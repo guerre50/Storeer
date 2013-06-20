@@ -67,10 +67,6 @@
     if (/iPhone|iPod|iPad|Android|BlackBerry|Opera Mini|IEMobile/).test ua
       # Mobile/Tablet CSS and JavaScript files to load
         filesToLoad = 
-          # CSS file that is loaded when in development mode
-          "dev-css": "css/mobile.css"
-          # CSS file that is loaded when in production mode
-          "prod-css": "css/mobile.min.css"
           # Require.js configuration file that is loaded when in development mode
           "dev-js": 
             "data-main": "js/app/config/config.js"
@@ -84,10 +80,6 @@
     else
       # Desktop CSS and JavaScript files to load
           filesToLoad =
-            # CSS file that is loaded when in development mode
-            "dev-css": "css/desktop.css"
-            # CSS file that is loaded when in production mode
-            "prod-css": "css/desktop.min.css"
             # Require.js configuration file that is also loaded when in development mode
             "dev-js":
               "data-main": "js/app/config/config.js"

@@ -4,6 +4,7 @@ require [
 	'underscore'
 	'backbone'
 	'routers/MobileRouter'
+	'less!mobile'
 	'jquerymobile'
 	'bootstrap'
 	'backbone.validateAll'

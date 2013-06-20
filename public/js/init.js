@@ -74,7 +74,7 @@
       };
     } else {
       filesToLoad = {
-        "dev-css": "css/desktop.css",
+        "dev-css": "",
         "prod-css": "css/desktop.min.css",
         "dev-js": {
           "data-main": "js/app/config/config.js",

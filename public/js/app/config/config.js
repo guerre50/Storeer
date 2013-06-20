@@ -11,7 +11,19 @@
       'backbone.validateAll': '../libs/plugins/Backbone.validateAll',
       'bootstrap': '../libs/plugins/bootstrap',
       'text': '../libs/plugins/text',
-      'jasminejquery': '../libs/plugins/jasmine-jquery'
+      'jasminejquery': '../libs/plugins/jasmine-jquery',
+      'normalize': '../libs/plugins/normalize',
+      'css': '../libs/plugins/require-css',
+      'less': '../libs/plugins/require-less',
+      'lessc': '../libs/plugins/lessc'
+    },
+    config: {
+      'css': {
+        'baseUrl': './css'
+      },
+      'less': {
+        'baseUrl': './css'
+      }
     },
     shim: {
       "jquerymobile": ["jquery"],
@@ -22,7 +34,12 @@
         "exports": "Backbone"
       },
       "backbone.validateAll": ["backbone"],
-      "jasminejquery": ["jquery"]
+      "jasminejquery": ["jquery"],
+      "css": {
+        "config": {
+          "path": '../../css'
+        }
+      }
     }
   });
 

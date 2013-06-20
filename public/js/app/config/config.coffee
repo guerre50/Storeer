@@ -5,15 +5,14 @@ require.config
 	baseUrl: './js/app'
 
 	# 3rd party script alias names (Easier to type "jquery" than "libs/jquery, etc")
-	# probably a good idea to keep version numbers in the file names for updates checking
 	paths:
-		# Code Libraries
+		# Core Libraries
 		# --------------
 		'jquery': '../libs/jquery'
 		'jqueryui': '../libs/jqueryui'
 		'jquerymobile': '../libs/jquery.mobile'
 		'underscore': '../libs/lodash'
-		'backbone': '../libs/backbone'
+		'backbone': '../libs/backbone'	
 
 		# Plugins
 		# -------
@@ -21,6 +20,17 @@ require.config
 		'bootstrap': '../libs/plugins/bootstrap'
 		'text': '../libs/plugins/text'
 		'jasminejquery': '../libs/plugins/jasmine-jquery'
+		'normalize': '../libs/plugins/normalize'
+		'css': '../libs/plugins/require-css'
+		'less': '../libs/plugins/require-less'
+		'lessc': '../libs/plugins/lessc'
+
+	config:
+		'css':
+			'baseUrl': './css'
+		'less':
+			'baseUrl': './css'
+
 
 	# Sets the configuration for your third party scripts that are not AMD compatible
 	shim: 
@@ -32,3 +42,6 @@ require.config
 			"exports": "Backbone"
 		"backbone.validateAll": ["backbone"]
 		"jasminejquery": ["jquery"]
+		"css":
+			"config": 
+				"path": '../../css'
