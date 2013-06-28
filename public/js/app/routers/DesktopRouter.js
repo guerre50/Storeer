@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["jquery", "underscore", "backbone", "models/BoilerplateModel", "views/BoilerplateView", "collections/BoilerplateCollection"], function($, _, Backbone, Model, View, Collection) {
+  define(['jquery', 'underscore', 'backbone', 'marionette', 'App', 'collections/StoreeCollection', 'views/IndexView'], function($, _, Backbone, Marionette, app, StoreeCollection, IndexView) {
     var DesktopRouter, _ref;
     return DesktopRouter = (function(_super) {
       __extends(DesktopRouter, _super);
@@ -14,15 +14,19 @@
       }
 
       DesktopRouter.prototype.initialize = function() {
+        app.start({
+          storee: new StoreeCollection()
+        });
+        window.app = app;
         return Backbone.history.start();
       };
 
       DesktopRouter.prototype.routes = {
-        "": "index"
+        '': 'index'
       };
 
       DesktopRouter.prototype.index = function() {
-        return new View();
+        return app.content.show(new IndexView());
       };
 
       return DesktopRouter;

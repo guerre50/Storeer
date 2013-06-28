@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["jquery", "underscore", "models/BoilerplateModel", "text!templates/boilerplate.html"], function($, _, Model, template) {
+  define(["jquery", "underscore", "views/RouteView", "models/BoilerplateModel", "text!templates/boilerplate.html"], function($, _, RouteView, Model, template) {
     var BoilerplateView, _ref;
     return BoilerplateView = (function(_super) {
       __extends(BoilerplateView, _super);
@@ -15,7 +15,13 @@
 
       BoilerplateView.prototype.el = $("#boilerplate");
 
-      BoilerplateView.prototype.initialize = function() {
+      BoilerplateView.prototype.path = 'boilerplate';
+
+      BoilerplateView.prototype.route = '';
+
+      BoilerplateView.prototype.initialize = function(query) {
+        BoilerplateView.__super__.initialize.apply(this, arguments);
+        console.log(query);
         return this.render();
       };
 
@@ -28,7 +34,7 @@
 
       return BoilerplateView;
 
-    })(Backbone.View);
+    })(RouteView);
   });
 
 }).call(this);

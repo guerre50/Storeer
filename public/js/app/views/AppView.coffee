@@ -2,24 +2,23 @@
 define [
 	"jquery"
 	"underscore"
-	"views/RouteView"
-	"models/BoilerplateModel"
+	"backbone"
+	"views/StoreeView"
+	"collections/StoreeCollection"
 	"text!templates/boilerplate.html"
-], ($, _, RouteView, Model, template) ->
-	class BoilerplateView extends RouteView
-		el: $("#boilerplate")
-
-		path: 'boilerplate'
-
-		route: ''
+], ($, _, Backbone, StoreeView, StoreeCollection, template) ->
+	class AppView extends Backbone.View
+		el: '#storeer-app'
 
 		initialize: (query) ->
 			super
-			console.log query
-			@.render()
+			
+			@render()
 
 		# events: 
 		render: ->
+			super
+
 			compiledTemplate = _.template template, {}
 			@.$el.html compiledTemplate
 

@@ -1,0 +1,83 @@
+<div id="drop-panel" class="storeer-visualizer-drop">
+  <div>
+    <i class="icon-unchecked drag"></i>
+    <i class="icon-plus-sign-alt drag-over"></i>
+  </div>
+</div>
+<% if (model.frames) { %>
+<div id="storeer-visualizer" class="storeer-visualizer">
+  <div class="storeer-visualizer-frame storeer-row row2">
+    <!-- Storee frame strip -->
+    <div id="storeer-frame-strip" class="storeer-frame-strip">
+      <% var active = 'active'; var i = 0; _.each(model.frames, function(frame) { %>
+        <div class="storeer-frame item <%- active %>" data-order="<%- i %>">
+          <img draggable="false" src="<%- frame.src %>">
+          <div class="storeer-frame-transparency">
+          </div>
+        </div>
+        <% active = ''; i++; %>
+      <% }); %>
+    </div>
+
+    <!-- Storee nav -->
+    <div id="storeer-prev" class="storeer-control-arrow previous" data-slide="prev"><p>&lsaquo;</p></div>
+    <div id="storeer-next" class="storeer-control-arrow next" data-slide="next"><p>&rsaquo;</p></div>
+  </div>
+  
+  <div class="storeer-details storeer-row row2">
+    <div class="storeer-details-topbar ">
+      <div class="media-preview">
+        <div class="avatar-frame">
+          <div class="avatar-img" style="background-image: url('https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRJW_acTVov-w8b97HLLIO-Jll9lOhXYbaPEFWbcDCWfrpTla2UHA'); background-size: cover; background-position:center;">
+          </div>
+        </div>
+      </div>
+      <div class="media-content">
+        <div class="storeer-title">
+          <h4>Boilerplate Title long name...</h4>
+        </div>
+      </div>
+
+      <div class="storeer-comments mobile">
+        <div class="storeer-options-container">
+          <div class="storeer-options info mobile">
+            <div class="options-outline"></div>
+            <i class="icon-info"></i>
+          </div><div class="storeer-options comments mobile">
+            <div class="options-outline"></div>
+            <i class="icon-comment"></i>
+          </div><div class="storeer-options share mobile">
+            <div class="options-outline"></div>
+            <i class="icon-share"></i>
+          </div><div class="storeer-options related mobile">
+            <div class="options-outline"></div>
+            <i class="icon-compass"></i>
+          </div>
+        </div>
+        <div class="storeer-option">
+        </div>
+      </div>
+
+
+    </div>
+    <div class="storeer-comments">
+        <div class="storeer-options-container">
+          <div class="storeer-options info no-mobile">
+            <i class="icon-info"></i>
+          </div>
+          <div class="storeer-options comments no-mobile">
+            <i class="icon-comment"></i>
+          </div>
+          <div class="storeer-options share no-mobile">
+            <i class="icon-share"></i>
+          </div>
+          <div class="storeer-options related no-mobile">
+            <i class="icon-compass"></i>
+          </div>
+        </div>
+        <div class="storeer-option">
+        </div>
+    </div>
+  </div><!-- Storee comments -->
+</div>
+<% }  %>

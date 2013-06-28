@@ -15,7 +15,13 @@
       'normalize': '../libs/plugins/normalize',
       'css': '../libs/plugins/require-css',
       'less': '../libs/plugins/require-less',
-      'lessc': '../libs/plugins/lessc'
+      'lessc': '../libs/plugins/lessc',
+      'localstorage': '../libs/plugins/Backbone.localStorage',
+      'wreqr': '../libs/plugins/backbone.wreqr',
+      'babysitter': '../libs/plugins/backbone.babysitter',
+      'json2': '../libs/plugins/json2',
+      'marionette': '../libs/plugins/backbone.marionette',
+      'prefixfree': '../libs/prefixfree.min'
     },
     config: {
       'css': {
@@ -35,11 +41,14 @@
       },
       "backbone.validateAll": ["backbone"],
       "jasminejquery": ["jquery"],
-      "css": {
-        "config": {
-          "path": '../../css'
-        }
-      }
+      "marionette": {
+        "deps": ["jquery", "underscore", "backbone", "wreqr", "babysitter", "json2"],
+        "exports": "Marionette"
+      },
+      "wreqr": ["backbone"],
+      "babysitter": ["backbone"],
+      "less": ["prefixfree"],
+      "css": ["prefixfree"]
     }
   });
 

@@ -1,18 +1,32 @@
 # DesktopRouter
 define [
-    "jquery"
-    "underscore"
-    "backbone"
-    "models/BoilerplateModel"
-    "views/BoilerplateView"
-    "collections/BoilerplateCollection"
-], ($, _, Backbone, Model, View, Collection) ->
+    'jquery'
+    'underscore'
+    'backbone'
+    'marionette'
+    'App'
+    'collections/StoreeCollection'
+    'views/IndexView'
+], ($, _, Backbone, Marionette, app, StoreeCollection, IndexView) ->
     class DesktopRouter extends Backbone.Router
         initialize: ->
-            Backbone.history.start()
+            app.start
+                storee: new StoreeCollection()
 
-        routes: 
-            "": "index"
+            # We expose app for debugging purposes 
+            window.app = app
+
+            Backbone.history.start()
+            
+            # This allows to use local or online data depending on users connection
+            # Backbone.sync = ->
+                #Backbone.ajaxSync.apply(this, arguments)
+                #Backbone.localSync.apply(this, arguments)
+
+        routes:
+            '': 'index'
 
         index: ->
-            new View()
+            app.content.show(new IndexView())
+
+
