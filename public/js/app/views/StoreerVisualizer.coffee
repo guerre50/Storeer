@@ -14,6 +14,8 @@ define [
 		dropPanel: '#drop-panel'
 		imagesToLoad: 0
 		className: 'storeer-visualizer'
+		storeerOptions: '#storeer-options'
+		storeerOptionsMobile: '#storeer-options-mobile'
 
 		initialize: ->
 			_.bindAll @
@@ -31,6 +33,8 @@ define [
 			'dragenter  .storeer-visualizer-drop': 'onDragEnter'
 			'dragleave .storeer-visualizer-drop': 'onDragLeave'
 			'dragover .storeer-visualizer-drop': 'onDragOver'
+			'click .storeer-options': 'onClickOption'
+			'transitionend #storeer-frame-strip' : 'onTransitionEnd'
 
 		loadStoreer: (storee) ->
 			# We remove listeners
@@ -50,7 +54,18 @@ define [
 			@$prevArrow = $(@prevArrow)
 			@$nextArrow = $(@nextArrow)
 
+			@$storeerOptions = $($(@storeerOptions)[0]).children()
+			@$storeerOptionsMobile = $($(@storeerOptionsMobile)[0]).children()
+			@setOptionsOrder()
+
 			@
+
+		setOptionsOrder: ->
+			i = 0
+			for option in @$storeerOptions
+				$($(option)[0]).data('order', i)
+				$(@$storeerOptionsMobile[i]).data('order', i)
+				i++
 
 		previous: ->
 			@moveFrame(-1)
@@ -58,9 +73,13 @@ define [
 		next: ->
 			@moveFrame(1)
 
+		onTransitionEnd: (event) ->
+			@resize()
+
 		onLoad: ->
 			# We need to wait until all images are loaded
 			# to reposition
+			@updateFrameOffsets()
 			@repositionStoree()
 			@updateControlArrows()
 
@@ -103,6 +122,16 @@ define [
 			order = $(event.currentTarget).data('order')
 			@moveFrame(order - @currentFrame)
 
+		onClickOption: (event) ->
+			@$storeerOptions.filter('div.active').toggleClass('active')
+			@$storeerOptionsMobile.filter('div.active').toggleClass('active')
+			
+			target = $(event.currentTarget)
+			targetOption = target.data('order')
+
+			$(@$storeerOptionsMobile[targetOption]).addClass('active')
+			$(@$storeerOptions[targetOption]).addClass('active')
+
 		moveFrame: (sign) ->
 			if sign is 0 then return @
 
@@ -124,32 +153,39 @@ define [
 
 
 		resize: ->
+			@updateFrameOffsets()
 			@repositionStoree()
 
 		updateControlArrows: ->
 			currentFrame = @getCurrentFrame()
 			
 			if @$frames.first().data('order')  == currentFrame.data('order') 
-				@$prevArrow.hide()
+				#@$prevArrow.hide()
+				@$prevArrow.css('left', -@$prevArrow.width())
 			else
-				@$prevArrow.show()
+				#@$prevArrow.show()
+				@$prevArrow.css('left', '')
 
 			if @$frames.last().data('order') == currentFrame.data('order') 
-				@$nextArrow.hide()
+				#@$nextArrow.hide()
+				@$nextArrow.css('right', -@$nextArrow.width())
 			else
-				@$nextArrow.show()
-			
-		repositionStoree: ->
-			if not @model then return
+				#@$nextArrow.show()
+				@$nextArrow.css('right','')
 
-			currentFrame = @$frames.filter('div.active')
-
+		updateFrameOffsets: ->
+			if not @$frames then return
 			# We recompute left offset due to possible size changes
 			i = 0
 			for frame in @$frames
 				$frame = $(frame)
 				$frame.data('left', i)
 				i += $frame.width()
+			
+		repositionStoree: ->
+			if not @model then return
+
+			currentFrame = @$frames.filter('div.active')
 
 			# Reposition Storee
 			currentWidth = @$el.width()

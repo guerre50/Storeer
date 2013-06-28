@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["jquery", "underscore", "backbone", "text!templates/landing.html"], function($, _, Backbone, template) {
+  define(["jquery", "underscore", "backbone", "marionette", "text!templates/landing.html"], function($, _, Backbone, Marionette, template) {
     var LandingView, _ref;
     return LandingView = (function(_super) {
       __extends(LandingView, _super);
@@ -13,7 +13,9 @@
         return _ref;
       }
 
-      LandingView.prototype.template = _template(template);
+      LandingView.prototype.className = 'landing-container';
+
+      LandingView.prototype.template = _.template(template);
 
       return LandingView;
 

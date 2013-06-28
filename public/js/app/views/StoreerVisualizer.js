@@ -27,6 +27,10 @@
 
       StoreerVisualizer.prototype.className = 'storeer-visualizer';
 
+      StoreerVisualizer.prototype.storeerOptions = '#storeer-options';
+
+      StoreerVisualizer.prototype.storeerOptionsMobile = '#storeer-options-mobile';
+
       StoreerVisualizer.prototype.initialize = function() {
         _.bindAll(this);
         $(window).on('resize', this.resize);
@@ -42,7 +46,9 @@
         'drop': 'onDrop',
         'dragenter  .storeer-visualizer-drop': 'onDragEnter',
         'dragleave .storeer-visualizer-drop': 'onDragLeave',
-        'dragover .storeer-visualizer-drop': 'onDragOver'
+        'dragover .storeer-visualizer-drop': 'onDragOver',
+        'click .storeer-options': 'onClickOption',
+        'transitionend #storeer-frame-strip': 'onTransitionEnd'
       };
 
       StoreerVisualizer.prototype.loadStoreer = function(storee) {
@@ -56,7 +62,24 @@
         this.$frames = this.$strip.find("div.item");
         this.$prevArrow = $(this.prevArrow);
         this.$nextArrow = $(this.nextArrow);
+        this.$storeerOptions = $($(this.storeerOptions)[0]).children();
+        this.$storeerOptionsMobile = $($(this.storeerOptionsMobile)[0]).children();
+        this.setOptionsOrder();
         return this;
+      };
+
+      StoreerVisualizer.prototype.setOptionsOrder = function() {
+        var i, option, _i, _len, _ref1, _results;
+        i = 0;
+        _ref1 = this.$storeerOptions;
+        _results = [];
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          option = _ref1[_i];
+          $($(option)[0]).data('order', i);
+          $(this.$storeerOptionsMobile[i]).data('order', i);
+          _results.push(i++);
+        }
+        return _results;
       };
 
       StoreerVisualizer.prototype.previous = function() {
@@ -67,7 +90,12 @@
         return this.moveFrame(1);
       };
 
+      StoreerVisualizer.prototype.onTransitionEnd = function(event) {
+        return this.resize();
+      };
+
       StoreerVisualizer.prototype.onLoad = function() {
+        this.updateFrameOffsets();
         this.repositionStoree();
         return this.updateControlArrows();
       };
@@ -118,6 +146,16 @@
         return this.moveFrame(order - this.currentFrame);
       };
 
+      StoreerVisualizer.prototype.onClickOption = function(event) {
+        var target, targetOption;
+        this.$storeerOptions.filter('div.active').toggleClass('active');
+        this.$storeerOptionsMobile.filter('div.active').toggleClass('active');
+        target = $(event.currentTarget);
+        targetOption = target.data('order');
+        $(this.$storeerOptionsMobile[targetOption]).addClass('active');
+        return $(this.$storeerOptions[targetOption]).addClass('active');
+      };
+
       StoreerVisualizer.prototype.moveFrame = function(sign) {
         var currentFrame, movement, previousFrame;
         if (sign === 0) {
@@ -140,6 +178,7 @@
       };
 
       StoreerVisualizer.prototype.resize = function() {
+        this.updateFrameOffsets();
         return this.repositionStoree();
       };
 
@@ -147,36 +186,45 @@
         var currentFrame;
         currentFrame = this.getCurrentFrame();
         if (this.$frames.first().data('order') === currentFrame.data('order')) {
-          this.$prevArrow.hide();
+          this.$prevArrow.css('left', -this.$prevArrow.width());
         } else {
-          this.$prevArrow.show();
+          this.$prevArrow.css('left', '');
         }
         if (this.$frames.last().data('order') === currentFrame.data('order')) {
-          return this.$nextArrow.hide();
+          return this.$nextArrow.css('right', -this.$nextArrow.width());
         } else {
-          return this.$nextArrow.show();
+          return this.$nextArrow.css('right', '');
         }
       };
 
-      StoreerVisualizer.prototype.repositionStoree = function() {
-        var $frame, currentFrame, currentWidth, frame, frameLeftOffset, frameWidth, i, _i, _len, _ref1;
-        if (!this.model) {
+      StoreerVisualizer.prototype.updateFrameOffsets = function() {
+        var $frame, frame, i, _i, _len, _ref1, _results;
+        if (!this.$frames) {
           return;
         }
-        currentFrame = this.$frames.filter('div.active');
         i = 0;
         _ref1 = this.$frames;
+        _results = [];
         for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
           frame = _ref1[_i];
           $frame = $(frame);
           $frame.data('left', i);
-          i += $frame.width();
+          _results.push(i += $frame.width());
         }
+        return _results;
+      };
+
+      StoreerVisualizer.prototype.repositionStoree = function() {
+        var currentFrame, currentWidth, frameLeftOffset, frameWidth;
+        if (!this.model) {
+          return;
+        }
+        currentFrame = this.$frames.filter('div.active');
         currentWidth = this.$el.width();
         frameWidth = currentFrame.width();
         frameLeftOffset = currentFrame.data('left');
         _.each(this.$frames, function(frame) {
-          var $image;
+          var $frame, $image;
           $frame = $(frame);
           $image = $frame.find("img");
           return $image.width($image.height() * $image.data('ratio'));

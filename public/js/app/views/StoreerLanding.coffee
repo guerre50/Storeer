@@ -3,7 +3,10 @@ define [
 	"jquery"
 	"underscore"
 	"backbone"
+	"marionette"
 	"text!templates/landing.html"
-], ($, _, Backbone, template) ->
+], ($, _, Backbone, Marionette, template) ->
 	class LandingView extends Backbone.Marionette.ItemView
-		template: _template(template)
+		className: 'landing-container' 
+		template: _.template(template)
+
