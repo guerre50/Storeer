@@ -248,11 +248,7 @@
         return this;
       };
 
-      StoreerVisualizer.prototype.onShow = function() {
-        if (!this.model) {
-          return this.$el.parent().addClass('closed');
-        }
-      };
+      StoreerVisualizer.prototype.onShow = function() {};
 
       StoreerVisualizer.prototype.remove = function() {
         $(window).off('resize', this.resize);

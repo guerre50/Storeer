@@ -215,7 +215,7 @@ define [
 			@
 
 		onShow: ->
-			if not @model then @$el.parent().addClass('closed')
+			#if not @model then @$el.parent().addClass('closed')
 
 		remove: ->
 			$(window).off('resize', @resize)

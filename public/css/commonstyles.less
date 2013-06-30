@@ -2,6 +2,33 @@ div {
 	.user-select(none);
 }
 
+.container {
+	margin: @margin/2;
+	.fill;
+	position: relative;
+}
+
+.squared(@width: 100%) {
+	height: 0;
+	padding-bottom: @width;
+}
+
+span.topic {
+	.main-color-complex;
+	color: white;
+	padding:5px;
+	.rounded(2px);
+}
+
+.main-panel {
+	background: @dark-color;
+	box-shadow: inset 0 -14px 58px -5px @darkest-color;
+	
+	margin-left: 0px;
+	margin-right: 0px;
+}
+
+
 .blur(@pixels : 0px) {
 	-webkit-filter: blur(@pixels);
 	-ms-filter: blur(@pixels);
@@ -69,20 +96,34 @@ div {
 
 
 .storeer-col {
+	position: relative;
+	&.col1-3 {
+		.fill-width(percentage(1/3));
+	}
+	&.col2-3 {
+		.fill-width(percentage(2/3));
+	}
+	&.col1-4 {
+		.fill-width(percentage(1/4));
+	}
+	&.col2-4 {
+		.fill-width(percentage(2/4));
+	}
 	&.col1 {
 		width:100%;
 	}
 	&.col2 {
 		width: 50%;
+		&.squared {
+			padding-bottom: 50%;
+		}
 		@media (max-width: @mobile-width) {
 			width: 100%;
-			&.square {
-				padding: 100%;
+			&.squared {
+				padding-bottom: 100%;
 			}
 		}
-		&.square {
-			padding: 50%;
-		}
+		
 	}
 	&.col3 {
 		width: 33%;

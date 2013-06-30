@@ -8,7 +8,7 @@ define [
 	"views/StoreerLibrary"
 	"views/LandingView"
 	"models/StoreeModel"
-	"text!templates/index.html"
+	"text!templates/explorer.html"
 ], ($, _, Backbone, app, StoreerVisualizer, StoreerLibrary, LandingView, StoreeModel, template) ->
 	class ExplorerView extends Backbone.Marionette.Layout
 		template: _.template(template)

@@ -166,27 +166,29 @@ body {
 	margin-top: @margin/2;
 }
 
+
+
 .storeer-storee-border {
-	top: 5%;
-	left: 5%;
-	height: 90%;
-	width: 90%;
+	.fill;
     position: absolute;
-	overflow: hidden;
 	.transition(0.2s, ease-in-out);
-	.rounded(3px);
 
 	&:hover {
-		.drop-shadow(0, 2px, 10px, 0.4);
-		height: 92%;
-		width: 92%;
-		top: 4%;
-		left: 4%;
+		.scale(1.1);
+	}
+	.storeer-outer-thumbnail {
+		position: relative;
+		padding: @margin/2;
+		.fill;
+		box-sizing: border-box;
+		overflow: hidden;
+		
 	}
 
 	.storeer-storee-thumbnail {
-		height: 100%;
-		width: 100%;
+		.fill;
+		.drop-shadow(0, 2px, 10px, 0.4);
+		.rounded(2px);
 	}
 
 	.storeer-storee-thumbnail-transparency {
@@ -269,8 +271,11 @@ body {
 }
 
 #storeer-results {
-	height:80%;
+	position: relative;
+	height: 80%;
+	margin: @margin/2;
 }
+
 
 .storee-summary {
 	position: relative;
@@ -411,7 +416,6 @@ body {
 	.storeer-visualizer {
 		.fill-height;
 		background: white;
-		position: relative;
 
 		.storeer-visualizer-drop {
 			.fill;
@@ -646,6 +650,20 @@ body {
 	height:5%;
 	z-index: @top-most-z;
 	background: @darkest-color;
+}
+
+
+//=====================
+// Storeer community summary
+//=====================
+.storeer-summary {
+	.fill;
+	
+}
+
+.header {
+	padding: @margin/2 @margin @margin/2 @margin;
+	float:left;
 }
 
 
