@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["jquery", "underscore", "backbone", "App", "views/StoreerVisualizer", "views/StoreerLibrary", "views/LandingView", "models/StoreeModel", "text!templates/explorer.html"], function($, _, Backbone, app, StoreerVisualizer, StoreerLibrary, LandingView, StoreeModel, template) {
+  define(["jquery", "underscore", "backbone", "App", "views/StoreerVisualizer", "views/StoreerLibrary", "views/LandingView", "views/HomeView", "models/StoreeModel", "text!templates/explorer.html"], function($, _, Backbone, app, StoreerVisualizer, StoreerLibrary, LandingView, HomeView, StoreeModel, template) {
     var ExplorerView, _ref;
     return ExplorerView = (function(_super) {
       __extends(ExplorerView, _super);
@@ -18,17 +18,66 @@
       ExplorerView.prototype.className = 'storeer-content';
 
       ExplorerView.prototype.regions = {
+        dropPanel: "#drop-panel",
         storee: "#storeer-storee",
         library: "#storeer-library"
       };
 
-      ExplorerView.prototype.initialize = function() {};
+      ExplorerView.prototype.events = {
+        'drop': 'onDrop',
+        'dragenter  .storeer-visualizer-drop': 'onDragEnter',
+        'dragleave .storeer-visualizer-drop': 'onDragLeave',
+        'dragover .storeer-visualizer-drop': 'onDragOver'
+      };
+
+      ExplorerView.prototype.initialize = function() {
+        _.bindAll(this);
+        app.vent.on('drag-start:storee', this.onDragStart);
+        app.vent.on('drag-end:storee', this.onDragEnd);
+        app.vent.on('close:visualizer', this.closeVisualizer);
+        return this.$dropPanel = $(this.regions.dropPanel);
+      };
+
+      ExplorerView.prototype.closeVisualizer = function() {
+        return this.storee.show(new HomeView());
+      };
 
       ExplorerView.prototype.onShow = function() {
-        this.storee.show(new StoreerVisualizer());
-        return this.library.show(new StoreerLibrary({
+        this.storee.show(new HomeView());
+        this.library.show(new StoreerLibrary({
           collection: app.storees
         }));
+        return this.$dropPanel = $(this.regions.dropPanel);
+      };
+
+      ExplorerView.prototype.onDrop = function(event) {
+        var storee;
+        storee = event.originalEvent.dataTransfer.getData("storee");
+        if (storee) {
+          return this.storee.show(new StoreerVisualizer({
+            model: new StoreeModel(storee)
+          }));
+        }
+      };
+
+      ExplorerView.prototype.onDragEnter = function(event) {
+        return this.$dropPanel.addClass('drag-over');
+      };
+
+      ExplorerView.prototype.onDragLeave = function(event) {
+        return this.$dropPanel.removeClass('drag-over');
+      };
+
+      ExplorerView.prototype.onDragOver = function(event) {
+        return event.preventDefault();
+      };
+
+      ExplorerView.prototype.onDragStart = function(event) {
+        return this.$dropPanel.addClass('dragging');
+      };
+
+      ExplorerView.prototype.onDragEnd = function(event) {
+        return this.$dropPanel.removeClass('dragging').removeClass('drag-over');
       };
 
       return ExplorerView;

@@ -11,7 +11,6 @@ define [
 		strip: '#storeer-frame-strip'
 		prevArrow: '#storeer-prev'
 		nextArrow: '#storeer-next'
-		dropPanel: '#drop-panel'
 		imagesToLoad: 0
 		className: 'storeer-visualizer'
 		storeerOptions: '#storeer-options'
@@ -23,24 +22,17 @@ define [
 			$(window).on('keydown', @onKeyDown)
 			$(window).on('resize', @resize)
 			app.vent.on('open:storee', @loadStoreer)
-			app.vent.on('drag-start:storee', @onDragStart)
-			app.vent.on('drag-end:storee', @onDragEnd)
+
+		onShow: ->
+			@loadStoreer(@model)
 
 		events:
 			'click .previous': 'previous'
 			'click .next': 'next'
 			'click .storeer-frame': 'onFrameClick'
-			'drop': 'onDrop'
-			'dragenter  .storeer-visualizer-drop': 'onDragEnter'
-			'dragleave .storeer-visualizer-drop': 'onDragLeave'
-			'dragover .storeer-visualizer-drop': 'onDragOver'
 			'click .storeer-options': 'onClickOption'
 			'transitionend #storeer-frame-strip' : 'onTransitionEnd'
-			'click .close': 'close'
-		
-		keys:
-			'left': 'previous'
-			'right': 'next' 
+			'click .close': 'onClickClose'
 
 		loadStoreer: (storee) ->
 			# We remove listeners
@@ -97,29 +89,6 @@ define [
 
 			if not --@imagesToLoad then @onLoad()
 
-		onDrop: (event) ->
-			storee = event.originalEvent.dataTransfer.getData("storee")
-			if storee then @loadStoreer(new StoreeModel(storee))
-
-		onDragEnter: (event) ->
-			@$el.parent().addClass('drag-over')
-
-
-		onDragLeave: (event) ->
-			@$el.parent().removeClass('drag-over')
-
-		onDragOver: (event) ->
-			# This "fixes" a bug in Chrome that prevents
-			# drop event from being fired more info: 
-			# https://code.google.com/p/chromium/issues/detail?id=168387
-			event.preventDefault()
-
-		onDragStart: (event) ->
-			@$el.parent().addClass('dragging')
-
-		onDragEnd: (event) ->
-			@$el.parent().removeClass('dragging').removeClass('drag-over')
-
 		onFrameClick: (event) ->
 			event.preventDefault()
 			event.returnValue = false
@@ -137,7 +106,7 @@ define [
 			switch code
 				when 37 then @previous() #left_arrow
 				when 39 then @next() #right_arrow
-				when 27 then @close() #esc
+				when 27 then @onClickClose() #esc
 
 		onClickOption: (event) ->
 			@$storeerOptions.filter('div.active').toggleClass('active')
@@ -149,9 +118,8 @@ define [
 			$(@$storeerOptionsMobile[targetOption]).addClass('active')
 			$(@$storeerOptions[targetOption]).addClass('active')	
 
-		close: ->
-			@model = null
-			@render()
+		onClickClose: ->
+			app.vent.trigger('close:visualizer')
 
 		moveFrame: (sign) ->
 			if sign is 0 then return @
@@ -195,7 +163,6 @@ define [
 				@$nextArrow.css('right','')
 
 		updateFrameOffsets: ->
-			if not @$frames then return
 			# We recompute left offset due to possible size changes
 			i = 0
 			for frame in @$frames
@@ -204,8 +171,6 @@ define [
 				i += $frame.width()
 			
 		repositionStoree: ->
-			if not @model then return
-
 			currentFrame = @$frames.filter('div.active')
 
 			# Reposition Storee
@@ -227,16 +192,10 @@ define [
 			@
 
 		render: ->
-			model = if @model then @model.toJSON() else {}
-
-			@$el.html(@template({model: model}))
-			@$el.parent().removeClass('closed')
-			@$dropPanel = $(@dropPanel)
+			@$el.html(@template({model: @model.toJSON()}))
 
 			@
 
-		onShow: ->
-			#if not @model then @$el.parent().addClass('closed')
 
 		remove: ->
 			$(window).off('keydown', @onKeyDown)

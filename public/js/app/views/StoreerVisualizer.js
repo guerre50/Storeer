@@ -21,8 +21,6 @@
 
       StoreerVisualizer.prototype.nextArrow = '#storeer-next';
 
-      StoreerVisualizer.prototype.dropPanel = '#drop-panel';
-
       StoreerVisualizer.prototype.imagesToLoad = 0;
 
       StoreerVisualizer.prototype.className = 'storeer-visualizer';
@@ -35,27 +33,20 @@
         _.bindAll(this);
         $(window).on('keydown', this.onKeyDown);
         $(window).on('resize', this.resize);
-        app.vent.on('open:storee', this.loadStoreer);
-        app.vent.on('drag-start:storee', this.onDragStart);
-        return app.vent.on('drag-end:storee', this.onDragEnd);
+        return app.vent.on('open:storee', this.loadStoreer);
+      };
+
+      StoreerVisualizer.prototype.onShow = function() {
+        return this.loadStoreer(this.model);
       };
 
       StoreerVisualizer.prototype.events = {
         'click .previous': 'previous',
         'click .next': 'next',
         'click .storeer-frame': 'onFrameClick',
-        'drop': 'onDrop',
-        'dragenter  .storeer-visualizer-drop': 'onDragEnter',
-        'dragleave .storeer-visualizer-drop': 'onDragLeave',
-        'dragover .storeer-visualizer-drop': 'onDragOver',
         'click .storeer-options': 'onClickOption',
         'transitionend #storeer-frame-strip': 'onTransitionEnd',
-        'click .close': 'close'
-      };
-
-      StoreerVisualizer.prototype.keys = {
-        'left': 'previous',
-        'right': 'next'
+        'click .close': 'onClickClose'
       };
 
       StoreerVisualizer.prototype.loadStoreer = function(storee) {
@@ -117,34 +108,6 @@
         }
       };
 
-      StoreerVisualizer.prototype.onDrop = function(event) {
-        var storee;
-        storee = event.originalEvent.dataTransfer.getData("storee");
-        if (storee) {
-          return this.loadStoreer(new StoreeModel(storee));
-        }
-      };
-
-      StoreerVisualizer.prototype.onDragEnter = function(event) {
-        return this.$el.parent().addClass('drag-over');
-      };
-
-      StoreerVisualizer.prototype.onDragLeave = function(event) {
-        return this.$el.parent().removeClass('drag-over');
-      };
-
-      StoreerVisualizer.prototype.onDragOver = function(event) {
-        return event.preventDefault();
-      };
-
-      StoreerVisualizer.prototype.onDragStart = function(event) {
-        return this.$el.parent().addClass('dragging');
-      };
-
-      StoreerVisualizer.prototype.onDragEnd = function(event) {
-        return this.$el.parent().removeClass('dragging').removeClass('drag-over');
-      };
-
       StoreerVisualizer.prototype.onFrameClick = function(event) {
         var order;
         event.preventDefault();
@@ -165,7 +128,7 @@
           case 39:
             return this.next();
           case 27:
-            return this.close();
+            return this.onClickClose();
         }
       };
 
@@ -179,9 +142,8 @@
         return $(this.$storeerOptions[targetOption]).addClass('active');
       };
 
-      StoreerVisualizer.prototype.close = function() {
-        this.model = null;
-        return this.render();
+      StoreerVisualizer.prototype.onClickClose = function() {
+        return app.vent.trigger('close:visualizer');
       };
 
       StoreerVisualizer.prototype.moveFrame = function(sign) {
@@ -227,9 +189,6 @@
 
       StoreerVisualizer.prototype.updateFrameOffsets = function() {
         var $frame, frame, i, _i, _len, _ref1, _results;
-        if (!this.$frames) {
-          return;
-        }
         i = 0;
         _ref1 = this.$frames;
         _results = [];
@@ -244,9 +203,6 @@
 
       StoreerVisualizer.prototype.repositionStoree = function() {
         var currentFrame, currentWidth, frameLeftOffset, frameWidth;
-        if (!this.model) {
-          return;
-        }
         currentFrame = this.$frames.filter('div.active');
         currentWidth = this.$el.width();
         frameWidth = currentFrame.width();
@@ -262,17 +218,11 @@
       };
 
       StoreerVisualizer.prototype.render = function() {
-        var model;
-        model = this.model ? this.model.toJSON() : {};
         this.$el.html(this.template({
-          model: model
+          model: this.model.toJSON()
         }));
-        this.$el.parent().removeClass('closed');
-        this.$dropPanel = $(this.dropPanel);
         return this;
       };
-
-      StoreerVisualizer.prototype.onShow = function() {};
 
       StoreerVisualizer.prototype.remove = function() {
         $(window).off('keydown', this.onKeyDown);
