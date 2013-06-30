@@ -5,17 +5,11 @@ define [
     'backbone'
     'marionette'
     'App'
-    'collections/StoreeCollection'
+    'views/LandingView'
     'views/IndexView'
-], ($, _, Backbone, Marionette, app, StoreeCollection, IndexView) ->
-    class DesktopRouter extends Backbone.Router
+], ($, _, Backbone, Marionette, app, LandingView, IndexView) ->
+    class DesktopRouter extends Backbone.Marionette.AppRouter
         initialize: ->
-            app.start
-                storee: new StoreeCollection()
-
-            # We expose app for debugging purposes 
-            window.app = app
-
             Backbone.history.start()
             
             # This allows to use local or online data depending on users connection
@@ -24,9 +18,15 @@ define [
                 #Backbone.localSync.apply(this, arguments)
 
         routes:
-            '': 'index'
+            '': 'landing'
+            'explorer': 'index'
 
         index: ->
+            console.log "index"
+            app.content.close()
             app.content.show(new IndexView())
+
+        landing: ->
+            app.content.show(new LandingView())
 
 

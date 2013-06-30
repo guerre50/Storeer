@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["jquery", "underscore", "backbone", "App", "views/StoreerVisualizer", "views/StoreerLibrary", "views/StoreerLanding", "models/StoreeModel", "text!templates/index.html"], function($, _, Backbone, app, StoreerVisualizer, StoreerLibrary, LandingView, StoreeModel, template) {
+  define(["jquery", "underscore", "backbone", "App", "views/StoreerVisualizer", "views/StoreerLibrary", "views/LandingView", "models/StoreeModel", "text!templates/index.html"], function($, _, Backbone, app, StoreerVisualizer, StoreerLibrary, LandingView, StoreeModel, template) {
     var IndexView, _ref;
     return IndexView = (function(_super) {
       __extends(IndexView, _super);
@@ -18,7 +18,6 @@
       IndexView.prototype.className = 'storeer-content';
 
       IndexView.prototype.regions = {
-        landing: '#storeer-landing',
         storee: "#storeer-storee",
         library: "#storeer-library"
       };
@@ -26,7 +25,6 @@
       IndexView.prototype.initialize = function() {};
 
       IndexView.prototype.onShow = function() {
-        this.landing.show(new LandingView());
         this.storee.show(new StoreerVisualizer());
         return this.library.show(new StoreerLibrary({
           collection: app.storees
