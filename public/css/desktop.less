@@ -380,7 +380,15 @@ body {
 			}
 		}
 	}
-	
+
+	&.close {
+		.options-item(@color-close);
+		&.no-mobile {
+			@media(max-height: @mobile-height) {
+				margin-top: -@avatar-size*5;
+			}
+		}
+	}
 }
 
 .storeer-option {
@@ -514,11 +522,10 @@ body {
 	}
 }
 
-.storeer-control-arrow {
+.storeer-control {
 	position: absolute;
 	width: 40px;
 	height: 40px;
-	top:50%;
 	font-size: 60px;
 	font-weight: 100;
 	line-height: 30px;
@@ -532,15 +539,41 @@ body {
 	text-shadow: 2px 2px 5px #111111;
 	.transition(0.2s, ease-in-out);
 
+	&:hover {
+		background: #555555;
+	}
+}
+
+
+
+.storeer-control-close {
+	.storeer-control;
+	top: 0px;
+	right: 0px;
+	opacity: 0;
+	&:hover {
+		opacity: 1;
+	}
+	p {
+		margin-top: 3px;
+		.transition(0.2s, ease-in-out, opacity);
+		.hover-translate();
+		&:hover {
+			text-decoration: none;
+			color: white;
+		}
+	}
+}
+
+.storeer-control-arrow {
+	.storeer-control;
+	top: 50%;
 	&.next {
 		left: auto;
 		right: 0px;
 		:hover {
 			.translate(4px, 0);
 		}	
-	}
-	&:hover {
-		background: #555555;
 	}
 	p {
 		.transition(0.2s, ease-in-out);

@@ -20,6 +20,7 @@ define [
 		initialize: ->
 			_.bindAll @
 
+			$(window).on('keydown', @onKeyDown)
 			$(window).on('resize', @resize)
 			app.vent.on('open:storee', @loadStoreer)
 			app.vent.on('drag-start:storee', @onDragStart)
@@ -35,6 +36,11 @@ define [
 			'dragover .storeer-visualizer-drop': 'onDragOver'
 			'click .storeer-options': 'onClickOption'
 			'transitionend #storeer-frame-strip' : 'onTransitionEnd'
+			'click .close': 'close'
+		
+		keys:
+			'left': 'previous'
+			'right': 'next' 
 
 		loadStoreer: (storee) ->
 			# We remove listeners
@@ -122,6 +128,17 @@ define [
 			order = $(event.currentTarget).data('order')
 			@moveFrame(order - @currentFrame)
 
+		onKeyDown: (event) ->
+			# We must listen events that doesn't target any other DOM
+			# element
+			if not event or event.target.localName isnt "body" then return
+
+			code = event.keyCode
+			switch code
+				when 37 then @previous() #left_arrow
+				when 39 then @next() #right_arrow
+				when 27 then @close() #esc
+
 		onClickOption: (event) ->
 			@$storeerOptions.filter('div.active').toggleClass('active')
 			@$storeerOptionsMobile.filter('div.active').toggleClass('active')
@@ -130,7 +147,11 @@ define [
 			targetOption = target.data('order')
 
 			$(@$storeerOptionsMobile[targetOption]).addClass('active')
-			$(@$storeerOptions[targetOption]).addClass('active')
+			$(@$storeerOptions[targetOption]).addClass('active')	
+
+		close: ->
+			@model = null
+			@render()
 
 		moveFrame: (sign) ->
 			if sign is 0 then return @
@@ -206,17 +227,18 @@ define [
 			@
 
 		render: ->
-			if @model
-				@$el.html(@template({model: @model.toJSON()}))
-				@$el.parent().removeClass('closed')
-			else
-				@$el.html(@template({model: {}}))
-				@$dropPanel = $(@dropPanel)
+			model = if @model then @model.toJSON() else {}
+
+			@$el.html(@template({model: model}))
+			@$el.parent().removeClass('closed')
+			@$dropPanel = $(@dropPanel)
+
 			@
 
 		onShow: ->
 			#if not @model then @$el.parent().addClass('closed')
 
 		remove: ->
+			$(window).off('keydown', @onKeyDown)
 			$(window).off('resize', @resize)
 			Backbone.View.prototype.remove.apply(@)
