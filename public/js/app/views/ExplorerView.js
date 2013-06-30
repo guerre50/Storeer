@@ -4,34 +4,34 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(["jquery", "underscore", "backbone", "App", "views/StoreerVisualizer", "views/StoreerLibrary", "views/LandingView", "models/StoreeModel", "text!templates/index.html"], function($, _, Backbone, app, StoreerVisualizer, StoreerLibrary, LandingView, StoreeModel, template) {
-    var IndexView, _ref;
-    return IndexView = (function(_super) {
-      __extends(IndexView, _super);
+    var ExplorerView, _ref;
+    return ExplorerView = (function(_super) {
+      __extends(ExplorerView, _super);
 
-      function IndexView() {
-        _ref = IndexView.__super__.constructor.apply(this, arguments);
+      function ExplorerView() {
+        _ref = ExplorerView.__super__.constructor.apply(this, arguments);
         return _ref;
       }
 
-      IndexView.prototype.template = _.template(template);
+      ExplorerView.prototype.template = _.template(template);
 
-      IndexView.prototype.className = 'storeer-content';
+      ExplorerView.prototype.className = 'storeer-content';
 
-      IndexView.prototype.regions = {
+      ExplorerView.prototype.regions = {
         storee: "#storeer-storee",
         library: "#storeer-library"
       };
 
-      IndexView.prototype.initialize = function() {};
+      ExplorerView.prototype.initialize = function() {};
 
-      IndexView.prototype.onShow = function() {
+      ExplorerView.prototype.onShow = function() {
         this.storee.show(new StoreerVisualizer());
         return this.library.show(new StoreerLibrary({
           collection: app.storees
         }));
       };
 
-      return IndexView;
+      return ExplorerView;
 
     })(Backbone.Marionette.Layout);
   });

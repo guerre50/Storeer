@@ -10,7 +10,7 @@ define [
 	"models/StoreeModel"
 	"text!templates/index.html"
 ], ($, _, Backbone, app, StoreerVisualizer, StoreerLibrary, LandingView, StoreeModel, template) ->
-	class IndexView extends Backbone.Marionette.Layout
+	class ExplorerView extends Backbone.Marionette.Layout
 		template: _.template(template)
 		className: 'storeer-content'
 

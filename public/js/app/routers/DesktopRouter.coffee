@@ -6,8 +6,8 @@ define [
     'marionette'
     'App'
     'views/LandingView'
-    'views/IndexView'
-], ($, _, Backbone, Marionette, app, LandingView, IndexView) ->
+    'views/ExplorerView'
+], ($, _, Backbone, Marionette, app, LandingView, ExplorerView) ->
     class DesktopRouter extends Backbone.Marionette.AppRouter
         initialize: ->
             Backbone.history.start()
@@ -24,7 +24,7 @@ define [
         index: ->
             console.log "index"
             app.content.close()
-            app.content.show(new IndexView())
+            app.content.show(new ExplorerView())
 
         landing: ->
             app.content.show(new LandingView())
