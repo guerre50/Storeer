@@ -27,7 +27,8 @@ define [
 			@$el.addClass('dragging')
 			# In Chrome (at least) we need to access originalEvent to set
 			# the correct dataTransfer
-			event.originalEvent.dataTransfer.setData("storee", @model.toJSON())
+
+			event.originalEvent.dataTransfer.setData("storee",  JSON.stringify(@model.toJSON()))
 			app.vent.trigger('drag-start:storee')
 
 		click: ->

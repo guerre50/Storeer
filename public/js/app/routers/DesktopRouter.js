@@ -20,7 +20,8 @@
       DesktopRouter.prototype.routes = {
         '': 'landing',
         'storees': 'storees',
-        'storees/:id': 'storees'
+        'storees/:id': 'storees',
+        '*actions': 'landing'
       };
 
       DesktopRouter.prototype.storees = function(id) {

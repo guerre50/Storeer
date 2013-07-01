@@ -13,16 +13,36 @@
         return _ref;
       }
 
-      SearchView.prototype.events = {
-        'change #searchTerm': 'search'
-      };
-
       SearchView.prototype.template = _.template(template);
 
+      SearchView.prototype.searchbar = '#searchbar';
+
+      SearchView.prototype.searchTerm = '#search-term';
+
+      SearchView.prototype.initialize = function() {
+        _.bindAll(this);
+        return app.vent.on('search:end', this.onSearchEnd);
+      };
+
+      SearchView.prototype.onShow = function() {
+        this.$searchTerm = $(this.searchTerm);
+        this.$searchbar = $(this.searchbar);
+        return this;
+      };
+
+      SearchView.prototype.events = {
+        'change #search-term': 'search'
+      };
+
       SearchView.prototype.search = function() {
-        var query;
-        query = $('#searchTerm').val().trim();
-        return app.vent.trigger('search:query', query);
+        var term;
+        term = this.$searchTerm.val().trim();
+        app.vent.trigger('search:term', term);
+        return this.$searchbar.addClass('loading');
+      };
+
+      SearchView.prototype.onSearchEnd = function() {
+        return this.$searchbar.removeClass('loading');
       };
 
       return SearchView;

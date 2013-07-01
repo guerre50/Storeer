@@ -5,8 +5,9 @@ define [
 	'backbone'
 	'App'
 	'models/StoreeModel'
+	'controllers/FlickrController'
 	'localstorage'
-], ($, _, Backbone, app, StoreeModel) ->
+], ($, _, Backbone, app, StoreeModel, flickr) ->
 	class StoreeCollection extends Backbone.Collection
 		model: StoreeModel
 
@@ -15,35 +16,35 @@ define [
 		initialize: ->
 			_.bindAll @
 
-			@maxResults = 20
-			@page = 0
-			@loading = false
+			@maxResults = 30
+			@page = 1
 
-			app.vent.on('search:query', (query) -> 
-				@search(query) 
-			, @)
-
-			app.vent.on('search:fetch', -> 
-				@more()
-			, @)
+			app.vent.on('search:more', @more)
+			app.vent.on('search:term', @search)
 
 		search: (query) ->
-			self = @
 			@page = 0
-
-			@fetchStorees(query, (storees) ->
-				self.reset(storees)
-			)
+			@query = query
+			@fetchStorees(query, @fetchReset)
 
 		more: ->
-			self = @
-			@fetchStorees(@query, (storees) -> 
-				self.add(storees)
-			)
+			@page++
+			@fetchStorees(@query, @fetchMore)
 
+		fetchReset: (storees) ->
+			@reset(storees)
+			@loading = false
+
+		fetchMore: (storees) ->
+			@add(storees)
+			@loading = false
 
 		fetchStorees: (query, callback) ->
-			if @loading or not callback then return true;
+			if @loading or not callback then return
 
-			#@loading = true
-			callback([new StoreeModel()])
+			@loading = true
+			flickr.topics(@maxResults, @page, callback, @fetchFail)
+		
+		fetchFail: (msg) ->
+
+			console.log "fail"

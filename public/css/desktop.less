@@ -300,6 +300,23 @@ body {
 		top: @margin/2;
 		right: @margin/2;
 		display: inline-block;
+		&.icon-spinner {
+			opacity: 0;
+		}
+		&.icon-search {
+			opacity: 1;
+		}
+	}
+	&.loading {
+		i {
+			&.icon-spinner {
+				opacity: 1;
+			}
+			&.icon-search {
+				opacity: 0;
+			}
+		}
+
 	}
 }
 

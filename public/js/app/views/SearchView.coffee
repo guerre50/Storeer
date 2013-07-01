@@ -7,12 +7,32 @@ define [
 	"text!templates/searchbar.html"
 ], ($, _, Backbone, app, template) ->
 	class SearchView extends Backbone.Marionette.ItemView
-		events:
-			'change #searchTerm': 'search'
-
 		template: _.template(template)
+		searchbar: '#searchbar'
+		searchTerm: '#search-term'
+
+		initialize: ->
+			_.bindAll @
+			
+			app.vent.on('search:end', @onSearchEnd)
+
+		onShow: ->
+			@$searchTerm = $(@searchTerm)
+			@$searchbar = $(@searchbar)
+
+			@
+
+
+		events:
+			'change #search-term': 'search'
 
 		search: ->
-			query = $('#searchTerm').val().trim()
-			app.vent.trigger('search:query', query)
+			term = @$searchTerm.val().trim()
+			app.vent.trigger('search:term', term)
+			@$searchbar.addClass('loading')
+
+		onSearchEnd: ->
+			@$searchbar.removeClass('loading')
+
+
 

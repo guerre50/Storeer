@@ -55,16 +55,14 @@
         var storee;
         storee = event.originalEvent.dataTransfer.getData("storee");
         if (storee) {
-          return this.openStoree(storee);
+          return this.openStoree(new StoreeModel(JSON.parse(storee)));
         }
       };
 
       ExplorerView.prototype.openStoree = function(storee) {
-        var model;
-        model = new StoreeModel(storee);
-        app.router.navigate('storees/' + model.id);
+        app.router.navigate('storees/' + storee.id);
         return this.storee.show(new StoreerVisualizer({
-          model: model
+          model: storee
         }));
       };
 

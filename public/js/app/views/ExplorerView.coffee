@@ -48,13 +48,12 @@ define [
 		onDrop: (event) ->
 			storee = event.originalEvent.dataTransfer.getData("storee")
 
-			if storee then @openStoree(storee)
+			if storee then @openStoree(new StoreeModel(JSON.parse(storee)))
 				
 
 		openStoree: (storee) ->
-			model = new StoreeModel(storee)
-			app.router.navigate('storees/' + model.id)
-			@storee.show(new StoreerVisualizer({model: model}))
+			app.router.navigate('storees/' + storee.id)
+			@storee.show(new StoreerVisualizer({model: storee}))
 
 		onDragEnter: (event) ->
 			@$dropPanel.addClass('drag-over')

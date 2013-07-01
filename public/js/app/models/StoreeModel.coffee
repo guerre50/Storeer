@@ -5,6 +5,7 @@ define [
 ], ($, _, Backbone) ->
 	class StoreeModel extends Backbone.Model
 
+			
 		defaults: 
 			id: 2
 			thumbnail: 'http://farm8.staticflickr.com/7339/9088143629_4134ddf9fe.jpg'
@@ -15,6 +16,7 @@ define [
 				{src: 'http://farm3.staticflickr.com/2818/9090363626_841887123f.jpg'}
 				{src: 'http://farm8.staticflickr.com/7354/9090365846_0601a01414.jpg'}
 			]
+
 
 		validate: (attributes) ->
 			return true;

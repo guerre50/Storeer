@@ -21,7 +21,6 @@ define [
 
 			$(window).on('keydown', @onKeyDown)
 			$(window).on('resize', @resize)
-			app.vent.on('open:storee', @loadStoreer)
 
 		onShow: ->
 			@loadStoreer(@model)

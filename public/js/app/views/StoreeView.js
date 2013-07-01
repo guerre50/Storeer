@@ -34,7 +34,7 @@
 
       StoreeView.prototype.onDragStart = function(event) {
         this.$el.addClass('dragging');
-        event.originalEvent.dataTransfer.setData("storee", this.model.toJSON());
+        event.originalEvent.dataTransfer.setData("storee", JSON.stringify(this.model.toJSON()));
         return app.vent.trigger('drag-start:storee');
       };
 

@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["jquery", "underscore", "backbone", "App", "text!templates/storeer-library.html", "views/SearchView", "views/StoreesView"], function($, _, Backbone, app, template, SearchView, StoreesView) {
+  define(["jquery", "underscore", "backbone", "App", "text!templates/storeer-library.html", "views/SearchView", "views/StoreesView", "controllers/FlickrController"], function($, _, Backbone, app, template, SearchView, StoreesView, Flickr) {
     var StoreerLibrary, _ref;
     return StoreerLibrary = (function(_super) {
       __extends(StoreerLibrary, _super);
@@ -17,6 +17,10 @@
 
       StoreerLibrary.prototype.className = 'storeer-library-content';
 
+      StoreerLibrary.prototype.initialize = function() {
+        return _.bindAll(this);
+      };
+
       StoreerLibrary.prototype.regions = {
         searchBar: '#storeer-searchBar',
         results: '#storeer-results'
@@ -28,6 +32,18 @@
         }));
         return this.searchBar.show(new SearchView());
       };
+
+      StoreerLibrary.prototype.searchTerm = function(term) {};
+
+      StoreerLibrary.prototype.onSearchFail = function(fail) {
+        return console.log("fail");
+      };
+
+      StoreerLibrary.prototype.onSearchSuccess = function(results) {
+        return app.vent.trigger('search:end');
+      };
+
+      StoreerLibrary.prototype.flickrToCollection = function(results) {};
 
       return StoreerLibrary;
 

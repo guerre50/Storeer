@@ -32,8 +32,7 @@
       StoreerVisualizer.prototype.initialize = function() {
         _.bindAll(this);
         $(window).on('keydown', this.onKeyDown);
-        $(window).on('resize', this.resize);
-        return app.vent.on('open:storee', this.loadStoreer);
+        return $(window).on('resize', this.resize);
       };
 
       StoreerVisualizer.prototype.onShow = function() {

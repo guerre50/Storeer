@@ -21,6 +21,8 @@ define [
             '': 'landing'
             'storees': 'storees'
             'storees/:id': 'storees'
+            '*actions': 'landing'
+
 
         storees: (id) ->
             app.content.show(new ExplorerView())
