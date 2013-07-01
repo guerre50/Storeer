@@ -16,6 +16,7 @@ define [
 		className: 'storeer-visualizer'
 		storeerOptions: '#storeer-options'
 		storeerOptionsMobile: '#storeer-options-mobile'
+		storeerOptionsContent: '#storeer-options-content'
 		comments: '#storee-comments'
 		commentsTemplate: _.template(commentsTemplate)
 
@@ -62,6 +63,7 @@ define [
 
 			@$storeerOptions = $($(@storeerOptions)[0]).children()
 			@$storeerOptionsMobile = $($(@storeerOptionsMobile)[0]).children()
+			@$storeerOptionsContent = $($(@storeerOptionsContent)[0]).children()
 			@setOptionsOrder()
 
 			@
@@ -119,12 +121,14 @@ define [
 		onClickOption: (event) ->
 			@$storeerOptions.filter('div.active').toggleClass('active')
 			@$storeerOptionsMobile.filter('div.active').toggleClass('active')
+			@$storeerOptionsContent.filter('div.active').toggleClass('active')
 			
 			target = $(event.currentTarget)
 			targetOption = target.data('order')
 
 			$(@$storeerOptionsMobile[targetOption]).addClass('active')
-			$(@$storeerOptions[targetOption]).addClass('active')	
+			$(@$storeerOptions[targetOption]).addClass('active')
+			$(@$storeerOptionsContent[targetOption]).addClass('active')
 
 		onClickClose: ->
 			app.vent.trigger('close:storee')

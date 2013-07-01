@@ -29,6 +29,8 @@
 
       StoreerVisualizer.prototype.storeerOptionsMobile = '#storeer-options-mobile';
 
+      StoreerVisualizer.prototype.storeerOptionsContent = '#storeer-options-content';
+
       StoreerVisualizer.prototype.comments = '#storee-comments';
 
       StoreerVisualizer.prototype.commentsTemplate = _.template(commentsTemplate);
@@ -68,6 +70,7 @@
         this.$comments = $(this.comments);
         this.$storeerOptions = $($(this.storeerOptions)[0]).children();
         this.$storeerOptionsMobile = $($(this.storeerOptionsMobile)[0]).children();
+        this.$storeerOptionsContent = $($(this.storeerOptionsContent)[0]).children();
         this.setOptionsOrder();
         return this;
       };
@@ -142,10 +145,12 @@
         var target, targetOption;
         this.$storeerOptions.filter('div.active').toggleClass('active');
         this.$storeerOptionsMobile.filter('div.active').toggleClass('active');
+        this.$storeerOptionsContent.filter('div.active').toggleClass('active');
         target = $(event.currentTarget);
         targetOption = target.data('order');
         $(this.$storeerOptionsMobile[targetOption]).addClass('active');
-        return $(this.$storeerOptions[targetOption]).addClass('active');
+        $(this.$storeerOptions[targetOption]).addClass('active');
+        return $(this.$storeerOptionsContent[targetOption]).addClass('active');
       };
 
       StoreerVisualizer.prototype.onClickClose = function() {
