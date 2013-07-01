@@ -46,7 +46,7 @@
       };
 
       LandingView.prototype.onLandingButtonClick = function(event) {
-        return app.router.navigate('explorer', {
+        return app.router.navigate('storees', {
           trigger: true
         });
       };

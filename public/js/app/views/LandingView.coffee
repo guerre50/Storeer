@@ -35,6 +35,6 @@ define [
 			$(newActive.data('text')).toggleClass('active')
 
 		onLandingButtonClick: (event) ->
-			app.router.navigate('explorer', {trigger: true})
+			app.router.navigate('storees', {trigger: true})
 
 

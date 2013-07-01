@@ -34,11 +34,12 @@
         _.bindAll(this);
         app.vent.on('drag-start:storee', this.onDragStart);
         app.vent.on('drag-end:storee', this.onDragEnd);
-        app.vent.on('close:visualizer', this.closeVisualizer);
+        app.vent.on('close:storee', this.closeStoree);
+        app.vent.on('open:storee', this.openStoree);
         return this.$dropPanel = $(this.regions.dropPanel);
       };
 
-      ExplorerView.prototype.closeVisualizer = function() {
+      ExplorerView.prototype.closeStoree = function() {
         return this.storee.show(new HomeView());
       };
 
@@ -54,10 +55,17 @@
         var storee;
         storee = event.originalEvent.dataTransfer.getData("storee");
         if (storee) {
-          return this.storee.show(new StoreerVisualizer({
-            model: new StoreeModel(storee)
-          }));
+          return this.openStoree(storee);
         }
+      };
+
+      ExplorerView.prototype.openStoree = function(storee) {
+        var model;
+        model = new StoreeModel(storee);
+        app.router.navigate('storees/' + model.id);
+        return this.storee.show(new StoreerVisualizer({
+          model: model
+        }));
       };
 
       ExplorerView.prototype.onDragEnter = function(event) {

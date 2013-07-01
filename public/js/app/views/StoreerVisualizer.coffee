@@ -119,7 +119,7 @@ define [
 			$(@$storeerOptions[targetOption]).addClass('active')	
 
 		onClickClose: ->
-			app.vent.trigger('close:visualizer')
+			app.vent.trigger('close:storee')
 
 		moveFrame: (sign) ->
 			if sign is 0 then return @

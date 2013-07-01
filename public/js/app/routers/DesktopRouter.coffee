@@ -19,11 +19,10 @@ define [
 
         routes:
             '': 'landing'
-            'explorer': 'index'
+            'storees': 'storees'
+            'storees/:id': 'storees'
 
-        index: ->
-            console.log "index"
-            app.content.close()
+        storees: (id) ->
             app.content.show(new ExplorerView())
 
         landing: ->

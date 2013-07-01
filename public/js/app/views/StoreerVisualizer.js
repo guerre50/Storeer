@@ -143,7 +143,7 @@
       };
 
       StoreerVisualizer.prototype.onClickClose = function() {
-        return app.vent.trigger('close:visualizer');
+        return app.vent.trigger('close:storee');
       };
 
       StoreerVisualizer.prototype.moveFrame = function(sign) {

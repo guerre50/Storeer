@@ -19,12 +19,11 @@
 
       DesktopRouter.prototype.routes = {
         '': 'landing',
-        'explorer': 'index'
+        'storees': 'storees',
+        'storees/:id': 'storees'
       };
 
-      DesktopRouter.prototype.index = function() {
-        console.log("index");
-        app.content.close();
+      DesktopRouter.prototype.storees = function(id) {
         return app.content.show(new ExplorerView());
       };
 

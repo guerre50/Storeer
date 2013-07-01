@@ -14,6 +14,7 @@
       }
 
       StoreeModel.prototype.defaults = {
+        id: 2,
         thumbnail: 'http://farm8.staticflickr.com/7339/9088143629_4134ddf9fe.jpg',
         frames: [
           {

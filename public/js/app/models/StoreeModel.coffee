@@ -6,6 +6,7 @@ define [
 	class StoreeModel extends Backbone.Model
 
 		defaults: 
+			id: 2
 			thumbnail: 'http://farm8.staticflickr.com/7339/9088143629_4134ddf9fe.jpg'
 			frames: [
 				{src: 'http://farm8.staticflickr.com/7339/9088143629_4134ddf9fe.jpg'}

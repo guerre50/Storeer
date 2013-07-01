@@ -31,11 +31,12 @@ define [
 
 			app.vent.on('drag-start:storee', @onDragStart)
 			app.vent.on('drag-end:storee', @onDragEnd)
-			app.vent.on('close:visualizer', @closeVisualizer)
+			app.vent.on('close:storee', @closeStoree)
+			app.vent.on('open:storee', @openStoree)
 
 			@$dropPanel = $(@regions.dropPanel)
 
-		closeVisualizer: ->
+		closeStoree: ->
 			@storee.show(new HomeView())
 
 		onShow: ->
@@ -47,8 +48,13 @@ define [
 		onDrop: (event) ->
 			storee = event.originalEvent.dataTransfer.getData("storee")
 
-			if storee
-				@storee.show(new StoreerVisualizer({model: new StoreeModel(storee)}))
+			if storee then @openStoree(storee)
+				
+
+		openStoree: (storee) ->
+			model = new StoreeModel(storee)
+			app.router.navigate('storees/' + model.id)
+			@storee.show(new StoreerVisualizer({model: model}))
 
 		onDragEnter: (event) ->
 			@$dropPanel.addClass('drag-over')
