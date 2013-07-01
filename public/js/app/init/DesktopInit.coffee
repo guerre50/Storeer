@@ -13,6 +13,5 @@ require [
 	app.start
         storee: new StoreeCollection()
 
-    # We expose app for debugging purposes 
     window.app = app
 	app.router = new DesktopRouter()

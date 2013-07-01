@@ -1,0 +1,10 @@
+<% if (model.comments) {_.each(model.comments, function(comment) { %>
+<div class="media">
+  <a class="pull-left">
+    <img class="media-object" src="<%- comment.avatar %>">
+  </a>
+  <div class="media-body">
+    <h4 class="media-heading"><%- comment.message._content %></h4>
+  </div>
+</div>
+<% });} %>

@@ -25,7 +25,8 @@
       };
 
       DesktopRouter.prototype.storees = function(id) {
-        return app.content.show(new ExplorerView());
+        app.content.show(new ExplorerView());
+        return app.vent.trigger('search:term', '');
       };
 
       DesktopRouter.prototype.landing = function() {

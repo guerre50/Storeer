@@ -23,13 +23,16 @@
     <div class="storeer-details-topbar ">
       <div class="media-preview">
         <div class="avatar-frame">
-          <div class="avatar-img" style="background-image: url('https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRJW_acTVov-w8b97HLLIO-Jll9lOhXYbaPEFWbcDCWfrpTla2UHA'); background-size: cover; background-position:center;">
+          <div class="avatar-img" style="background-image: url('<%- model.authorModel.avatar %>'); background-size: cover; background-position:center;">
           </div>
         </div>
       </div>
       <div class="media-content">
         <div class="storeer-title">
           <h4><%- model.subject %></h4>
+        </div>
+        <div class="storeer-author">
+          <h4> <small><%- model.authorname %></small></h4>
         </div>
       </div>
 
@@ -49,8 +52,6 @@
             <i class="icon-trophy"></i>
           </div>
         </div>
-        <div class="storeer-option">
-        </div>
       </div>
     </div>
     <div class="storeer-comments">
@@ -68,7 +69,8 @@
             <i class="icon-trophy"></i>
           </div>
         </div>
-        <div class="storeer-option">
+        <div id="storee-comments" class="storeer-option">
+          
         </div>
     </div>
   </div><!-- Storee comments -->

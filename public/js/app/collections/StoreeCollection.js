@@ -19,7 +19,7 @@
 
       StoreeCollection.prototype.initialize = function() {
         _.bindAll(this);
-        this.maxResults = 30;
+        this.maxResults = 100;
         this.page = 1;
         app.vent.on('search:more', this.more);
         return app.vent.on('search:term', this.search);

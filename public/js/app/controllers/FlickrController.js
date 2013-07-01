@@ -13,7 +13,7 @@
         return _ref;
       }
 
-      FlickrController.prototype.apiKey = 'INSERT YOUR API KEY HERE';
+      FlickrController.prototype.apiKey = 'e400c83e08716edc21ce04d19a71d697';
 
       FlickrController.prototype.groupId = '46744914%40N00';
 
@@ -22,7 +22,8 @@
         return this.urls = {
           base: "http://api.flickr.com/services/rest/?api_key=" + this.apiKey + "&group_id=" + this.groupId + "&format=json&nojsoncallback=1",
           topics: "&method=flickr.groups.discuss.topics.getList",
-          user: "&method=flickr.people.getInfo"
+          user: "&method=flickr.people.getInfo",
+          replies: "&method=flickr.groups.discuss.replies.getList"
         };
       };
 
@@ -41,7 +42,19 @@
       FlickrController.prototype.user = function(userId, success, fail) {
         var url;
         url = this.urls.base + this.urls.user + this.userId(userId);
-        return this.ajaxPetition(url);
+        return this.ajaxPetition(url, this.processUser, success, fail);
+      };
+
+      FlickrController.prototype.replies = function(topicId, perPage, page, success, fail) {
+        var url;
+        if (perPage == null) {
+          perPage = 20;
+        }
+        if (page == null) {
+          page = 1;
+        }
+        url = this.urls.base + this.urls.replies + this.perPage(perPage) + this.page(page) + this.topicId(topicId);
+        return this.ajaxPetition(url, this.processReplies, success, fail);
       };
 
       FlickrController.prototype.onSuccess = function(result) {
@@ -58,8 +71,12 @@
         return "&page=" + page;
       };
 
-      FlickrController.prototype.userId = function(user_id) {
-        return "&user_id=" + user_id;
+      FlickrController.prototype.userId = function(userId) {
+        return "&user_id=" + userId;
+      };
+
+      FlickrController.prototype.topicId = function(topicId) {
+        return "&topic_id=" + topicId;
       };
 
       FlickrController.prototype.ajaxPetition = function(url, process, successCallback, failCallback) {
@@ -73,6 +90,38 @@
             return failCallback(msg);
           }
         });
+      };
+
+      FlickrController.prototype.processReplies = function(msg) {
+        var buildAvatar, replies, result;
+        replies = msg.replies.reply;
+        result = [];
+        buildAvatar = this.buildAvatarURL;
+        _.each(replies, function(reply) {
+          reply.nsid = reply.author;
+          reply.avatar = buildAvatar(reply);
+          return result.push(reply);
+        });
+        return result;
+      };
+
+      FlickrController.prototype.processUser = function(msg) {
+        var user;
+        user = msg.person;
+        user.avatar = this.buildAvatarURL(user);
+        return user;
+      };
+
+      FlickrController.prototype.buildAvatarURL = function(user) {
+        var iconfarm, iconserver, nsid;
+        iconserver = user.iconserver;
+        if (iconserver > 0) {
+          iconfarm = user.iconfarm;
+          nsid = user.nsid;
+          return "http://farm" + iconfarm + ".staticflickr.com/" + iconserver + "/buddyicons/" + nsid + ".jpg";
+        } else {
+          return "http://www.flickr.com/images/buddyicon.gif";
+        }
       };
 
       FlickrController.prototype.processTopic = function(msg) {

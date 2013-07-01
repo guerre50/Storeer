@@ -4,8 +4,9 @@ define [
 	"backbone"
 	"App"
 	"text!templates/storeer-visualizer.html"
+	"text!templates/comments.html"
 	"models/StoreeModel"
-], ($, _, Backbone, app, template, StoreeModel) ->
+], ($, _, Backbone, app, template, commentsTemplate, StoreeModel) ->
 	class StoreerVisualizer extends Backbone.Marionette.ItemView
 		template: _.template(template)
 		strip: '#storeer-frame-strip'
@@ -15,6 +16,8 @@ define [
 		className: 'storeer-visualizer'
 		storeerOptions: '#storeer-options'
 		storeerOptionsMobile: '#storeer-options-mobile'
+		comments: '#storee-comments'
+		commentsTemplate: _.template(commentsTemplate)
 
 		initialize: ->
 			_.bindAll @
@@ -39,6 +42,10 @@ define [
 
 			# Assign new Storee
 			@model = storee
+			@model.loadExtras()
+
+			@listenTo(@model, 'change:comments', @renderComments)
+
 			@currentFrame = 0
 			@imagesToLoad = 5
 
@@ -46,10 +53,12 @@ define [
 
 			@$el.find('img').on('load', @onImgLoad)
 
+			# We asign the DOM elements of our view
 			@$strip = $(@strip)
 			@$frames = @$strip.find("div.item")
 			@$prevArrow = $(@prevArrow)
 			@$nextArrow = $(@nextArrow)
+			@$comments = $(@comments)
 
 			@$storeerOptions = $($(@storeerOptions)[0]).children()
 			@$storeerOptionsMobile = $($(@storeerOptionsMobile)[0]).children()
@@ -148,17 +157,13 @@ define [
 			currentFrame = @getCurrentFrame()
 			
 			if @$frames.first().data('order')  == currentFrame.data('order') 
-				#@$prevArrow.hide()
 				@$prevArrow.css('left', -@$prevArrow.width())
 			else
-				#@$prevArrow.show()
 				@$prevArrow.css('left', '')
 
 			if @$frames.last().data('order') == currentFrame.data('order') 
-				#@$nextArrow.hide()
 				@$nextArrow.css('right', -@$nextArrow.width())
 			else
-				#@$nextArrow.show()
 				@$nextArrow.css('right','')
 
 		updateFrameOffsets: ->
@@ -187,6 +192,11 @@ define [
 			)
 			
 			@$strip.css('left', (-frameLeftOffset + (currentWidth - frameWidth)/2) + 'px')
+
+			@
+
+		renderComments: ->
+			@$comments.html(@commentsTemplate({model: @model.toJSON()}))
 
 			@
 

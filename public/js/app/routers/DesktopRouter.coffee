@@ -26,6 +26,7 @@ define [
 
         storees: (id) ->
             app.content.show(new ExplorerView())
+            app.vent.trigger('search:term','')
 
         landing: ->
             app.content.show(new LandingView())

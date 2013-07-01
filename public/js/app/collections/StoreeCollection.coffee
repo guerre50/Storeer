@@ -16,7 +16,7 @@ define [
 		initialize: ->
 			_.bindAll @
 
-			@maxResults = 30
+			@maxResults = 100
 			@page = 1
 
 			app.vent.on('search:more', @more)

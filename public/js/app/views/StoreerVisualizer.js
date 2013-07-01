@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["jquery", "underscore", "backbone", "App", "text!templates/storeer-visualizer.html", "models/StoreeModel"], function($, _, Backbone, app, template, StoreeModel) {
+  define(["jquery", "underscore", "backbone", "App", "text!templates/storeer-visualizer.html", "text!templates/comments.html", "models/StoreeModel"], function($, _, Backbone, app, template, commentsTemplate, StoreeModel) {
     var StoreerVisualizer, _ref;
     return StoreerVisualizer = (function(_super) {
       __extends(StoreerVisualizer, _super);
@@ -29,6 +29,10 @@
 
       StoreerVisualizer.prototype.storeerOptionsMobile = '#storeer-options-mobile';
 
+      StoreerVisualizer.prototype.comments = '#storee-comments';
+
+      StoreerVisualizer.prototype.commentsTemplate = _.template(commentsTemplate);
+
       StoreerVisualizer.prototype.initialize = function() {
         _.bindAll(this);
         $(window).on('keydown', this.onKeyDown);
@@ -51,6 +55,8 @@
       StoreerVisualizer.prototype.loadStoreer = function(storee) {
         this.$el.find('img').off('load', this.onImgLoad);
         this.model = storee;
+        this.model.loadExtras();
+        this.listenTo(this.model, 'change:comments', this.renderComments);
         this.currentFrame = 0;
         this.imagesToLoad = 5;
         this.render();
@@ -59,6 +65,7 @@
         this.$frames = this.$strip.find("div.item");
         this.$prevArrow = $(this.prevArrow);
         this.$nextArrow = $(this.nextArrow);
+        this.$comments = $(this.comments);
         this.$storeerOptions = $($(this.storeerOptions)[0]).children();
         this.$storeerOptionsMobile = $($(this.storeerOptionsMobile)[0]).children();
         this.setOptionsOrder();
@@ -213,6 +220,13 @@
           return $image.width($image.height() * $image.data('ratio'));
         });
         this.$strip.css('left', (-frameLeftOffset + (currentWidth - frameWidth) / 2) + 'px');
+        return this;
+      };
+
+      StoreerVisualizer.prototype.renderComments = function() {
+        this.$comments.html(this.commentsTemplate({
+          model: this.model.toJSON()
+        }));
         return this;
       };
 

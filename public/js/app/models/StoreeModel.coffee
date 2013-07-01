@@ -2,10 +2,15 @@ define [
 	'jquery'
 	'underscore'
 	'backbone'
-], ($, _, Backbone) ->
+	'controllers/FlickrController'
+], ($, _, Backbone, Flickr) ->
 	class StoreeModel extends Backbone.Model
+		initialize: (attributes) ->
+			_.bindAll @
 
-			
+			if attributes.author and not attributes.authorModel
+				Flickr.user(attributes.author, @loadAuthor, @loadAuthorFail)
+
 		defaults: 
 			id: 2
 			thumbnail: 'http://farm8.staticflickr.com/7339/9088143629_4134ddf9fe.jpg'
@@ -16,6 +21,21 @@ define [
 				{src: 'http://farm3.staticflickr.com/2818/9090363626_841887123f.jpg'}
 				{src: 'http://farm8.staticflickr.com/7354/9090365846_0601a01414.jpg'}
 			]
+
+		loadExtras: ->
+			Flickr.replies(@attributes.id ,100, 1, @loadComments, @loadCommentsFail)
+
+		loadAuthor: (author) ->
+			@attributes.authorModel = author
+
+		loadAuthorFail: (msg) ->
+			console.log "load author fail"
+
+		loadComments: (comments) ->
+			@set("comments", comments)
+
+		loadCommentsFail: (msg) ->
+			console.log "message loading fail"
 
 
 		validate: (attributes) ->

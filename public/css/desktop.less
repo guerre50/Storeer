@@ -272,8 +272,10 @@ body {
 
 #storeer-results {
 	position: relative;
-	height: 80%;
+	height: 90%;
 	margin: @margin/2;
+	overflow-y: scroll;
+	overflow-x: hidden;
 }
 
 
@@ -660,10 +662,17 @@ body {
 	overflow: hidden;
 }
 
-.storeer-title {
-	margin-left:15px;
-	color: white;
-	display: inline-block;
+.media-content {
+	float:left;
+
+	.storeer-title, .storeer-author {
+		margin-left:15px;
+		color: white;
+		display: block;
+		@media(max-height: @mobile-height) {
+			display: inline-block;
+		}
+	}
 }
 
 .media-preview {
@@ -851,23 +860,28 @@ body {
 // Scroll
 //=====================
 ::-webkit-scrollbar {
-    width: 12px;
+    width: @margin/2;
 }
 
 ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 4px rgba(0,0,0,0.3); 
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+
 }
  
 
 ::-webkit-scrollbar-thumb {
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
-    background: rgba(255,0,0,0.8); 
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
-}
-::-webkit-scrollbar-thumb:window-inactive {
-	background: rgba(255,0,0,0.4); 
-}
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    .main-color-complex;
+    .transition(2s, ease-in);
 
+    &:window-inactive {
+    	background: fadeout(@main-color, 80%); 
+    }
+
+    &:hover {
+    	background: lighten(@main-color, 20%);
+    }
+}

@@ -5,7 +5,7 @@ define [
 	"App"
 ], ($, _, Backbone, app) ->
 	class FlickrController extends Backbone.Marionette.Controller
-		apiKey: 'INSERT YOUR API KEY HERE'
+		apiKey: 'e400c83e08716edc21ce04d19a71d697'
 		groupId: '46744914%40N00'
 
 		initialize: (options) ->
@@ -15,6 +15,7 @@ define [
 				base: "http://api.flickr.com/services/rest/?api_key=#{@apiKey}&group_id=#{@groupId}&format=json&nojsoncallback=1"
 				topics: "&method=flickr.groups.discuss.topics.getList"
 				user: "&method=flickr.people.getInfo"
+				replies: "&method=flickr.groups.discuss.replies.getList"
 			
 
 		topics: (perPage = 20, page = 1, success, fail) ->
@@ -25,7 +26,12 @@ define [
 		user: (userId, success, fail) ->
 			url = @urls.base + @urls.user + @userId(userId)
 
-			@ajaxPetition(url, )
+			@ajaxPetition(url, @processUser, success, fail)
+
+		replies: (topicId, perPage = 20, page = 1, success, fail) ->
+			url = @urls.base + @urls.replies + @perPage(perPage) + @page(page) + @topicId(topicId)
+
+			@ajaxPetition(url, @processReplies, success, fail)
 
 		onSuccess: (result) ->
 			@topics = result
@@ -39,8 +45,12 @@ define [
 		page: (page) ->
 			"&page=#{page}"
 
-		userId: (user_id) ->
-			"&user_id=#{user_id}"
+		userId: (userId) ->
+			"&user_id=#{userId}"
+
+		topicId: (topicId) ->
+			"&topic_id=#{topicId}"
+			
 
 		ajaxPetition: (url, process, successCallback, failCallback) ->
 			$.ajax
@@ -51,6 +61,38 @@ define [
 				fail: (msg) ->
 					failCallback(msg)
 
+
+		processReplies: (msg) ->
+			replies = msg.replies.reply
+			result = []
+
+			buildAvatar = @buildAvatarURL
+
+			_.each(replies, (reply) -> 
+				reply.nsid = reply.author
+				reply.avatar = buildAvatar(reply)
+				result.push(reply)
+			)
+
+			result
+
+		processUser: (msg) ->
+			user = msg.person
+			user.avatar = @buildAvatarURL(user)
+
+			user
+
+		buildAvatarURL: (user) ->
+			# Avatar url must be built using information of the user
+			iconserver = user.iconserver
+
+			if iconserver > 0
+				iconfarm = user.iconfarm
+				nsid = user.nsid
+				"http://farm#{iconfarm}.staticflickr.com/#{iconserver}/buddyicons/#{nsid}.jpg"
+			else
+				"http://www.flickr.com/images/buddyicon.gif"
+
 		processTopic: (msg) ->
 			topics = msg.topics.topic
 			result = []
@@ -59,6 +101,7 @@ define [
 				try
 					content = $(topic.message._content)
 					imgs = content.find('img')
+
 					if imgs.length == 5
 						topic.frames = []
 						_.each(imgs, (img) -> 
@@ -66,6 +109,7 @@ define [
 						, topic)
 						@push(topic)
 				catch error
+					
 
 			, result)
 

@@ -14,7 +14,6 @@ define [
 
 		initialize: ->
 			_.bindAll @
-			#app.vent.on('search:term', @searchTerm)
 
 
 		regions:
@@ -24,17 +23,3 @@ define [
 		onShow: ->
 			@results.show(new StoreesView({collection: app.storees}))
 			@searchBar.show(new SearchView())
-
-
-		searchTerm: (term) ->
-			#Flickr.topics(100, 1, @onSearchSuccess, @onSearchFail)
-
-		onSearchFail: (fail) ->
-			console.log "fail"
-
-		onSearchSuccess: (results) ->
-			app.vent.trigger('search:end')
-			#@results.show(new StoreesView({collection: results}))
-
-		flickrToCollection: (results) ->
-			return 

@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
+  define(['jquery', 'underscore', 'backbone', 'controllers/FlickrController'], function($, _, Backbone, Flickr) {
     var StoreeModel, _ref;
     return StoreeModel = (function(_super) {
       __extends(StoreeModel, _super);
@@ -12,6 +12,13 @@
         _ref = StoreeModel.__super__.constructor.apply(this, arguments);
         return _ref;
       }
+
+      StoreeModel.prototype.initialize = function(attributes) {
+        _.bindAll(this);
+        if (attributes.author && !attributes.authorModel) {
+          return Flickr.user(attributes.author, this.loadAuthor, this.loadAuthorFail);
+        }
+      };
 
       StoreeModel.prototype.defaults = {
         id: 2,
@@ -29,6 +36,26 @@
             src: 'http://farm8.staticflickr.com/7354/9090365846_0601a01414.jpg'
           }
         ]
+      };
+
+      StoreeModel.prototype.loadExtras = function() {
+        return Flickr.replies(this.attributes.id, 100, 1, this.loadComments, this.loadCommentsFail);
+      };
+
+      StoreeModel.prototype.loadAuthor = function(author) {
+        return this.attributes.authorModel = author;
+      };
+
+      StoreeModel.prototype.loadAuthorFail = function(msg) {
+        return console.log("load author fail");
+      };
+
+      StoreeModel.prototype.loadComments = function(comments) {
+        return this.set("comments", comments);
+      };
+
+      StoreeModel.prototype.loadCommentsFail = function(msg) {
+        return console.log("message loading fail");
       };
 
       StoreeModel.prototype.validate = function(attributes) {

@@ -33,18 +33,6 @@
         return this.searchBar.show(new SearchView());
       };
 
-      StoreerLibrary.prototype.searchTerm = function(term) {};
-
-      StoreerLibrary.prototype.onSearchFail = function(fail) {
-        return console.log("fail");
-      };
-
-      StoreerLibrary.prototype.onSearchSuccess = function(results) {
-        return app.vent.trigger('search:end');
-      };
-
-      StoreerLibrary.prototype.flickrToCollection = function(results) {};
-
       return StoreerLibrary;
 
     })(Backbone.Marionette.Layout);
