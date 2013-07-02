@@ -17,6 +17,10 @@
 
       ExplorerView.prototype.className = 'storeer-content';
 
+      ExplorerView.prototype.dragTab = '#drag-tab';
+
+      ExplorerView.prototype.tabs = '#explorer-tabs';
+
       ExplorerView.prototype.regions = {
         dropPanel: "#drop-panel",
         storee: "#storeer-storee",
@@ -27,7 +31,14 @@
         'drop': 'onDrop',
         'dragenter  .storeer-visualizer-drop': 'onDragEnter',
         'dragleave .storeer-visualizer-drop': 'onDragLeave',
-        'dragover .storeer-visualizer-drop': 'onDragOver'
+        'dragover .storeer-visualizer-drop': 'onDragOver',
+        'mousedown .explorer-tabs': 'onMouseDown',
+        'click .explorer-tab.library': 'showLibrary',
+        'click .explorer-tab.storee': 'showStoree',
+        'mouseenter .explorer-tab.library': 'showLibrary',
+        'mouseenter .explorer-tab.storee': 'showStoree',
+        'mouseup .explorer-tab.library': 'showLibrary',
+        'mouseup .explorer-tab.storee': 'showStoree'
       };
 
       ExplorerView.prototype.initialize = function() {
@@ -36,7 +47,9 @@
         app.vent.on('drag-end:storee', this.onDragEnd);
         app.vent.on('close:storee', this.closeStoree);
         app.vent.on('open:storee', this.openStoree);
-        return this.$dropPanel = $(this.regions.dropPanel);
+        this.$dropPanel = $(this.regions.dropPanel);
+        this.$tabs = $(this.tabs);
+        return this.$body = $('body');
       };
 
       ExplorerView.prototype.closeStoree = function() {
@@ -48,7 +61,8 @@
         this.library.show(new StoreerLibrary({
           collection: app.storees
         }));
-        return this.$dropPanel = $(this.regions.dropPanel);
+        this.$dropPanel = $(this.regions.dropPanel);
+        return this.$dragTab = $(this.dragTab);
       };
 
       ExplorerView.prototype.onDrop = function(event) {
@@ -84,6 +98,64 @@
 
       ExplorerView.prototype.onDragEnd = function(event) {
         return this.$dropPanel.removeClass('dragging').removeClass('drag-over');
+      };
+
+      ExplorerView.prototype.onMouseDown = function(event) {
+        this.dragging = true;
+        $(window).on('mousemove', this.onMouseMove);
+        return $(window).on('mouseup', this.onMouseUp);
+      };
+
+      ExplorerView.prototype.onMouseUp = function(event) {
+        this.dragging = false;
+        $(window).off('mousemove', this.onMouseMove);
+        return $(window).off('mouseup', this.onMouseUp);
+      };
+
+      ExplorerView.prototype.onMouseMove = function(event) {
+        var left, max, min;
+        if (this.dragging) {
+          left = event.clientX / this.$body.width() * 100;
+          min = 100 - this.tabSize() * 1.5;
+          max = 100 - this.tabSize() * 0.5;
+          if (left < min) {
+            left = min;
+          } else if (left > max) {
+            left = max;
+          }
+          return this.slideTab(left + this.tabSize() / 2);
+        }
+      };
+
+      ExplorerView.prototype.showStoree = function() {
+        if (!this.dragging) {
+          return;
+        }
+        return this.slideTab(100 - this.tabSize());
+      };
+
+      ExplorerView.prototype.showLibrary = function() {
+        if (!this.dragging) {
+          return;
+        }
+        return this.slideTab(100);
+      };
+
+      ExplorerView.prototype.tabSize = function() {
+        return (this.$dragTab.width() / this.$body.width()) * 100;
+      };
+
+      ExplorerView.prototype.slideTab = function(left) {
+        var tabSize;
+        tabSize = this.tabSize();
+        this.$dragTab.css('right', ((100 - left) / 100 * this.$body.width()) + "px");
+        if (left > 100 - tabSize) {
+          left = 0;
+        } else {
+          left = 100;
+        }
+        this.library.$el.css('left', left + "%");
+        return this.storee.$el.parent().css('left', -(100 - left) + "%");
       };
 
       return ExplorerView;

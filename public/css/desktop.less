@@ -10,10 +10,14 @@
 //=====================
 
 // to add full height to work 
-html, body, .storeer-content {
+html, body {
 	.fill-height;
 	overflow: hidden;
 }
+
+.storeer-content {
+	.fill-height;
+} 
 
 #storeer-content {
 	z-index: @top-most-z*100;
@@ -23,7 +27,6 @@ html, body, .storeer-content {
 	@media(max-height: @mobile-height) {
 		.fill-height(92%);
 	}
-	overflow: hidden;
 	.drop-shadow(0, 0, 4px, 0.2, 1px);
 	max-width: @max-width;
 	.center;
@@ -42,6 +45,32 @@ body {
 //=====================
 // Navbar
 //=====================
+.logo {
+	position: relative;
+	.fill-height;
+}
+
+.logo-background {
+	position: absolute;
+	left: 10px;
+	top: 44px;
+}
+
+.cube {
+	height: 18px;
+	width: 18px;
+	
+	.rounded(1px);
+	display: inline-block;
+	.main-color-complex;
+	box-shadow: 
+		0px 1px 1px rgba(0, 0, 0, 0.5),
+		inset 0px 1px 1px rgba(0, 0, 0, 0.5);
+
+	&:hover {
+		.scale(1.1);
+	}
+}
 
 .storeer-navbar {
 	margin:0;
@@ -55,35 +84,15 @@ body {
 		padding: 0 20px 0 20px;
 		position: absolute;
 		top: -4px;
-
-		color: @logo-main-color;
+		color: transparent;
+		background-color: rgba(0, 0, 0, 0.2);
+		.background-clip(text);
 		text-shadow: 
-			0 1px 0 @logo-main-color*0.8,
-			0 2px 0 @logo-main-color*0.5,
-			0 3px 0 @logo-main-color*0.6,
-			0 4px 1px transparent,
-			0 0px 5px transparent,
-			0 1px 3px rgba(0, 0, 0, 0.3),
-			0 2px 5px rgba(0, 0, 0, 0.2),
-			0 3px 10px rgba(0, 0, 0, 0.25),
-			0 5px 10px rgba(0, 0, 0, 0.2),
-			0 10px 20px rgba(0, 0, 0, 0.15);
+			0px 1px 1px @logo-main-color,
+			0px 0px 1px fadeout(grey, 70%);
 
-		.transition(0.2s, ease-in-out);
 		&:hover {
-			.translate(0,-1px);
-			
-			text-shadow: 
-				0 0px 0 @logo-main-color*0.8,
-				0 1px 0 @logo-main-color*0.5,
-				0 2px 0 @logo-main-color*0.6,
-				0 3px 1px rgba(0, 0, 0, 0.1),
-				0 0px 2px rgba(0, 0, 0, 0.1),
-				0 0px 1px rgba(0, 0, 0, 0.3),
-				0 1px 2px rgba(0, 0, 0, 0.2),
-				0 2px 5px rgba(0, 0, 0, 0.25),
-				0 3px 5px rgba(0, 0, 0, 0.2),
-				0 5px 10px rgba(0, 0, 0, 0.15);
+			background-color: rgba(0, 0, 0, 0.7);
 		}
 	}
 	.storeer-subvar {
@@ -99,6 +108,7 @@ body {
 
 	.storeer-navbar-inner {
 	    max-width: @max-width;
+	    .fill-height;
 	    .center;
 	    
 	    &:before {
@@ -152,11 +162,23 @@ body {
 .storeer-library {
 	display: inline-block;
 	overflow: hidden;
+	background: white;
+	@media(min-width: @mobile-width) {
+		left: 0% !important;
+	}
 	.fill-height;
 	.storeer-library-content {
-		padding: @margin/2;
 		border-left: solid 1px fadeout(#444444, 80%);
-		height: 98%;
+		height: 100%;
+		@media(max-height: @mobile-height) {
+			height: 90%;
+		}
+	}
+
+
+	@media (max-width: @mobile-width) {
+		position: absolute;
+		left: 100%;
 	}
 }
 
@@ -164,8 +186,6 @@ body {
 .storeer-results-content {
 	.fill-height;
 }
-
-
 
 .storeer-storee-border {
 	.fill;
@@ -197,6 +217,18 @@ body {
 	}
 }
 
+#storee-comments {
+	.fill-height;
+	.loading {
+		.fill-height;
+		text-align: center;
+		overflow: hidden;
+		i {
+			margin-top: 20%;
+		}
+	}
+}
+
 .storeer-comments {
 	height: 100%;
 	width: 100%;
@@ -221,7 +253,7 @@ body {
 				width: @avatar-size/2;
 				// commented for version without extra options display: inline-block;
 				i {
-					padding-top: 4px;
+					padding-top: 2px;
 				}
 			}
 		}
@@ -286,10 +318,16 @@ body {
 
 #storeer-results {
 	position: relative;
-	height: 90%;
 	margin: @margin/2;
 	overflow-y: scroll;
 	overflow-x: hidden;
+	height: 92%;
+	@media(max-height: 760px) {
+		height: 89%;
+	}
+	@media(max-height: @mobile-height) {
+		height: 95%;
+	}
 }
 
 
@@ -584,6 +622,51 @@ body {
 		background: fadeout(@dark-color, 20%);
 	}
 }
+
+// Tabs
+
+.tab {
+	position: absolute;
+	top: -@navbar-height;
+	right: 0px;
+	height: @navbar-height;
+	width: @navbar-height;
+	text-align: center;
+	i {
+		margin-top: 20%;
+		display: block;
+	}
+	.transition(0.2s, ease-out, right);
+
+	@media(min-width: @mobile-width) {
+		right: -100% !important;
+	}
+}
+
+.explorer-tabs {
+
+	.explorer-tab {
+		.tab;
+		&.storee {
+			right: @navbar-height;
+			background: @color3;
+		}
+		&.library {
+			background: @color2;
+		}
+	}
+}
+
+
+.search-tab {
+	.tab;
+	background: rgba(0, 0, 0, 0.5);
+	pointer-events: none;
+}
+
+
+
+
 //=====================
 // Storee Visualizer
 //=====================
@@ -592,6 +675,9 @@ body {
 	display: inline;
 	overflow: hidden;
 	.fill-height;
+	@media(min-width: @mobile-width) {
+		left: 0% !important;
+	}
 	// Visualizer is closed
 	&.closed {
 		width: 30px;
@@ -611,6 +697,15 @@ body {
 	@media(max-height: @mobile-height) {
 		.fill-height(82%) !important;
 	}
+	&.expanded {
+		.fill-height(82%) !important;
+		@media(max-height: @mobile-height) {
+			.fill-height(82%) !important;
+		}
+		@media(max-height: @mobile-height) {
+			.fill-height(82%) !important;
+		}
+	}
 }
 
 .storeer-details {
@@ -621,6 +716,12 @@ body {
 	overflow: hidden;
 	.drop-shadow(inset 0px, 10px, 15px, 0.2);
 	@media(max-height: @mobile-height) {
+		position: absolute;
+		.fill-height(@avatar-size*1.1px) !important;
+		bottom: 0px;
+		width: 100%;
+	}
+	&.minimized {
 		position: absolute;
 		.fill-height(@avatar-size*1.1px) !important;
 		bottom: 0px;
@@ -798,7 +899,6 @@ body {
 
 #storeer-footer {
 	height:5%;
-	z-index: @top-most-z;
 	background: @darkest-color;
 }
 
