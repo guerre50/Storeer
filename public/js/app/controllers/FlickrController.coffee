@@ -2,13 +2,13 @@ define [
 	"jquery"
 	"underscore"
 	"backbone"
-	"App"
-], ($, _, Backbone, app) ->
+	"marionette"
+], ($, _, Backbone) ->
 	class FlickrController extends Backbone.Marionette.Controller
-		apiKey: 'e400c83e08716edc21ce04d19a71d697'
+		apiKey: '55ec26d53c16abec5dca3c72e76ece71'
 		groupId: '46744914%40N00'
 
-		initialize: (options) ->
+		initialize: ->
 			_.bindAll @
 
 			@urls = 
@@ -18,7 +18,7 @@ define [
 				replies: "&method=flickr.groups.discuss.replies.getList"
 			
 
-		topics: (perPage = 20, page = 1, success, fail) ->
+		topics: (perPage = 20, page = 1, success = @onSuccess, fail = @onFail) ->
 			url = @urls.base + @urls.topics + @perPage(perPage) + @page(page)
 
 			@ajaxPetition(url, @processTopic, success, fail)
@@ -28,16 +28,16 @@ define [
 
 			@ajaxPetition(url, @processUser, success, fail)
 
-		replies: (topicId, perPage = 20, page = 1, success, fail) ->
+		replies: (topicId, perPage = 20, page = 1, success = @onSuccess, fail = @onFail) ->
 			url = @urls.base + @urls.replies + @perPage(perPage) + @page(page) + @topicId(topicId)
 
 			@ajaxPetition(url, @processReplies, success, fail)
 
-		onSuccess: (result) ->
-			@topics = result
+		onFail: (msg) ->
+			console.log("Flickr call failed:", msg)
 
-		onFail: (fail) ->
-			return
+		onSuccess: (msg) ->
+			console.log("Flickr call success:", msg)
 
 		perPage: (perPage) ->
 			"&per_page=#{perPage}"
@@ -94,9 +94,11 @@ define [
 				"http://www.flickr.com/images/buddyicon.gif"
 
 		processTopic: (msg) ->
+
+			console.log msg
 			topics = msg.topics.topic
 			result = []
-			
+
 			_.each(topics, (topic) ->
 				try
 					content = $(topic.message._content)
@@ -109,7 +111,7 @@ define [
 						, topic)
 						@push(topic)
 				catch error
-					
+
 
 			, result)
 

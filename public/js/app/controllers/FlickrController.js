@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["jquery", "underscore", "backbone", "App"], function($, _, Backbone, app) {
+  define(["jquery", "underscore", "backbone", "marionette"], function($, _, Backbone) {
     var FlickrController, _ref;
     FlickrController = (function(_super) {
       __extends(FlickrController, _super);
@@ -13,11 +13,11 @@
         return _ref;
       }
 
-      FlickrController.prototype.apiKey = 'e400c83e08716edc21ce04d19a71d697';
+      FlickrController.prototype.apiKey = '55ec26d53c16abec5dca3c72e76ece71';
 
       FlickrController.prototype.groupId = '46744914%40N00';
 
-      FlickrController.prototype.initialize = function(options) {
+      FlickrController.prototype.initialize = function() {
         _.bindAll(this);
         return this.urls = {
           base: "http://api.flickr.com/services/rest/?api_key=" + this.apiKey + "&group_id=" + this.groupId + "&format=json&nojsoncallback=1",
@@ -34,6 +34,12 @@
         }
         if (page == null) {
           page = 1;
+        }
+        if (success == null) {
+          success = this.onSuccess;
+        }
+        if (fail == null) {
+          fail = this.onFail;
         }
         url = this.urls.base + this.urls.topics + this.perPage(perPage) + this.page(page);
         return this.ajaxPetition(url, this.processTopic, success, fail);
@@ -53,15 +59,23 @@
         if (page == null) {
           page = 1;
         }
+        if (success == null) {
+          success = this.onSuccess;
+        }
+        if (fail == null) {
+          fail = this.onFail;
+        }
         url = this.urls.base + this.urls.replies + this.perPage(perPage) + this.page(page) + this.topicId(topicId);
         return this.ajaxPetition(url, this.processReplies, success, fail);
       };
 
-      FlickrController.prototype.onSuccess = function(result) {
-        return this.topics = result;
+      FlickrController.prototype.onFail = function(msg) {
+        return console.log("Flickr call failed:", msg);
       };
 
-      FlickrController.prototype.onFail = function(fail) {};
+      FlickrController.prototype.onSuccess = function(msg) {
+        return console.log("Flickr call success:", msg);
+      };
 
       FlickrController.prototype.perPage = function(perPage) {
         return "&per_page=" + perPage;
@@ -126,6 +140,7 @@
 
       FlickrController.prototype.processTopic = function(msg) {
         var result, topics;
+        console.log(msg);
         topics = msg.topics.topic;
         result = [];
         _.each(topics, function(topic) {

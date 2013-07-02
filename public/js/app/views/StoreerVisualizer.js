@@ -51,7 +51,7 @@
         'click .storeer-frame': 'onFrameClick',
         'click .storeer-options': 'onClickOption',
         'transitionend #storeer-frame-strip': 'onTransitionEnd',
-        'click .close': 'onClickClose'
+        'click .remove': 'onClickClose'
       };
 
       StoreerVisualizer.prototype.loadStoreer = function(storee) {

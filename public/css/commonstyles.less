@@ -90,20 +90,6 @@ span.topic {
 // Columns
 //=====================
 
-.storeer-row {
-	&:before {
-		content: "";
-		display: table;
-	}
-	&:after {
-		content: "";
-		display: table;
-		clear: both;
-	}
-}
-
-
-
 .storeer-col {
 	position: relative;
 	float: left;
@@ -163,6 +149,16 @@ span.topic {
 }
 
 .storeer-row {
+	&:before {
+		content: "";
+		display: table;
+	}
+	&:after {
+		content: "";
+		display: table;
+		clear: both;
+	}
+	width:100%;
 	.transition(0.5s, ease-in-out);
 	&.row2 {
 		.fill-height(50%);

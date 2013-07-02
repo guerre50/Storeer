@@ -35,7 +35,7 @@ define [
 			'click .storeer-frame': 'onFrameClick'
 			'click .storeer-options': 'onClickOption'
 			'transitionend #storeer-frame-strip' : 'onTransitionEnd'
-			'click .close': 'onClickClose'
+			'click .remove': 'onClickClose'
 
 		loadStoreer: (storee) ->
 			# We remove listeners
