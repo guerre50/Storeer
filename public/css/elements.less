@@ -4,7 +4,7 @@
     A set of useful LESS mixins
     More info at: http://lesselements.com
   ---------------------------------------------------*/
-
+@import "config.less";
 .gradient(@color: #F5F5F5, @start: #EEE, @stop: #FFF) {
   background: @color;
   background: -webkit-gradient(linear,
@@ -98,12 +98,16 @@
 .scale(@ratio:1.5){
   .transform(scale(@ratio));
 }
-.transition(@duration:0.2s, @ease:ease-out, @type: all) {
+
+.transition(@duration:0.2s, @ease:ease-out, @type: all) when (@media = desktop) {
   -webkit-transition:  @type @duration @ease;
   -moz-transition:  @type @duration @ease;
   -o-transition:  @type @duration @ease;
   transition:  @type @duration @ease;
 }
+.transition(@duration:0.2s, @ease:ease-out, @type: all) {
+}
+
 .inner-shadow(@horizontal:0, @vertical:1px, @blur:2px, @alpha: 0.4) {
   -webkit-box-shadow: inset @horizontal @vertical @blur rgba(0, 0, 0, @alpha);
   -moz-box-shadow: inset @horizontal @vertical @blur rgba(0, 0, 0, @alpha);

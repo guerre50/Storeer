@@ -92,6 +92,9 @@ define [
 			else
 				"http://www.flickr.com/images/buddyicon.gif"
 
+		buildImgURL: (url) ->
+
+
 		processTopic: (msg) ->
 
 			console.log msg
@@ -106,10 +109,26 @@ define [
 
 					if imgs.length == 5
 						topic.frames = []
+						topic.thumbnails = []
 
 						# We build the frame array out of the content of the message
+						i = 0
 						_.each(imgs, (img) -> 
-							@frames.push({src: img.src})
+							# preProcess the src to create the low and hi res
+							src = img.src
+							startSize = src.lastIndexOf('_')
+							if src.charAt(startSize+2) != '.'
+								startSize = src.lastIndexOf('.')
+
+							srcBase = src.substr(0, startSize) 
+
+							# low_res
+							@thumbnails.push({src: srcBase + if i == 0 then "_q.jpg" else "_s.jpg"})
+
+							# hi_res
+							@frames.push({src: srcBase + ".jpg"})
+
+							i++
 						, topic)
 
 						# Avatar generation

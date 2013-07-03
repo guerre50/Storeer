@@ -31,6 +31,8 @@
 
       StoreerVisualizer.prototype.storeerOptionsContent = '#storeer-options-content';
 
+      StoreerVisualizer.prototype.frameIndicator = '#frame-indicator';
+
       StoreerVisualizer.prototype.comments = '#storee-comments';
 
       StoreerVisualizer.prototype.commentsTemplate = _.template(commentsTemplate);
@@ -68,6 +70,7 @@
         this.$prevArrow = $(this.prevArrow);
         this.$nextArrow = $(this.nextArrow);
         this.$comments = $(this.comments);
+        this.$frameIndicator = $(this.frameIndicator);
         this.$storeerOptions = $($(this.storeerOptions)[0]).children();
         this.$storeerOptionsMobile = $($(this.storeerOptionsMobile)[0]).children();
         this.$storeerOptionsContent = $($(this.storeerOptionsContent)[0]).children();
@@ -158,7 +161,7 @@
       };
 
       StoreerVisualizer.prototype.moveFrame = function(sign) {
-        var currentFrame, movement, previousFrame;
+        var currentFrame, currentIndicator, movement, previousFrame;
         if (sign === 0) {
           return this;
         }
@@ -168,6 +171,9 @@
         if (currentFrame.length > 0) {
           previousFrame.toggleClass('active');
           currentFrame.toggleClass('active');
+          currentIndicator = this.$frameIndicator.find('.active');
+          currentIndicator.toggleClass('active', false);
+          currentIndicator[movement]().toggleClass('active', true);
           this.currentFrame = currentFrame.data('order');
         }
         this.repositionStoree();
@@ -189,9 +195,11 @@
         if (this.$frames.first().data('order') === currentFrame.data('order')) {
           this.$prevArrow.css('left', -this.$prevArrow.width());
         } else {
+          $(this.$strip.parent()).toggleClass('expanded', true);
           this.$prevArrow.css('left', '');
         }
         if (this.$frames.last().data('order') === currentFrame.data('order')) {
+          $(this.$strip.parent()).toggleClass('expanded', false);
           return this.$nextArrow.css('right', -this.$nextArrow.width());
         } else {
           return this.$nextArrow.css('right', '');

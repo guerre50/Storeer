@@ -137,6 +137,8 @@
         }
       };
 
+      FlickrController.prototype.buildImgURL = function(url) {};
+
       FlickrController.prototype.processTopic = function(msg) {
         var buildAvatarURL, result, topics;
         console.log(msg);
@@ -144,16 +146,29 @@
         result = [];
         buildAvatarURL = this.buildAvatarURL;
         _.each(topics, function(topic) {
-          var content, error, imgs;
+          var content, error, i, imgs;
           try {
             content = $(topic.message._content);
             imgs = content.find('img');
             if (imgs.length === 5) {
               topic.frames = [];
+              topic.thumbnails = [];
+              i = 0;
               _.each(imgs, function(img) {
-                return this.frames.push({
-                  src: img.src
+                var src, srcBase, startSize;
+                src = img.src;
+                startSize = src.lastIndexOf('_');
+                if (src.charAt(startSize + 2) !== '.') {
+                  startSize = src.lastIndexOf('.');
+                }
+                srcBase = src.substr(0, startSize);
+                this.thumbnails.push({
+                  src: srcBase + (i === 0 ? "_q.jpg" : "_s.jpg")
                 });
+                this.frames.push({
+                  src: srcBase + ".jpg"
+                });
+                return i++;
               }, topic);
               topic.avatar = buildAvatarURL(topic);
               return this.push(topic);

@@ -1,9 +1,10 @@
-<div class="storeer-storee-border" draggable="true" >
+<%  for (var i = 0; i < thumbnails.length; ++i) { %>
+<div class="storeer-storee-border" draggable="true" style="top:<%- i*2 %>px; left: -<%- i*2 %>px;">
 	<div class="storeer-outer-thumbnail">
-		<div class="storeer-storee-thumbnail" style="background-image: url('<%= frames[0].src %>'); background-size:cover;">
+		<div class="storeer-storee-thumbnail" style="background-image: url('<%- thumbnails[thumbnails.length - 1 - i].src %>'); background-size:cover;">
 			<div class="storeer-storee-thumbnail-transparency">
-
 			</div>
 		</div>
 	</div>
 </div>
+<% } %>

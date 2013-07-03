@@ -1,15 +1,27 @@
 <div id="storeer-visualizer" class="storeer-visualizer">
-  <div class="storeer-visualizer-frame storeer-row row2">
+  <div class="storeer-frame-indicator">
+    <div id ="frame-indicator" class="logo-background">
+      <% var active = 'active'; for (var i = 0; i < model.frames.length; ++i) { %>
+        <div class="cube <%- active %>" data-order="<%- i %>"></div>
+        <% active = '';%>
+      <% }; %>
+      <div class=""></div>
+    </div>
+  </div>
+
+  <div class="storeer-visualizer-frame expanded storeer-row row2">
     <!-- Storee frame strip -->
     <div id="storeer-frame-strip" class="storeer-frame-strip">
       <% var active = 'active'; var i = 0; _.each(model.frames, function(frame) { %>
-        <div class="storeer-frame item <%- active %>" data-order="<%- i %>">
+        <div class="storeer-frame item <%- active %>" data-order="<%- i %>" style="margin-right:20px;">
           <img draggable="false" src="<%- frame.src %>">
           <div class="storeer-frame-transparency">
           </div>
         </div>
         <% active = ''; i++; %>
       <% }); %>
+      <div class="storeer-frame item <%- active %>" data-order="<%- i %>" style="margin-right:20px;">
+      </div>
     </div>
 
     <!-- Storee nav -->

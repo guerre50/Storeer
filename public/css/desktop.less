@@ -27,10 +27,8 @@ html, body {
 	@media(max-height: @mobile-height) {
 		.fill-height(92%);
 	}
-	.drop-shadow(0, 0, 4px, 0.2, 1px);
 	max-width: @max-width;
 	.center;
-	background: white;
 	position: relative;
 }
 
@@ -50,12 +48,6 @@ body {
 	.fill-height;
 }
 
-.logo-background {
-	position: absolute;
-	left: 10px;
-	top: 44px;
-}
-
 .cube {
 	height: 18px;
 	width: 18px;
@@ -64,9 +56,14 @@ body {
 	display: inline-block;
 	.main-color-complex;
 	box-shadow: 
-		0px 1px 1px rgba(0, 0, 0, 0.5),
-		inset 0px 1px 1px rgba(0, 0, 0, 0.5);
+		0px 2px 1px rgba(0, 0, 0, 0.5),
+		0px 2px 1px rgba(0, 0, 0, 0.2);
 
+	.transition(0.5s, ease-in, transform);
+	&.active {
+		.scale(1.2);
+		background: @dark-color;
+	}
 	&:hover {
 		.scale(1.1);
 	}
@@ -163,10 +160,22 @@ body {
 	display: inline-block;
 	overflow: hidden;
 	background: white;
+	top: 2%;
+	.drop-shadow(1px, 1px, 5px, 0.3);
+	.rounded(2px);
+
+	height: 95%;
+	@media(max-width: @mobile-width) {
+		top: 0%;
+		.fill-height(100%);
+		.rounded(0px);
+	}
+
 	@media(min-width: @mobile-width) {
 		left: 0% !important;
 	}
-	.fill-height;
+
+
 	.storeer-library-content {
 		border-left: solid 1px fadeout(#444444, 80%);
 		height: 100%;
@@ -488,7 +497,6 @@ body {
 
 		.media-body {
 			padding: 5px 20px 5px 5px;
-
 		}
 		.pull-left {
 			margin-right: 0px !important;
@@ -684,8 +692,10 @@ body {
 
 .storeer-storee {
 	display: inline;
-	overflow: hidden;
 	.fill-height;
+	background: white;
+	box-shadow: 2px 0px 3px rgba(0, 0, 0, 0.2);
+	z-index: @top-most-z;
 	@media(min-width: @mobile-width) {
 		left: 0% !important;
 	}
@@ -700,6 +710,13 @@ body {
 
 	.storeer-visualizer {
 		.fill-height;
+		overflow: hidden;
+		.logo-background {
+			position: absolute;
+			top: -10px;
+			left: 10px;
+			z-index: @top-most-z;
+		}
 	}
 }
 
@@ -708,8 +725,9 @@ body {
 	@media(max-height: @mobile-height) {
 		.fill-height(82%) !important;
 	}
+	.fill-height(20%) !important;
 	&.expanded {
-		.fill-height(82%) !important;
+		.fill-height(92%) !important;
 		@media(max-height: @mobile-height) {
 			.fill-height(82%) !important;
 		}

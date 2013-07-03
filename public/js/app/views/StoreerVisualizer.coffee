@@ -17,6 +17,7 @@ define [
 		storeerOptions: '#storeer-options'
 		storeerOptionsMobile: '#storeer-options-mobile'
 		storeerOptionsContent: '#storeer-options-content'
+		frameIndicator: '#frame-indicator'
 		comments: '#storee-comments'
 		commentsTemplate: _.template(commentsTemplate)
 
@@ -60,6 +61,7 @@ define [
 			@$prevArrow = $(@prevArrow)
 			@$nextArrow = $(@nextArrow)
 			@$comments = $(@comments)
+			@$frameIndicator = $(@frameIndicator)
 
 			@$storeerOptions = $($(@storeerOptions)[0]).children()
 			@$storeerOptionsMobile = $($(@storeerOptionsMobile)[0]).children()
@@ -144,6 +146,12 @@ define [
 			if currentFrame.length > 0
 				previousFrame.toggleClass('active')
 				currentFrame.toggleClass('active')
+
+				# Update the current frame
+				currentIndicator = @$frameIndicator.find('.active')
+				currentIndicator.toggleClass('active', false)
+				currentIndicator[movement]().toggleClass('active', true)
+
 				@currentFrame = currentFrame.data('order')
 
 			@repositionStoree()
@@ -160,12 +168,16 @@ define [
 		updateControlArrows: ->
 			currentFrame = @getCurrentFrame()
 			
+			# first frame
 			if @$frames.first().data('order')  == currentFrame.data('order') 
 				@$prevArrow.css('left', -@$prevArrow.width())
 			else
+				$(@$strip.parent()).toggleClass('expanded', true)
 				@$prevArrow.css('left', '')
 
+			# We have reached the end
 			if @$frames.last().data('order') == currentFrame.data('order') 
+				$(@$strip.parent()).toggleClass('expanded', false)
 				@$nextArrow.css('right', -@$nextArrow.width())
 			else
 				@$nextArrow.css('right','')
