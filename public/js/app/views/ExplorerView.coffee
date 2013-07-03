@@ -28,12 +28,9 @@ define [
 			'dragleave .storeer-visualizer-drop': 'onDragLeave'
 			'dragover .storeer-visualizer-drop': 'onDragOver'
 			'mousedown .explorer-tabs' : 'onMouseDown'
-			'click .explorer-tab.library' : 'showLibrary'
-			'click .explorer-tab.storee' : 'showStoree'
-			'mouseenter .explorer-tab.library' : 'showLibrary'
-			'mouseenter .explorer-tab.storee' : 'showStoree'
-			'mouseup .explorer-tab.library' : 'showLibrary'
-			'mouseup .explorer-tab.storee' : 'showStoree'
+			'click .explorer-tab' : 'selectTab'
+			'mouseup .explorer-tab' : 'selectTab'
+			'mouseenter .explorer-tab' : 'onMouseEnter'
 
 		initialize: ->
 			_.bindAll @
@@ -42,10 +39,7 @@ define [
 			app.vent.on('drag-end:storee', @onDragEnd)
 			app.vent.on('close:storee', @closeStoree)
 			app.vent.on('open:storee', @openStoree)
-
-			@$dropPanel = $(@regions.dropPanel)
-			@$tabs = $(@tabs)
-			@$body = $('body')
+			
 
 		closeStoree: ->
 			@storee.show(new HomeView())
@@ -56,6 +50,8 @@ define [
 
 			@$dropPanel = $(@regions.dropPanel)
 			@$dragTab = $(@dragTab)
+			@$tabs = $(@tabs)
+			@$body = $('body')
 
 		onDrop: (event) ->
 			storee = event.originalEvent.dataTransfer.getData("storee")
@@ -66,10 +62,11 @@ define [
 		openStoree: (storee) ->
 			app.router.navigate('storees/' + storee.id)
 			@storee.show(new StoreerVisualizer({model: storee}))
+			# TO-DO make this less dependent on DOM
+			@show($(@$tabs.children()[0]))
 
 		onDragEnter: (event) ->
 			@$dropPanel.addClass('drag-over')
-
 
 		onDragLeave: (event) ->
 			@$dropPanel.removeClass('drag-over')
@@ -86,7 +83,6 @@ define [
 		onDragEnd: (event) ->
 			@$dropPanel.removeClass('dragging').removeClass('drag-over')
 			
-
 		onMouseDown: (event) ->
 			@dragging = true
 			$(window).on('mousemove', @onMouseMove)
@@ -110,27 +106,30 @@ define [
 
 				@slideTab(left + @tabSize()/2)
 
-		showStoree: ->
-			if not @dragging then return
-			@slideTab(100 - @tabSize())
+		selectTab: (event) ->
+			@show($(event.currentTarget))
 
-		showLibrary: ->
-			if not @dragging then return
-			@slideTab(100)
+		onMouseEnter: (event) ->
+			if @dragging then @show($(event.currentTarget))
+
+		show: (tab) ->
+			@$tabs.find('.active').toggleClass('active', false)
+			tab.toggleClass('active', true)
+			@slideTab((tab.position().left) / @$body.width()*100 + @tabSize())
 
 		tabSize: ->
 			(@$dragTab.width()/@$body.width()) * 100
 
 		slideTab: (left) ->
+			# We move the dragging tab selector
 			tabSize = @tabSize()
-			
-			@$dragTab.css('right', ((100-(left))/100*@$body.width()) + "px")
+			@$dragTab.css('right', ((100-left)/100*@$body.width()) + "px")
 
 			# We set left for the tab content
-			if left > 100 - tabSize then left = 0 else left = 100
+			if left >= 100 then left = 0 else left = 100
 
 			@library.$el.css('left', left + "%")
-			@storee.$el.parent().css('left', - (100-left) + "%")
+			@storee.$el.parent().css('left', -(100 - left) + "%")
 
 
 

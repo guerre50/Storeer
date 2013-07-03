@@ -112,7 +112,6 @@
         result = [];
         buildAvatar = this.buildAvatarURL;
         _.each(replies, function(reply) {
-          reply.nsid = reply.author;
           reply.avatar = buildAvatar(reply);
           return result.push(reply);
         });
@@ -131,7 +130,7 @@
         iconserver = user.iconserver;
         if (iconserver > 0) {
           iconfarm = user.iconfarm;
-          nsid = user.nsid;
+          nsid = user.nsid ? user.nsid : user.author;
           return "http://farm" + iconfarm + ".staticflickr.com/" + iconserver + "/buddyicons/" + nsid + ".jpg";
         } else {
           return "http://www.flickr.com/images/buddyicon.gif";
@@ -139,10 +138,11 @@
       };
 
       FlickrController.prototype.processTopic = function(msg) {
-        var result, topics;
+        var buildAvatarURL, result, topics;
         console.log(msg);
         topics = msg.topics.topic;
         result = [];
+        buildAvatarURL = this.buildAvatarURL;
         _.each(topics, function(topic) {
           var content, error, imgs;
           try {
@@ -155,6 +155,7 @@
                   src: img.src
                 });
               }, topic);
+              topic.avatar = buildAvatarURL(topic);
               return this.push(topic);
             }
           } catch (_error) {

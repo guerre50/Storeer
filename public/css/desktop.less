@@ -633,7 +633,7 @@ body {
 	width: @navbar-height;
 	text-align: center;
 	i {
-		margin-top: 20%;
+		margin-top: 25%;
 		display: block;
 	}
 	.transition(0.2s, ease-out, right);
@@ -647,12 +647,23 @@ body {
 
 	.explorer-tab {
 		.tab;
+		box-shadow: 
+			inset 2px 1px 1px rgba(1, 1, 1, 0.5),
+			inset 0px 0px 1px 60px rgba(0, 0, 0, 0.2);
+
+		&.active {
+			box-shadow: inset 1px 1px 1px rgba(1, 1, 1, 0.5);
+			i {
+				color: white;
+				text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+			}
+		}
 		&.storee {
 			right: @navbar-height;
 			background: @color3;
 		}
 		&.library {
-			background: @color2;
+			background: @color1;
 		}
 	}
 }
@@ -660,7 +671,7 @@ body {
 
 .search-tab {
 	.tab;
-	background: rgba(0, 0, 0, 0.5);
+	background: fadeout(white, 80%);
 	pointer-events: none;
 }
 

@@ -69,7 +69,6 @@ define [
 			buildAvatar = @buildAvatarURL
 
 			_.each(replies, (reply) -> 
-				reply.nsid = reply.author
 				reply.avatar = buildAvatar(reply)
 				result.push(reply)
 			)
@@ -88,7 +87,7 @@ define [
 
 			if iconserver > 0
 				iconfarm = user.iconfarm
-				nsid = user.nsid
+				nsid = if user.nsid then user.nsid else user.author
 				"http://farm#{iconfarm}.staticflickr.com/#{iconserver}/buddyicons/#{nsid}.jpg"
 			else
 				"http://www.flickr.com/images/buddyicon.gif"
@@ -98,6 +97,7 @@ define [
 			console.log msg
 			topics = msg.topics.topic
 			result = []
+			buildAvatarURL = @buildAvatarURL
 
 			_.each(topics, (topic) ->
 				try
@@ -106,10 +106,17 @@ define [
 
 					if imgs.length == 5
 						topic.frames = []
+
+						# We build the frame array out of the content of the message
 						_.each(imgs, (img) -> 
 							@frames.push({src: img.src})
 						, topic)
+
+						# Avatar generation
+						topic.avatar = buildAvatarURL(topic)
+
 						@push(topic)
+
 				catch error
 
 

@@ -8,11 +8,9 @@ define [
 		initialize: (attributes) ->
 			_.bindAll @
 
-			if attributes.author and not attributes.authorModel
-				Flickr.user(attributes.author, @loadAuthor, @loadAuthorFail)
-
 		defaults: 
 			id: 2
+			avatar: 'http://farm8.staticflickr.com/7339/9088143629_4134ddf9fe.jpg'
 			thumbnail: 'http://farm8.staticflickr.com/7339/9088143629_4134ddf9fe.jpg'
 			frames: [
 				{src: 'http://farm8.staticflickr.com/7339/9088143629_4134ddf9fe.jpg'}
@@ -25,18 +23,11 @@ define [
 		loadExtras: ->
 			Flickr.replies(@attributes.id ,100, 1, @loadComments, @loadCommentsFail)
 
-		loadAuthor: (author) ->
-			@attributes.authorModel = author
-
-		loadAuthorFail: (msg) ->
-			console.log "load author fail"
-
 		loadComments: (comments) ->
 			@set("comments", comments)
 
 		loadCommentsFail: (msg) ->
 			console.log "message loading fail"
 
-
 		validate: (attributes) ->
-			return true;
+			return true

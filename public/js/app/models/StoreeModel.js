@@ -14,14 +14,12 @@
       }
 
       StoreeModel.prototype.initialize = function(attributes) {
-        _.bindAll(this);
-        if (attributes.author && !attributes.authorModel) {
-          return Flickr.user(attributes.author, this.loadAuthor, this.loadAuthorFail);
-        }
+        return _.bindAll(this);
       };
 
       StoreeModel.prototype.defaults = {
         id: 2,
+        avatar: 'http://farm8.staticflickr.com/7339/9088143629_4134ddf9fe.jpg',
         thumbnail: 'http://farm8.staticflickr.com/7339/9088143629_4134ddf9fe.jpg',
         frames: [
           {
@@ -40,14 +38,6 @@
 
       StoreeModel.prototype.loadExtras = function() {
         return Flickr.replies(this.attributes.id, 100, 1, this.loadComments, this.loadCommentsFail);
-      };
-
-      StoreeModel.prototype.loadAuthor = function(author) {
-        return this.attributes.authorModel = author;
-      };
-
-      StoreeModel.prototype.loadAuthorFail = function(msg) {
-        return console.log("load author fail");
       };
 
       StoreeModel.prototype.loadComments = function(comments) {
