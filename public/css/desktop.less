@@ -161,7 +161,8 @@ body {
 	overflow: hidden;
 	background: white;
 	top: 2%;
-	.drop-shadow(1px, 1px, 5px, 0.3);
+
+	.drop-shadow(0px, 1px, 5px, 0.3);
 	.rounded(2px);
 
 	height: 95%;
@@ -177,7 +178,6 @@ body {
 
 
 	.storeer-library-content {
-		border-left: solid 1px fadeout(#444444, 80%);
 		height: 100%;
 		@media(max-height: @mobile-height) {
 			height: 90%;
@@ -233,7 +233,7 @@ body {
 		text-align: center;
 		overflow: hidden;
 		i {
-			margin-top: 20%;
+			margin-top: 17%;
 		}
 	}
 }
@@ -327,9 +327,10 @@ body {
 
 #storeer-results {
 	position: relative;
-	margin: @margin/2;
 	overflow-y: scroll;
 	overflow-x: hidden;
+	padding-left: @margin/2;
+	margin-right: @margin/2;
 	height: 92%;
 	@media(max-height: 760px) {
 		height: 89%;
@@ -524,11 +525,8 @@ body {
 				top: 0px;
 				right: 10px;
 				position: absolute;
-				border-left: solid 1px rgba(0, 0, 0, 0.2);
 				padding-left: 5px;
-				box-shadow: -1px 0px 1px rgba(0, 0, 0, 0.2);
 				&:hover {
-					text-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2);
 					.translate(0, 1px);
 				}
 			}
@@ -686,6 +684,7 @@ body {
 
 
 
+
 //=====================
 // Storee Visualizer
 //=====================
@@ -694,7 +693,7 @@ body {
 	display: inline;
 	.fill-height;
 	background: white;
-	box-shadow: 2px 0px 3px rgba(0, 0, 0, 0.2);
+	box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.2);
 	z-index: @top-most-z;
 	@media(min-width: @mobile-width) {
 		left: 0% !important;
@@ -717,33 +716,44 @@ body {
 			left: 10px;
 			z-index: @top-most-z;
 		}
+		.storeer-details {
+			.fill-height(50%);
+		}
+		.storeer-visualizer-frame {
+			.fill-height(50%);
+			@media(max-height: @mobile-height) {
+				.fill-height(92%);
+			}
+		}
+
+		&.expanded {
+			.storeer-details {
+				.fill-height(@avatar-size);
+				position: absolute;
+				bottom: 0px;
+			}
+			.storeer-visualizer-frame {
+				.fill-height(92%);
+			}
+		}
 	}
 }
 
 .storeer-visualizer-frame {
 	position: relative;
-	@media(max-height: @mobile-height) {
-		.fill-height(82%) !important;
-	}
-	.fill-height(20%) !important;
-	&.expanded {
-		.fill-height(92%) !important;
-		@media(max-height: @mobile-height) {
-			.fill-height(82%) !important;
-		}
-		@media(max-height: @mobile-height) {
-			.fill-height(82%) !important;
-		}
-	}
+	display: inline-block;
 }
 
 .storeer-details {
 	display: block;
-	border-top: 1px solid @lightest-color;
-	outline: 1px solid @lightest-color*0.5;
+	margin-top:-5px;
+	z-index: @top-most-z;
+	border-top: 1px solid fadeout(black, 0.5);
 	background: @dark-color;
 	overflow: hidden;
-	.drop-shadow(inset 0px, 10px, 15px, 0.2);
+	box-shadow: 
+		inset 0px 10px 15px rgba(0, 0, 0, 0.2);
+
 	@media(max-height: @mobile-height) {
 		position: absolute;
 		.fill-height(@avatar-size*1.1px) !important;
@@ -826,10 +836,9 @@ body {
 	position:relative;
 	width: 1000%;
 	overflow: hidden;
-	padding-left: 30px;
 	overflow: visible;
 	.fill-height;
-	.transition(0.5s, ease-in-out);
+	.transition(0.5s, ease-in-out, left);
 }
 
 // Each of the frames in the Storee
@@ -838,8 +847,6 @@ body {
 	position: relative;
 	float: left;
 	display: block;
-	vertical-align: middle;
-	.transition(0.6s, ease-in-out, transform);
 	&.active {
 		img {
 			.drop-shadow(0, 0, 2px, 0.4, 2px);
@@ -856,8 +863,8 @@ body {
 		.transition(0.7s, ease-in, margin-top box-shadow);
 	}
 	.storeer-frame-transparency {
-		width: 100%;
-		height: 100%;
+		width: inherit;
+		height: inherit;
 		position: absolute;	
 		background: fadeout(black, 50%);
 		top:0px;
@@ -877,7 +884,9 @@ body {
 	position: relative;
 	overflow: hidden;
 	z-index: @top-most-z;
-	.drop-shadow(0px, 1px, 1px, 0.5, 0px);
+	box-shadow: 
+		0px 1px 1px 0px rgba(0, 0, 0, 0.5),
+		inset 0 -14px 58px -5px @darkest-color;
 }
 
 .media-content {
@@ -912,12 +921,42 @@ body {
 	.avatar-img {
 		overflow: hidden;
 		position: absolute;
+		background-repeat: no-repeat;
 		min-width: 80px;
 		min-height: 80px;
 		left:0;
 		top:0;
 		height: 100%;
 		width: 100%;
+	}
+}
+
+
+.end-frame {
+	display: none;
+	position: absolute;
+
+	&.active {
+		width: 100% !important;
+		height: 100% !important;
+		display: block;
+		color: white;
+		right: 0%;
+		background: rgba(0, 0, 0, 0.5);
+		.end-options {
+			text-align: center;
+			position: relative;
+			top: 40%;
+			.transition(0.2s, ease-in, transform);
+			color: @main-color;
+
+			span {
+				&:hover {
+					color: lighten(@main-color, 10%);
+					.scale(1.1);
+				}
+			}
+		} 
 	}
 }
 

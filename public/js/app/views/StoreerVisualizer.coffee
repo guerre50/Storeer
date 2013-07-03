@@ -13,7 +13,7 @@ define [
 		prevArrow: '#storeer-prev'
 		nextArrow: '#storeer-next'
 		imagesToLoad: 0
-		className: 'storeer-visualizer'
+		className: 'storeer-visualizer expanded'
 		storeerOptions: '#storeer-options'
 		storeerOptionsMobile: '#storeer-options-mobile'
 		storeerOptionsContent: '#storeer-options-content'
@@ -89,7 +89,6 @@ define [
 		onLoad: ->
 			# We need to wait until all images are loaded
 			# to reposition
-			@updateFrameOffsets()
 			@repositionStoree()
 			@updateControlArrows()
 
@@ -98,6 +97,7 @@ define [
 			# Effect to make images appear nicer 
 			$img.css('margin-top', '0')
 			$img.data('ratio', $img.width()/$img.height())
+			@resize($img.parent())
 
 			if not --@imagesToLoad then @onLoad()
 
@@ -160,11 +160,6 @@ define [
 		getCurrentFrame: ->
 			$(@$frames[@currentFrame])
 
-
-		resize: ->
-			@updateFrameOffsets()
-			@repositionStoree()
-
 		updateControlArrows: ->
 			currentFrame = @getCurrentFrame()
 			
@@ -172,40 +167,52 @@ define [
 			if @$frames.first().data('order')  == currentFrame.data('order') 
 				@$prevArrow.css('left', -@$prevArrow.width())
 			else
-				$(@$strip.parent()).toggleClass('expanded', true)
 				@$prevArrow.css('left', '')
 
 			# We have reached the end
 			if @$frames.last().data('order') == currentFrame.data('order') 
-				$(@$strip.parent()).toggleClass('expanded', false)
+				@$el.toggleClass('expanded', false)
 				@$nextArrow.css('right', -@$nextArrow.width())
 			else
 				@$nextArrow.css('right','')
 
-		updateFrameOffsets: ->
-			# We recompute left offset due to possible size changes
-			i = 0
-			for frame in @$frames
-				$frame = $(frame)
-				$frame.data('left', i)
-				i += $frame.width()
-			
+
+		resize: ->
+			_.each(@$frames, @resizeFrame)
+
+			@repositionStoree()
+
+		resizeFrame: (frame) ->
+			containerHeight = @$strip.height()
+			containerWidth = @$el.width()
+			containerRatio = containerWidth / containerHeight
+			isLastFrame = @currentFrame == @$frames.length - 1
+
+			$frame = $(frame)
+			$img = $frame.find('img')
+			imgRatio = $img.data('ratio')
+
+			# Last frame has no image inside
+			if imgRatio
+				if imgRatio > containerRatio 
+					$frame.width(containerWidth)
+					newHeight = containerWidth/imgRatio
+					$frame.height(newHeight)
+					$frame.data('height', newHeight)
+				else
+					$frame.height(containerHeight)
+					$frame.width(containerHeight*imgRatio)
+					$frame.data('height', containerHeight)
+
+				$frame.css('top', (containerHeight - $frame.data('height'))/2)
+
 		repositionStoree: ->
-			currentFrame = @$frames.filter('div.active')
+			currentFrame = @getCurrentFrame()
 
 			# Reposition Storee
 			currentWidth = @$el.width()
 			frameWidth = currentFrame.width()
-			frameLeftOffset = currentFrame.data('left')
-
-			# TO-DO Try to find a way to do it with css. 
-			# Keeping aspect ratio.
-			_.each(@$frames, (frame)-> 
-				$frame = $(frame)
-				$image = $frame.find("img")
-
-				$image.width($image.height()*$image.data('ratio'))
-			)
+			frameLeftOffset = currentFrame.position().left
 			
 			@$strip.css('left', (-frameLeftOffset + (currentWidth - frameWidth)/2) + 'px')
 

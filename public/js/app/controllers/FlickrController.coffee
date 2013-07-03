@@ -96,8 +96,6 @@ define [
 
 
 		processTopic: (msg) ->
-
-			console.log msg
 			topics = msg.topics.topic
 			result = []
 			buildAvatarURL = @buildAvatarURL

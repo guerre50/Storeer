@@ -126,7 +126,7 @@ define [
 			@$dragTab.css('right', ((100-left)/100*@$body.width()) + "px")
 
 			# We set left for the tab content
-			if left >= 100 then left = 0 else left = 100
+			if left >= 95 then left = 0 else left = 100
 
 			@library.$el.css('left', left + "%")
 			@storee.$el.parent().css('left', -(100 - left) + "%")

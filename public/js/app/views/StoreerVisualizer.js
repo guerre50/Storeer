@@ -23,7 +23,7 @@
 
       StoreerVisualizer.prototype.imagesToLoad = 0;
 
-      StoreerVisualizer.prototype.className = 'storeer-visualizer';
+      StoreerVisualizer.prototype.className = 'storeer-visualizer expanded';
 
       StoreerVisualizer.prototype.storeerOptions = '#storeer-options';
 
@@ -105,7 +105,6 @@
       };
 
       StoreerVisualizer.prototype.onLoad = function() {
-        this.updateFrameOffsets();
         this.repositionStoree();
         return this.updateControlArrows();
       };
@@ -115,6 +114,7 @@
         $img = $(event.target);
         $img.css('margin-top', '0');
         $img.data('ratio', $img.width() / $img.height());
+        this.resize($img.parent());
         if (!--this.imagesToLoad) {
           return this.onLoad();
         }
@@ -184,54 +184,57 @@
         return $(this.$frames[this.currentFrame]);
       };
 
-      StoreerVisualizer.prototype.resize = function() {
-        this.updateFrameOffsets();
-        return this.repositionStoree();
-      };
-
       StoreerVisualizer.prototype.updateControlArrows = function() {
         var currentFrame;
         currentFrame = this.getCurrentFrame();
         if (this.$frames.first().data('order') === currentFrame.data('order')) {
           this.$prevArrow.css('left', -this.$prevArrow.width());
         } else {
-          $(this.$strip.parent()).toggleClass('expanded', true);
           this.$prevArrow.css('left', '');
         }
         if (this.$frames.last().data('order') === currentFrame.data('order')) {
-          $(this.$strip.parent()).toggleClass('expanded', false);
+          this.$el.toggleClass('expanded', false);
           return this.$nextArrow.css('right', -this.$nextArrow.width());
         } else {
           return this.$nextArrow.css('right', '');
         }
       };
 
-      StoreerVisualizer.prototype.updateFrameOffsets = function() {
-        var $frame, frame, i, _i, _len, _ref1, _results;
-        i = 0;
-        _ref1 = this.$frames;
-        _results = [];
-        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-          frame = _ref1[_i];
-          $frame = $(frame);
-          $frame.data('left', i);
-          _results.push(i += $frame.width());
+      StoreerVisualizer.prototype.resize = function() {
+        _.each(this.$frames, this.resizeFrame);
+        return this.repositionStoree();
+      };
+
+      StoreerVisualizer.prototype.resizeFrame = function(frame) {
+        var $frame, $img, containerHeight, containerRatio, containerWidth, imgRatio, isLastFrame, newHeight;
+        containerHeight = this.$strip.height();
+        containerWidth = this.$el.width();
+        containerRatio = containerWidth / containerHeight;
+        isLastFrame = this.currentFrame === this.$frames.length - 1;
+        $frame = $(frame);
+        $img = $frame.find('img');
+        imgRatio = $img.data('ratio');
+        if (imgRatio) {
+          if (imgRatio > containerRatio) {
+            $frame.width(containerWidth);
+            newHeight = containerWidth / imgRatio;
+            $frame.height(newHeight);
+            $frame.data('height', newHeight);
+          } else {
+            $frame.height(containerHeight);
+            $frame.width(containerHeight * imgRatio);
+            $frame.data('height', containerHeight);
+          }
+          return $frame.css('top', (containerHeight - $frame.data('height')) / 2);
         }
-        return _results;
       };
 
       StoreerVisualizer.prototype.repositionStoree = function() {
         var currentFrame, currentWidth, frameLeftOffset, frameWidth;
-        currentFrame = this.$frames.filter('div.active');
+        currentFrame = this.getCurrentFrame();
         currentWidth = this.$el.width();
         frameWidth = currentFrame.width();
-        frameLeftOffset = currentFrame.data('left');
-        _.each(this.$frames, function(frame) {
-          var $frame, $image;
-          $frame = $(frame);
-          $image = $frame.find("img");
-          return $image.width($image.height() * $image.data('ratio'));
-        });
+        frameLeftOffset = currentFrame.position().left;
         this.$strip.css('left', (-frameLeftOffset + (currentWidth - frameWidth) / 2) + 'px');
         return this;
       };

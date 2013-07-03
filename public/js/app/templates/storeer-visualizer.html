@@ -13,14 +13,28 @@
     <!-- Storee frame strip -->
     <div id="storeer-frame-strip" class="storeer-frame-strip">
       <% var active = 'active'; var i = 0; _.each(model.frames, function(frame) { %>
-        <div class="storeer-frame item <%- active %>" data-order="<%- i %>" style="margin-right:20px;">
+        <div class="storeer-frame item <%- active %>" data-order="<%- i %>" style="margin-right:80px;">
           <img draggable="false" src="<%- frame.src %>">
           <div class="storeer-frame-transparency">
           </div>
         </div>
         <% active = ''; i++; %>
       <% }); %>
-      <div class="storeer-frame item <%- active %>" data-order="<%- i %>" style="margin-right:20px;">
+      <div class="storeer-frame item end-frame" data-order="<%- i %>" style="margin-right:20px;">
+          <div class="end-options">
+            <span class="icon-stack icon-4x">
+              <i class="icon-circle icon-stack-base"></i>
+              <i class="icon-trophy icon-light"></i>
+            </span>
+            <span class="icon-stack icon-4x">
+              <i class="icon-circle icon-stack-base"></i>
+              <i class="icon-heart  icon-light"></i>
+            </span>
+            <span class="icon-stack icon-4x">
+              <i class="icon-circle icon-stack-base"></i>
+              <i class="icon-bookmark  icon-light"></i>
+            </span>
+          </div>
       </div>
     </div>
 

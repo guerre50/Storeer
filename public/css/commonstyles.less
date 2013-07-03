@@ -98,13 +98,16 @@ span.topic {
 
 	&.col1-3 {
 		.fill-width(percentage(1/3));
-
 	}
 	&.col2-3 {
 		.fill-width(percentage(2/3));
 	}
 	&.col1-4 {
 		.fill-width(25%);
+
+		@media (max-width: @mobile-width) {
+			.fill-width(100%);
+		}
 	}
 	&.col3-4 {
 		.fill-width(75%);

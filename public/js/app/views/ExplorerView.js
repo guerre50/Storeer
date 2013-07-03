@@ -148,7 +148,7 @@
         var tabSize;
         tabSize = this.tabSize();
         this.$dragTab.css('right', ((100 - left) / 100 * this.$body.width()) + "px");
-        if (left >= 100) {
+        if (left >= 95) {
           left = 0;
         } else {
           left = 100;

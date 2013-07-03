@@ -141,7 +141,6 @@
 
       FlickrController.prototype.processTopic = function(msg) {
         var buildAvatarURL, result, topics;
-        console.log(msg);
         topics = msg.topics.topic;
         result = [];
         buildAvatarURL = this.buildAvatarURL;
