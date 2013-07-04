@@ -25,18 +25,10 @@ define [
 		events:
 			'click .landing-storee' : 'onLandingStoreeClick'
 			'click .landing-button' : 'onLandingButtonClick'
-			'mouseenter .landing-promo' : 'onEnterLandingPromo'
-			'mouseleave .landing-promo' : 'onLeaveLandingPromo'
 
 		onLandingStoreeClick: (event) ->
 			@selectStoree($(event.currentTarget))
 			@clearInterval()
-
-		onEnterLandingPromo: (event) ->
-			#$(event.currentTarget).addClass('active')
-
-		onLeaveLandingPromo: (event) ->
-			#$(event.currentTarget).removeClass('active')
 
 		selectStoree: (storee) ->
 			oldActive = @$landingStoree.find('.active')

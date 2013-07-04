@@ -33,19 +33,13 @@
 
       LandingView.prototype.events = {
         'click .landing-storee': 'onLandingStoreeClick',
-        'click .landing-button': 'onLandingButtonClick',
-        'mouseenter .landing-promo': 'onEnterLandingPromo',
-        'mouseleave .landing-promo': 'onLeaveLandingPromo'
+        'click .landing-button': 'onLandingButtonClick'
       };
 
       LandingView.prototype.onLandingStoreeClick = function(event) {
         this.selectStoree($(event.currentTarget));
         return this.clearInterval();
       };
-
-      LandingView.prototype.onEnterLandingPromo = function(event) {};
-
-      LandingView.prototype.onLeaveLandingPromo = function(event) {};
 
       LandingView.prototype.selectStoree = function(storee) {
         var newActive, oldActive;
