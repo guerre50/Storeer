@@ -27,22 +27,61 @@
 
       LandingView.prototype.onShow = function() {
         this.$landingStoree = $(this.landingStoree);
-        return this.$landingTexts = $(this.landingTexts);
+        this.$landingTexts = $(this.landingTexts);
+        return this.setInterval();
       };
 
       LandingView.prototype.events = {
         'click .landing-storee': 'onLandingStoreeClick',
-        'click .landing-button': 'onLandingButtonClick'
+        'click .landing-button': 'onLandingButtonClick',
+        'mouseenter .landing-promo': 'onEnterLandingPromo',
+        'mouseleave .landing-promo': 'onLeaveLandingPromo'
       };
 
       LandingView.prototype.onLandingStoreeClick = function(event) {
+        this.selectStoree($(event.currentTarget));
+        return this.clearInterval();
+      };
+
+      LandingView.prototype.onEnterLandingPromo = function(event) {};
+
+      LandingView.prototype.onLeaveLandingPromo = function(event) {};
+
+      LandingView.prototype.selectStoree = function(storee) {
         var newActive, oldActive;
         oldActive = this.$landingStoree.find('.active');
         oldActive.toggleClass('active');
         $(oldActive.data('text')).toggleClass('active');
-        newActive = $(event.currentTarget);
+        newActive = storee;
         newActive.toggleClass('active');
         return $(newActive.data('text')).toggleClass('active');
+      };
+
+      LandingView.prototype.animateStoree = function() {
+        var currentActive, newActive;
+        currentActive = this.$landingStoree.find('.active');
+        newActive = currentActive.next();
+        if (newActive.length > 0) {
+          return this.selectStoree(newActive);
+        } else {
+          return this.clearInterval();
+        }
+      };
+
+      LandingView.prototype.setInterval = function() {
+        var animateStoree;
+        animateStoree = this.animateStoree;
+        return this.storeeInterval = setInterval(function() {
+          return animateStoree();
+        }, 2500);
+      };
+
+      LandingView.prototype.clearInterval = function() {
+        return clearInterval(this.storeeInterval);
+      };
+
+      LandingView.prototype.remove = function() {
+        return this.clearInterval();
       };
 
       LandingView.prototype.onLandingButtonClick = function(event) {

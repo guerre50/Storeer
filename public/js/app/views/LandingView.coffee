@@ -17,22 +17,56 @@ define [
 		initialize: ->
 			_.bindAll @
  
-		onShow: ->
+		onShow: -> 
 			@$landingStoree = $(@landingStoree)
 			@$landingTexts = $(@landingTexts)
+			@setInterval()
 
 		events:
 			'click .landing-storee' : 'onLandingStoreeClick'
 			'click .landing-button' : 'onLandingButtonClick'
+			'mouseenter .landing-promo' : 'onEnterLandingPromo'
+			'mouseleave .landing-promo' : 'onLeaveLandingPromo'
 
 		onLandingStoreeClick: (event) ->
+			@selectStoree($(event.currentTarget))
+			@clearInterval()
+
+		onEnterLandingPromo: (event) ->
+			#$(event.currentTarget).addClass('active')
+
+		onLeaveLandingPromo: (event) ->
+			#$(event.currentTarget).removeClass('active')
+
+		selectStoree: (storee) ->
 			oldActive = @$landingStoree.find('.active')
 			oldActive.toggleClass('active')
 			$(oldActive.data('text')).toggleClass('active')
 
-			newActive = $(event.currentTarget)
+			newActive = storee
 			newActive.toggleClass('active')
 			$(newActive.data('text')).toggleClass('active')
+
+		animateStoree: ->
+			currentActive = @$landingStoree.find('.active')
+			newActive = currentActive.next()
+
+			if newActive.length > 0
+				@selectStoree(newActive)
+			else
+				@clearInterval()
+
+		setInterval: ->
+			animateStoree = @animateStoree
+			@storeeInterval = setInterval(->
+				animateStoree()
+			, 2500)
+
+		clearInterval: ->
+			clearInterval(@storeeInterval)
+
+		remove: ->
+			@clearInterval()
 
 		onLandingButtonClick: (event) ->
 			app.router.navigate('storees', {trigger: true})

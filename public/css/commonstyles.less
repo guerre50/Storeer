@@ -130,6 +130,12 @@ span.topic {
 	}
 	&.col3 {
 		width: 33%;
+
+		&.responsive {
+			@media (max-width: @mobile-width) {
+				.fill-width(100%);
+			}
+		}
 	}
 	&.col4 {
 		width: 25%;
