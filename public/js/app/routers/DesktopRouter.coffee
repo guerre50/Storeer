@@ -20,13 +20,17 @@ define [
         routes:
             '': 'landing'
             'storees': 'storees'
+            'storees/create': 'createStoree'
             'storees/:id': 'storees'
             '*actions': 'landing'
 
+        createStoree: ->
+            app.content.show(new ExplorerView())
+            app.vent.trigger('create:storee')
 
         storees: (id) ->
             app.content.show(new ExplorerView())
-            app.vent.trigger('search:term','')
+            app.vent.trigger('search:term', '')
 
         landing: ->
             app.content.show(new LandingView())

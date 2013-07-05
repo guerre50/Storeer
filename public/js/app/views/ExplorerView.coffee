@@ -1,4 +1,3 @@
-# View example
 define [
 	"jquery"
 	"underscore"
@@ -39,6 +38,7 @@ define [
 			app.vent.on('drag-end:storee', @onDragEnd)
 			app.vent.on('close:storee', @closeStoree)
 			app.vent.on('open:storee', @openStoree)
+			app.vent.on('create:storee', @createStoree)
 			
 
 		closeStoree: ->
@@ -65,7 +65,15 @@ define [
 			# TO-DO make this less dependent on DOM
 			@show($(@$tabs.children()[0]))
 
+		createStoree: ->
+			@storee.show(new StoreerVisualizer({model: new StoreeModel()}))
+			@library.close()
+
+			# TO-DO make this less dependent on DOM
+			@show($(@$tabs.children()[0]))
+
 		onDragEnter: (event) ->
+			console.log event
 			@$dropPanel.addClass('drag-over')
 
 		onDragLeave: (event) ->
@@ -75,6 +83,7 @@ define [
 			# This "fixes" a bug in Chrome that prevents
 			# drop event from being fired more info: 
 			# https://code.google.com/p/chromium/issues/detail?id=168387
+			console.log event
 			event.preventDefault()
 
 		onDragStart: (event) ->

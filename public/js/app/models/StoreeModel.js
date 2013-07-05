@@ -18,26 +18,28 @@
       };
 
       StoreeModel.prototype.defaults = {
-        id: 2,
-        avatar: 'http://farm8.staticflickr.com/7339/9088143629_4134ddf9fe.jpg',
+        id: void 0,
+        avatar: '/img/avatar.png',
         thumbnail: 'http://farm8.staticflickr.com/7339/9088143629_4134ddf9fe.jpg',
         frames: [
           {
-            src: 'http://farm8.staticflickr.com/7339/9088143629_4134ddf9fe.jpg'
+            src: void 0
           }, {
-            src: 'http://farm8.staticflickr.com/7434/9090364692_7b5ceb9fe7.jpg'
+            src: void 0
           }, {
-            src: 'http://farm4.staticflickr.com/3781/9088142449_13561296dd.jpg'
+            src: void 0
           }, {
-            src: 'http://farm3.staticflickr.com/2818/9090363626_841887123f.jpg'
+            src: void 0
           }, {
-            src: 'http://farm8.staticflickr.com/7354/9090365846_0601a01414.jpg'
+            src: void 0
           }
         ]
       };
 
       StoreeModel.prototype.loadExtras = function() {
-        return Flickr.replies(this.attributes.id, 100, 1, this.loadComments, this.loadCommentsFail);
+        if (this.attributes.id) {
+          return Flickr.replies(this.attributes.id, 100, 1, this.loadComments, this.loadCommentsFail);
+        }
       };
 
       StoreeModel.prototype.loadComments = function(comments) {

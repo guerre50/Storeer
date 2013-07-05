@@ -20,8 +20,14 @@
       DesktopRouter.prototype.routes = {
         '': 'landing',
         'storees': 'storees',
+        'storees/create': 'createStoree',
         'storees/:id': 'storees',
         '*actions': 'landing'
+      };
+
+      DesktopRouter.prototype.createStoree = function() {
+        app.content.show(new ExplorerView());
+        return app.vent.trigger('create:storee');
       };
 
       DesktopRouter.prototype.storees = function(id) {

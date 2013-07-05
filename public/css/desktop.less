@@ -551,7 +551,7 @@ body {
 	left:0;
 	z-index: @top-most-z*10;
 	.transition(0.5s, ease-in-out, background);
-	pointer-events: none;
+	//pointer-events: none;
 
 	// We show dark bar when is closed
 	&.closed {
@@ -726,6 +726,24 @@ body {
 				.fill-height(92%);
 			}
 		}
+
+		.storeer-frame-empty {
+			background: red;
+			margin-right: 80px;
+			position: absolute;
+			.fill(100%, 100%);
+			text-align: center;
+			top: 0px;
+
+			.empty-image {
+				margin: auto;
+			}
+		}
+
+		img.empty {
+			width: 400px;
+			height: 400px;
+		} 
 
 		&.expanded {
 			.storeer-details {

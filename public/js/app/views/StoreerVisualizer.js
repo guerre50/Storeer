@@ -56,6 +56,10 @@
         'click .remove': 'onClickClose'
       };
 
+      StoreerVisualizer.prototype.onDragOver = function(event) {
+        return console.log(event);
+      };
+
       StoreerVisualizer.prototype.loadStoreer = function(storee) {
         this.$el.find('img').off('load', this.onImgLoad);
         this.model = storee;
@@ -75,6 +79,7 @@
         this.$storeerOptionsMobile = $($(this.storeerOptionsMobile)[0]).children();
         this.$storeerOptionsContent = $($(this.storeerOptionsContent)[0]).children();
         this.setOptionsOrder();
+        this.resize();
         return this;
       };
 

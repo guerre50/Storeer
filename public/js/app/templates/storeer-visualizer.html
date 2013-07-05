@@ -1,4 +1,5 @@
 <div id="storeer-visualizer" class="storeer-visualizer">
+  <!-- Storee frame helper -->
   <div class="storeer-frame-indicator">
     <div id ="frame-indicator" class="logo-background">
       <% var active = 'active'; for (var i = 0; i < model.frames.length; ++i) { %>
@@ -9,18 +10,28 @@
     </div>
   </div>
 
+  <!-- Storee frame -->
   <div class="storeer-visualizer-frame expanded storeer-row row2">
     <!-- Storee frame strip -->
     <div id="storeer-frame-strip" class="storeer-frame-strip">
       <% var active = 'active'; var i = 0; _.each(model.frames, function(frame) { %>
-        <div class="storeer-frame item <%- active %>" data-order="<%- i %>" style="margin-right:80px;">
-          <img draggable="false" src="<%- frame.src %>">
-          <div class="storeer-frame-transparency">
-          </div>
+        <div class="storeer-frame item <%- active %>" data-order="<%- i %>" style="margin-right: 80px;">
+          <% if (!frame.src) { %>
+            <img draggable="false" class="empty" data-ratio="1">
+            <div class="storeer-frame-empty">
+              <div class="empty-image">
+                Drop image
+              </div>
+            </div>
+          <% } else { %>
+            <img draggable="false" src="<%- frame.src %>">
+            <div class="storeer-frame-transparency">
+            </div>
+          <% } %>
         </div>
         <% active = ''; i++; %>
       <% }); %>
-      <div class="storeer-frame item end-frame" data-order="<%- i %>" style="margin-right:20px;">
+      <div class="storeer-frame item end-frame" data-order="<%- i %>" style="margin-right: 20px;">
           <div class="end-options">
             <span class="icon-stack icon-4x">
               <i class="icon-circle icon-stack-base"></i>
@@ -38,12 +49,13 @@
       </div>
     </div>
 
-    <!-- Storee nav -->
+    <!-- Storee nav controls -->
     <div id="storeer-prev" class="storeer-control-arrow previous" data-slide="prev"><p><i class="icon-chevron-left"></i></p></div>
     <div id="storeer-next" class="storeer-control-arrow next" data-slide="next"><p><i class="icon-chevron-right"></i></p></div>
     <div id="storeer-close" class="storeer-control-close remove extra"><p>&times;</p></div>
   </div>
-  
+
+  <!-- Storee details -->
   <div class="storeer-details storeer-row row2">
     <div class="storeer-details-topbar ">
       <div class="media-preview">
@@ -60,21 +72,11 @@
           <h4> <small><%- model.authorname %></small></h4>
         </div>
       </div>
-
       <div class="storeer-comments mobile">
         <div id="storeer-options-mobile" class="storeer-options-container">
           <div class="storeer-options comments mobile active">
             <div class="options-outline"></div>
             <i class="icon-comment"></i>
-          </div><div class="storeer-options info mobile">
-            <div class="options-outline"></div>
-            <i class="icon-info"></i>
-          </div><div class="storeer-options share mobile">
-            <div class="options-outline"></div>
-            <i class="icon-trophy"></i>
-          </div><div class="storeer-options related mobile">
-            <div class="options-outline"></div>
-            <i class="icon-remove remove"></i>
           </div>
         </div>
       </div>
@@ -84,34 +86,16 @@
           <div class="storeer-options comments no-mobile active">
             <i class="icon-comment"></i>
           </div>
-          <div class="storeer-options info no-mobile">
-            <i class="icon-info"></i>
-          </div>
-          <div class="storeer-options share no-mobile">
-            <i class="icon-trophy"></i>
-          </div>
-          <div class="storeer-options related no-mobile">
-            <i class="icon-remove remove"></i>
-          </div>
         </div>
     </div>
     <div  class="storeer-option">
       <div id="storeer-options-content">
-        <div id="" class="tab-content">
-
-        </div>
         <div id="storee-comments" class="tab-content active">
           <div class="loading">
             <i class="icon-spinner icon-spin icon-3x"></i>
           </div>
         </div>
-        <div id="" class="tab-content">
-
-        </div>
-        <div id="" class="tab-content">
-
-        </div>
       </div>
     </div>
-  </div><!-- Storee comments -->
+  </div>
 </div>

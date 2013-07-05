@@ -43,7 +43,8 @@
         app.vent.on('drag-start:storee', this.onDragStart);
         app.vent.on('drag-end:storee', this.onDragEnd);
         app.vent.on('close:storee', this.closeStoree);
-        return app.vent.on('open:storee', this.openStoree);
+        app.vent.on('open:storee', this.openStoree);
+        return app.vent.on('create:storee', this.createStoree);
       };
 
       ExplorerView.prototype.closeStoree = function() {
@@ -77,7 +78,16 @@
         return this.show($(this.$tabs.children()[0]));
       };
 
+      ExplorerView.prototype.createStoree = function() {
+        this.storee.show(new StoreerVisualizer({
+          model: new StoreeModel()
+        }));
+        this.library.close();
+        return this.show($(this.$tabs.children()[0]));
+      };
+
       ExplorerView.prototype.onDragEnter = function(event) {
+        console.log(event);
         return this.$dropPanel.addClass('drag-over');
       };
 
@@ -86,6 +96,7 @@
       };
 
       ExplorerView.prototype.onDragOver = function(event) {
+        console.log(event);
         return event.preventDefault();
       };
 

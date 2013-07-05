@@ -38,6 +38,9 @@ define [
 			'transitionend #storeer-frame-strip' : 'onTransitionEnd'
 			'click .remove': 'onClickClose'
 
+		onDragOver: (event) ->
+			console.log event
+
 		loadStoreer: (storee) ->
 			# We remove listeners
 			@$el.find('img').off('load', @onImgLoad)
@@ -67,6 +70,8 @@ define [
 			@$storeerOptionsMobile = $($(@storeerOptionsMobile)[0]).children()
 			@$storeerOptionsContent = $($(@storeerOptionsContent)[0]).children()
 			@setOptionsOrder()
+
+			@resize()
 
 			@
 
