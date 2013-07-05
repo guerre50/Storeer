@@ -8,8 +8,8 @@ define [
 	"text!templates/landing.html"
 ], ($, _, Backbone, Marionette, app, template) ->
 	class LandingView extends Backbone.Marionette.ItemView
-		className: 'landing-container' 
 		template: _.template(template)
+		className: 'landing-container' 
 
 		landingStoree: '#landing-storee'
 		landingTexts: '#landing-text'
@@ -25,6 +25,8 @@ define [
 		events:
 			'click .landing-storee' : 'onLandingStoreeClick'
 			'click .landing-button' : 'onLandingButtonClick'
+			'click .previous' : 'previous'
+			'click .next' : 'next'
 
 		onLandingStoreeClick: (event) ->
 			@selectStoree($(event.currentTarget))
@@ -39,9 +41,17 @@ define [
 			newActive.toggleClass('active')
 			$(newActive.data('text')).toggleClass('active')
 
-		animateStoree: ->
+		next: ->
+			@clearInterval()
+			@animateStoree('next')
+
+		previous: ->
+			@clearInterval()
+			@animateStoree('prev')
+
+		animateStoree: (movement) ->
 			currentActive = @$landingStoree.find('.active')
-			newActive = currentActive.next()
+			newActive = currentActive[movement]()
 
 			if newActive.length > 0
 				@selectStoree(newActive)
@@ -51,7 +61,7 @@ define [
 		setInterval: ->
 			animateStoree = @animateStoree
 			@storeeInterval = setInterval(->
-				animateStoree()
+				animateStoree('next')
 			, 2500)
 
 		clearInterval: ->

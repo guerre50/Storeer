@@ -776,18 +776,17 @@ body {
 	font-size: 60px;
 	font-weight: 100;
 	line-height: 30px;
-	color: #ffffff;
-	text-align: center;
-	background: #222222;
-	opacity: 0.5;
+	color: darken(#ffffff, 50%);
+	opacity: 0;
 	filter: alpha(opacity=50); 
 	text-decoration: !important none;
 	z-index: @top-most-z -1;
-	text-shadow: 2px 2px 5px #111111;
+	text-shadow: 2px 2px 2px fadeout(darken(grey, 30%), 10%);
 	.transition(0.2s, ease-in-out);
 
 	&:hover {
-		background: #555555;
+		opacity: 1;
+		color: #ffffff;
 	}
 }
 
@@ -814,20 +813,31 @@ body {
 
 .storeer-control-arrow {
 	.storeer-control;
-	top: 50%;
+	height: 100%;
+	width: 30%;
+	top: 0px;
+	p {
+		position: relative;
+		top: 50%;
+		color: white;
+		text-decoration: none;
+		.transition(0.2s, ease-in-out);
+	}
 	&.next {
+		margin-right: @margin;
+		text-align: right;
 		left: auto;
 		right: 0px;
-		:hover {
+		p:hover {
 			.translate(4px, 0);
 		}	
 	}
-	p {
-		.transition(0.2s, ease-in-out);
-		&:hover {
-			text-decoration: none;
+	&.previous {
+		text-align: left;
+		left: 0px;
+		margin-left: @margin;
+		p:hover {
 			.translate(-4px, 0);
-			color: white;
 		}	
 	}
 }
@@ -1019,10 +1029,11 @@ body {
 
 			margin: auto;
 
-			@media(max-height: @mobile-height) {
+			@media(max-height: @mobile-height), (max-width: @mobile-width) {
 				h2 {
 					font-size: 20px;
 				}
+
 				h1 {
 					font-size: 25px;
 					margin: @margin/2;
@@ -1053,8 +1064,12 @@ body {
 			text-align: center;
 			color: @dark-color;
 		}
+
 		.landing-text {
 			padding: 20px 40px 20px 40px;
+			@media (max-width: @mobile-width), (max-height: @mobile-height) {
+				font-size: 70%;
+			}
 		}
 
 		.landing-promo {
@@ -1111,8 +1126,8 @@ body {
 				margin-left: -26px;
 			}
 		}
-
 	}
+
 	.background {
 		width: 100%;
 		min-height: 100%;
@@ -1146,7 +1161,27 @@ body {
 		max-width: 15%;
 	}
 
-	@media screen and (orientation: portrait), (max-width: @mobile-width)  {
+	@media screen and (orientation: landscape), (min-width: 1000px) {
+		.landing-controls {
+			display: none !important;
+		}
+		img { 
+			max-height: 100%; 
+			.translate(10%, 10%);
+		}
+		.landing-story {
+			top: 5% !important;
+		}
+		.center-div {
+			margin-left: 10%;
+		}
+	}
+
+
+	@media screen and (orientation: portrait), (max-width: 1000px)  {
+		.landing-controls {
+			display: block !important;
+		}
 		img {
 			max-width: 40%;
 			position: absolute;
@@ -1163,20 +1198,6 @@ body {
 			top: 50%;
 			left: 50%;
 			.translate(-50%, -50%);
-		}
-	}
-
-	@media screen and (orientation: landscape), (min-width: 1000px) {
-
-		img { 
-			max-height: 100%; 
-			.translate(10%, 10%);
-		}
-		.landing-story {
-			top: 10%;
-		}
-		.center-div {
-			margin-left: 10%;
 		}
 	}
 

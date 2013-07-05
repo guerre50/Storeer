@@ -33,7 +33,9 @@
 
       LandingView.prototype.events = {
         'click .landing-storee': 'onLandingStoreeClick',
-        'click .landing-button': 'onLandingButtonClick'
+        'click .landing-button': 'onLandingButtonClick',
+        'click .previous': 'previous',
+        'click .next': 'next'
       };
 
       LandingView.prototype.onLandingStoreeClick = function(event) {
@@ -51,10 +53,20 @@
         return $(newActive.data('text')).toggleClass('active');
       };
 
-      LandingView.prototype.animateStoree = function() {
+      LandingView.prototype.next = function() {
+        this.clearInterval();
+        return this.animateStoree('next');
+      };
+
+      LandingView.prototype.previous = function() {
+        this.clearInterval();
+        return this.animateStoree('prev');
+      };
+
+      LandingView.prototype.animateStoree = function(movement) {
         var currentActive, newActive;
         currentActive = this.$landingStoree.find('.active');
-        newActive = currentActive.next();
+        newActive = currentActive[movement]();
         if (newActive.length > 0) {
           return this.selectStoree(newActive);
         } else {
@@ -66,7 +78,7 @@
         var animateStoree;
         animateStoree = this.animateStoree;
         return this.storeeInterval = setInterval(function() {
-          return animateStoree();
+          return animateStoree('next');
         }, 2500);
       };
 
