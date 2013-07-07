@@ -40,7 +40,9 @@
       StoreerVisualizer.prototype.initialize = function() {
         _.bindAll(this);
         $(window).on('keydown', this.onKeyDown);
-        return $(window).on('resize', this.resize);
+        $(window).on('resize', this.timeoutResize);
+        app.vent.on('load:images', this.loadImages);
+        return app.vent.on('load:url', this.loadURL);
       };
 
       StoreerVisualizer.prototype.onShow = function() {
@@ -51,8 +53,9 @@
         'click .previous': 'previous',
         'click .next': 'next',
         'click .storeer-frame': 'onFrameClick',
+        'click .storeer-frame-indicator': 'onFrameClick',
         'click .storeer-options': 'onClickOption',
-        'transitionend #storeer-frame-strip': 'onTransitionEnd',
+        'transitionend #storeer-frame-strip': 'timeoutResize',
         'click .remove': 'onClickClose'
       };
 
@@ -80,7 +83,39 @@
         this.$storeerOptionsContent = $($(this.storeerOptionsContent)[0]).children();
         this.setOptionsOrder();
         this.resize();
+        if (!this.model.id) {
+          app.vent.trigger('requireDrop');
+        }
         return this;
+      };
+
+      StoreerVisualizer.prototype.setImage = function(frame, image) {
+        var $frame, $img;
+        $frame = $(this.$frames[frame]);
+        this.model.attributes.frames[frame].src = image;
+        $img = $($frame.find('img'));
+        $img.attr('src', image);
+        $img.removeClass('empty');
+        $frame.find('div.storeer-frame-empty').remove();
+        return this.next();
+      };
+
+      StoreerVisualizer.prototype.loadImages = function(images) {
+        var frame, image, reader, setImage;
+        setImage = this.setImage;
+        image = images[0];
+        frame = this.currentFrame;
+        reader = new FileReader();
+        reader.onload = (function(file) {
+          return function(e) {
+            return setImage(frame, e.target.result);
+          };
+        })(image);
+        return reader.readAsDataURL(image);
+      };
+
+      StoreerVisualizer.prototype.loadURL = function(URL) {
+        return console.log(URL);
       };
 
       StoreerVisualizer.prototype.setOptionsOrder = function() {
@@ -98,15 +133,11 @@
       };
 
       StoreerVisualizer.prototype.previous = function() {
-        return this.moveFrame(-1);
+        return this.setCurrentFrame(this.currentFrame - 1);
       };
 
       StoreerVisualizer.prototype.next = function() {
-        return this.moveFrame(1);
-      };
-
-      StoreerVisualizer.prototype.onTransitionEnd = function(event) {
-        return this.resize();
+        return this.setCurrentFrame(this.currentFrame + 1);
       };
 
       StoreerVisualizer.prototype.onLoad = function() {
@@ -115,10 +146,12 @@
       };
 
       StoreerVisualizer.prototype.onImgLoad = function(event) {
-        var $img;
-        $img = $(event.target);
-        $img.css('margin-top', '0');
-        $img.data('ratio', $img.width() / $img.height());
+        var $img, img, tmpImage;
+        img = event.target;
+        $img = $(img);
+        tmpImage = new Image();
+        tmpImage.src = img.src;
+        $img.data('ratio', tmpImage.width / tmpImage.height);
         this.resize($img.parent());
         if (!--this.imagesToLoad) {
           return this.onLoad();
@@ -127,10 +160,9 @@
 
       StoreerVisualizer.prototype.onFrameClick = function(event) {
         var order;
-        event.preventDefault();
-        event.returnValue = false;
         order = $(event.currentTarget).data('order');
-        return this.moveFrame(order - this.currentFrame);
+        this.setCurrentFrame(order);
+        return false;
       };
 
       StoreerVisualizer.prototype.onKeyDown = function(event) {
@@ -151,6 +183,7 @@
 
       StoreerVisualizer.prototype.onClickOption = function(event) {
         var target, targetOption;
+        console.log(this.$storeerOptions);
         this.$storeerOptions.filter('div.active').toggleClass('active');
         this.$storeerOptionsMobile.filter('div.active').toggleClass('active');
         this.$storeerOptionsContent.filter('div.active').toggleClass('active');
@@ -165,24 +198,21 @@
         return app.vent.trigger('close:storee');
       };
 
-      StoreerVisualizer.prototype.moveFrame = function(sign) {
-        var currentFrame, currentIndicator, movement, previousFrame;
-        if (sign === 0) {
-          return this;
-        }
-        movement = sign < 0 ? "prev" : "next";
-        previousFrame = this.getCurrentFrame();
-        currentFrame = previousFrame[movement]();
-        if (currentFrame.length > 0) {
+      StoreerVisualizer.prototype.setCurrentFrame = function(frame) {
+        var currentFrame, currentIndicator, previousFrame;
+        if (frame >= 0 && frame < this.$frames.length) {
+          previousFrame = this.getCurrentFrame();
+          this.currentFrame = frame;
+          currentFrame = this.getCurrentFrame();
           previousFrame.toggleClass('active');
           currentFrame.toggleClass('active');
           currentIndicator = this.$frameIndicator.find('.active');
           currentIndicator.toggleClass('active', false);
-          currentIndicator[movement]().toggleClass('active', true);
-          this.currentFrame = currentFrame.data('order');
+          $(this.$frameIndicator.children()[this.currentFrame]).toggleClass('active', true);
+          this.repositionStoree();
+          this.updateControlArrows();
         }
-        this.repositionStoree();
-        return this.updateControlArrows();
+        return this;
       };
 
       StoreerVisualizer.prototype.getCurrentFrame = function() {
@@ -198,11 +228,19 @@
           this.$prevArrow.css('left', '');
         }
         if (this.$frames.last().data('order') === currentFrame.data('order')) {
-          this.$el.toggleClass('expanded', false);
+          if (this.model.id) {
+            this.$el.toggleClass('expanded', false);
+            this.resize();
+          }
           return this.$nextArrow.css('right', -this.$nextArrow.width());
         } else {
           return this.$nextArrow.css('right', '');
         }
+      };
+
+      StoreerVisualizer.prototype.timeoutResize = function(event) {
+        clearTimeout(this.resizeTimeout);
+        return this.resizeTimeout = setTimeout(this.resize, 500);
       };
 
       StoreerVisualizer.prototype.resize = function() {
@@ -251,6 +289,11 @@
         return this;
       };
 
+      StoreerVisualizer.prototype.renderModel = function() {
+        this.render();
+        return this.resize();
+      };
+
       StoreerVisualizer.prototype.render = function() {
         this.$el.html(this.template({
           model: this.model.toJSON()
@@ -260,7 +303,7 @@
 
       StoreerVisualizer.prototype.remove = function() {
         $(window).off('keydown', this.onKeyDown);
-        $(window).off('resize', this.resize);
+        $(window).off('resize', this.timeoutResize);
         return Backbone.View.prototype.remove.apply(this);
       };
 

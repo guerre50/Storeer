@@ -50,3 +50,11 @@
 
 @navbar-height: 60px;
 
+@has-mobile-width: ~"(max-width: @{mobile-width})";
+@has-desktop-width: ~"(min-width: @{mobile-width})";
+@has-desktop-height: ~"(min-width: @{mobile-height})";
+@has-mobile-height: ~"(max-width: @{mobile-height})";
+@has-mobile: ~"@{has-mobile-width}, @{has-mobile-height}";
+@has-desktop: ~"@{has-desktop-width}, @{has-desktop-height}";
+
+

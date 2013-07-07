@@ -3,7 +3,7 @@
   <div class="storeer-frame-indicator">
     <div id ="frame-indicator" class="logo-background">
       <% var active = 'active'; for (var i = 0; i < model.frames.length; ++i) { %>
-        <div class="cube <%- active %>" data-order="<%- i %>"></div>
+        <div class=" storeer-frame-indicator cube <%- active %>" data-order="<%- i %>"></div>
         <% active = '';%>
       <% }; %>
       <div class=""></div>
@@ -20,7 +20,22 @@
             <img draggable="false" class="empty" data-ratio="1">
             <div class="storeer-frame-empty">
               <div class="empty-image">
-                Drop image
+                <div class="drop-zone">
+                  <div class="storeer-row row2">
+                    <br>
+                    <h3><span class="icon-stack icon-2x">
+                      <i class="icon-circle icon-stack-base"></i>
+                      <i class="icon-light"> <%- i+1 %></i>
+                    </span></h3>
+                    <h3><%- frame.info %></h3>
+                  </div>
+                  <div class="storeer-row row2">
+                    <h3 class="sub-info">
+                      <i class="icon-signin"></i><br>
+                      Drop image
+                    </h3>
+                  </div>
+                </div>
               </div>
             </div>
           <% } else { %>
@@ -33,6 +48,7 @@
       <% }); %>
       <div class="storeer-frame item end-frame" data-order="<%- i %>" style="margin-right: 20px;">
           <div class="end-options">
+            <% if (model.id) { %>
             <span class="icon-stack icon-4x">
               <i class="icon-circle icon-stack-base"></i>
               <i class="icon-trophy icon-light"></i>
@@ -43,16 +59,24 @@
             </span>
             <span class="icon-stack icon-4x">
               <i class="icon-circle icon-stack-base"></i>
-              <i class="icon-bookmark  icon-light"></i>
+              <i class="icon-bookmark icon-light"></i>
             </span>
+            <% } else { %>
+            <span class="icon-stack icon-4x">
+              <i class="icon-circle icon-stack-base"></i>
+              <i class="icon-arrow-up icon-light"></i>
+            </span>
+            <% } %>
           </div>
       </div>
     </div>
 
     <!-- Storee nav controls -->
-    <div id="storeer-prev" class="storeer-control-arrow previous" data-slide="prev"><p><i class="icon-chevron-left"></i></p></div>
-    <div id="storeer-next" class="storeer-control-arrow next" data-slide="next"><p><i class="icon-chevron-right"></i></p></div>
-    <div id="storeer-close" class="storeer-control-close remove extra"><p>&times;</p></div>
+    <div class="visualizer-controls">
+      <div id="storeer-prev" class="storeer-control-arrow previous" data-slide="prev"><p><i class="icon-chevron-left"></i></p></div>
+      <div id="storeer-next" class="storeer-control-arrow next" data-slide="next"><p><i class="icon-chevron-right"></i></p></div>
+      <div id="storeer-close" class="storeer-control-close remove extra"><p>&times;</p></div>
+    </div>
   </div>
 
   <!-- Storee details -->
@@ -64,12 +88,21 @@
           </div>
         </div>
       </div>
+
       <div class="media-content">
         <div class="storeer-title">
-          <h4><%- model.subject %></h4>
+          <h4><% if (model.id) { %>
+            <%- model.subject %>
+          <% } else { %>
+          <input placeholder="Storee title" type="text">
+          <% } %></h4>
         </div>
         <div class="storeer-author">
-          <h4> <small><%- model.authorname %></small></h4>
+          <h4> <% if (model.id) { %>
+          <small><%- model.authorname %></small>
+          <% } else { %>
+          <small> Victor Guerrero</small>
+          <% } %></h4>
         </div>
       </div>
       <div class="storeer-comments mobile">

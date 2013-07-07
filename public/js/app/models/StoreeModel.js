@@ -23,15 +23,15 @@
         thumbnail: 'http://farm8.staticflickr.com/7339/9088143629_4134ddf9fe.jpg',
         frames: [
           {
-            src: void 0
+            info: 'Present characters and location'
           }, {
-            src: void 0
+            info: 'Build up the situation'
           }, {
-            src: void 0
+            info: 'Involve characters in the situation'
           }, {
-            src: void 0
+            info: 'Leave it open to different endings'
           }, {
-            src: void 0
+            info: 'Conclude with a surprising end'
           }
         ]
       };

@@ -13,11 +13,11 @@ define [
 			avatar: '/img/avatar.png'
 			thumbnail: 'http://farm8.staticflickr.com/7339/9088143629_4134ddf9fe.jpg'
 			frames: [
-				{src: undefined}
-				{src: undefined}
-				{src: undefined}
-				{src: undefined}
-				{src: undefined}
+				{info: 'Present characters and location'}
+				{info: 'Build up the situation'}
+				{info: 'Involve characters in the situation'}
+				{info: 'Leave it open to different endings'}
+				{info: 'Conclude with a surprising end'}
 			]
 
 		loadExtras: ->

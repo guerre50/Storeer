@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["jquery", "underscore", "backbone", "App", "views/StoreerVisualizer", "views/StoreerLibrary", "views/LandingView", "views/HomeView", "models/StoreeModel", "text!templates/explorer.html"], function($, _, Backbone, app, StoreerVisualizer, StoreerLibrary, LandingView, HomeView, StoreeModel, template) {
+  define(["jquery", "underscore", "backbone", "App", "views/StoreerVisualizer", "views/StoreerLibrary", "views/LandingView", "views/HomeView", "views/DropAreaView", "models/StoreeModel", "text!templates/explorer.html"], function($, _, Backbone, app, StoreerVisualizer, StoreerLibrary, LandingView, HomeView, DropAreaView, StoreeModel, template) {
     var ExplorerView, _ref;
     return ExplorerView = (function(_super) {
       __extends(ExplorerView, _super);
@@ -21,27 +21,22 @@
 
       ExplorerView.prototype.tabs = '#explorer-tabs';
 
+      ExplorerView.prototype.tabsMobile = '#explorer-tabs-mobile';
+
       ExplorerView.prototype.regions = {
-        dropPanel: "#drop-panel",
+        dropArea: "#drop-panel",
         storee: "#storeer-storee",
         library: "#storeer-library"
       };
 
       ExplorerView.prototype.events = {
-        'drop': 'onDrop',
-        'dragenter  .storeer-visualizer-drop': 'onDragEnter',
-        'dragleave .storeer-visualizer-drop': 'onDragLeave',
-        'dragover .storeer-visualizer-drop': 'onDragOver',
         'mousedown .explorer-tabs': 'onMouseDown',
         'click .explorer-tab': 'selectTab',
-        'mouseup .explorer-tab': 'selectTab',
         'mouseenter .explorer-tab': 'onMouseEnter'
       };
 
       ExplorerView.prototype.initialize = function() {
         _.bindAll(this);
-        app.vent.on('drag-start:storee', this.onDragStart);
-        app.vent.on('drag-end:storee', this.onDragEnd);
         app.vent.on('close:storee', this.closeStoree);
         app.vent.on('open:storee', this.openStoree);
         return app.vent.on('create:storee', this.createStoree);
@@ -53,21 +48,15 @@
 
       ExplorerView.prototype.onShow = function() {
         this.storee.show(new HomeView());
+        this.dropArea.show(new DropAreaView());
         this.library.show(new StoreerLibrary({
           collection: app.storees
         }));
-        this.$dropPanel = $(this.regions.dropPanel);
+        this.$dropArea = $(this.regions.dropArea);
         this.$dragTab = $(this.dragTab);
         this.$tabs = $(this.tabs);
+        this.$tabsMobile = $(this.tabsMobile);
         return this.$body = $('body');
-      };
-
-      ExplorerView.prototype.onDrop = function(event) {
-        var storee;
-        storee = event.originalEvent.dataTransfer.getData("storee");
-        if (storee) {
-          return this.openStoree(new StoreeModel(JSON.parse(storee)));
-        }
       };
 
       ExplorerView.prototype.openStoree = function(storee) {
@@ -78,34 +67,16 @@
         return this.show($(this.$tabs.children()[0]));
       };
 
+      ExplorerView.prototype.toggleMenu = function(menu) {
+        return $(this.library.$el.parent()).toggleClass('expanded');
+      };
+
       ExplorerView.prototype.createStoree = function() {
         this.storee.show(new StoreerVisualizer({
           model: new StoreeModel()
         }));
         this.library.close();
         return this.show($(this.$tabs.children()[0]));
-      };
-
-      ExplorerView.prototype.onDragEnter = function(event) {
-        console.log(event);
-        return this.$dropPanel.addClass('drag-over');
-      };
-
-      ExplorerView.prototype.onDragLeave = function(event) {
-        return this.$dropPanel.removeClass('drag-over');
-      };
-
-      ExplorerView.prototype.onDragOver = function(event) {
-        console.log(event);
-        return event.preventDefault();
-      };
-
-      ExplorerView.prototype.onDragStart = function(event) {
-        return this.$dropPanel.addClass('dragging');
-      };
-
-      ExplorerView.prototype.onDragEnd = function(event) {
-        return this.$dropPanel.removeClass('dragging').removeClass('drag-over');
       };
 
       ExplorerView.prototype.onMouseDown = function(event) {
@@ -118,6 +89,11 @@
         this.dragging = false;
         $(window).off('mousemove', this.onMouseMove);
         return $(window).off('mouseup', this.onMouseUp);
+      };
+
+      ExplorerView.prototype.closeMenu = function() {
+        this.library.$el.addClass('closed');
+        return this.library.close();
       };
 
       ExplorerView.prototype.onMouseMove = function(event) {
@@ -136,6 +112,11 @@
       };
 
       ExplorerView.prototype.selectTab = function(event) {
+        var target;
+        target = $(event.currentTarget).data('target');
+        if (target === 1) {
+          this.toggleMenu();
+        }
         return this.show($(event.currentTarget));
       };
 
@@ -146,8 +127,23 @@
       };
 
       ExplorerView.prototype.show = function(tab) {
+        var first, left, tabContents, tabIndex;
         this.$tabs.find('.active').toggleClass('active', false);
-        tab.toggleClass('active', true);
+        this.$tabsMobile.find('.active').toggleClass('active', false);
+        tabIndex = tab.data('target');
+        $(this.$tabs.children()[tabIndex]).toggleClass('active', true);
+        $(this.$tabsMobile.children()[tabIndex]).toggleClass('active', true);
+        tabContents = this.tabContents();
+        left = -100 * tab.data('target');
+        first = 0;
+        _.each(tabContents, function(tabContent) {
+          if (first > 0) {
+            tabContent.css('left', left + '%');
+          } else {
+            first = 1;
+          }
+          return left += 100;
+        });
         return this.slideTab((tab.position().left) / this.$body.width() * 100 + this.tabSize());
       };
 
@@ -155,17 +151,14 @@
         return (this.$dragTab.width() / this.$body.width()) * 100;
       };
 
+      ExplorerView.prototype.tabContents = function() {
+        return [this.storee.$el.parent(), this.library.$el.parent()];
+      };
+
       ExplorerView.prototype.slideTab = function(left) {
         var tabSize;
         tabSize = this.tabSize();
-        this.$dragTab.css('right', ((100 - left) / 100 * this.$body.width()) + "px");
-        if (left >= 95) {
-          left = 0;
-        } else {
-          left = 100;
-        }
-        this.library.$el.css('left', left + "%");
-        return this.storee.$el.parent().css('left', -(100 - left) + "%");
+        return this.$dragTab.css('right', ((100 - left) / 100 * this.$body.width()) + "px");
       };
 
       return ExplorerView;
