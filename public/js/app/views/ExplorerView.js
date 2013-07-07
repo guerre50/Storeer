@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["jquery", "underscore", "backbone", "App", "views/StoreerVisualizer", "views/StoreerLibrary", "views/LandingView", "views/HomeView", "views/DropAreaView", "models/StoreeModel", "text!templates/explorer.html"], function($, _, Backbone, app, StoreerVisualizer, StoreerLibrary, LandingView, HomeView, DropAreaView, StoreeModel, template) {
+  define(["jquery", "underscore", "backbone", "App", "views/StoreerVisualizer", "views/StoreerLibrary", "views/LandingView", "views/HomeView", "views/DropAreaView", "views/StreamView", "models/StoreeModel", "text!templates/explorer.html"], function($, _, Backbone, app, StoreerVisualizer, StoreerLibrary, LandingView, HomeView, DropAreaView, StreamView, StoreeModel, template) {
     var ExplorerView, _ref;
     return ExplorerView = (function(_super) {
       __extends(ExplorerView, _super);
@@ -47,7 +47,9 @@
       };
 
       ExplorerView.prototype.onShow = function() {
-        this.storee.show(new HomeView());
+        this.storee.show(new StreamView({
+          collection: app.storees
+        }));
         this.dropArea.show(new DropAreaView());
         this.library.show(new StoreerLibrary({
           collection: app.storees

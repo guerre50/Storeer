@@ -1,0 +1,73 @@
+<div id="storeer-visualizer" class="storeer-visualizer">
+  <!-- Storee frame -->
+  <div class="storeer-visualizer-frame expanded storeer-row row2">
+    <!-- Storee frame strip -->
+    <div id="storeer-frame-strip" class="storeer-frame-strip">
+      <% var active = 'active'; var i = 0; _.each(model.frames, function(frame) { %>
+        <div class="storeer-frame item <%- active %>" data-order="<%- i %>" style="margin-right: 80px;">
+          <% if (!frame.src) { %>
+            <img draggable="false" class="empty" data-ratio="1">
+            <div class="storeer-frame-empty">
+              <div class="empty-image">
+                <div class="drop-zone">
+                  <div class="storeer-row row2">
+                    <br>
+                    <h3><span class="icon-stack icon-2x">
+                      <i class="icon-circle icon-stack-base"></i>
+                      <i class="icon-light"> <%- i+1 %></i>
+                    </span></h3>
+                    <h3><%- frame.info %></h3>
+                  </div>
+                  <div class="storeer-row row2">
+                    <h3 class="sub-info">
+                      <i class="icon-signin"></i><br>
+                      Drop image
+                    </h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% } else { %>
+            <img draggable="false" src="<%- frame.src %>">
+            <div class="storeer-frame-transparency">
+            </div>
+          <% } %>
+        </div>
+        <% active = ''; i++; %>
+      <% }); %>
+      <div class="storeer-frame item end-frame" data-order="<%- i %>" style="margin-right: 20px;">
+          <div class="end-options">
+            <% if (model.id) { %>
+            <span class="icon-stack icon-4x">
+              <i class="icon-circle icon-stack-base"></i>
+              <i class="icon-trophy icon-light"></i>
+            </span>
+            <span class="icon-stack icon-4x">
+              <i class="icon-circle icon-stack-base"></i>
+              <i class="icon-heart  icon-light"></i>
+            </span>
+            <span class="icon-stack icon-4x">
+              <i class="icon-circle icon-stack-base"></i>
+              <i class="icon-bookmark icon-light"></i>
+            </span>
+            <% } else { %>
+            <span class="icon-stack icon-4x">
+              <i class="icon-circle icon-stack-base"></i>
+              <i class="icon-arrow-up icon-light"></i>
+            </span>
+            <% } %>
+          </div>
+      </div>
+    </div>
+    <!-- Storee overlay information -->
+    <div class="storeer-overlay">
+      <h5><%- model.subject %><br>
+      <small><%- model.authorname %></small></h5>
+    </div>
+    <!-- Storee nav controls -->
+    <div class="visualizer-controls">
+      <div id="storeer-prev" class="storeer-control-arrow previous" data-slide="prev"><p><i class="icon-chevron-left"></i></p></div>
+      <div id="storeer-next" class="storeer-control-arrow next" data-slide="next"><p><i class="icon-chevron-right"></i></p></div>
+    </div>
+  </div>
+</div>

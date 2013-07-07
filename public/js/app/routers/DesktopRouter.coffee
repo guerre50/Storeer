@@ -7,7 +7,8 @@ define [
     'App'
     'views/LandingView'
     'views/ExplorerView'
-], ($, _, Backbone, Marionette, app, LandingView, ExplorerView) ->
+    'views/StreamView'
+], ($, _, Backbone, Marionette, app, LandingView, ExplorerView, StreamView) ->
     class DesktopRouter extends Backbone.Marionette.AppRouter
         initialize: ->
             Backbone.history.start()
@@ -21,6 +22,7 @@ define [
             '': 'landing'
             'storees': 'storees'
             'storees/create': 'createStoree'
+            'storees/stream': 'stream'
             'storees/:id': 'storees'
             '*actions': 'landing'
 
@@ -34,5 +36,9 @@ define [
 
         landing: ->
             app.content.show(new LandingView())
+
+        stream: ->
+            app.content.show(new ExplorerView())
+            app.vent.trigger('search:term','')
 
 

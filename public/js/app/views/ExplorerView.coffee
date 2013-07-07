@@ -8,9 +8,10 @@ define [
 	"views/LandingView"
 	"views/HomeView"
 	"views/DropAreaView"
+	"views/StreamView"
 	"models/StoreeModel"
 	"text!templates/explorer.html"
-], ($, _, Backbone, app, StoreerVisualizer, StoreerLibrary, LandingView, HomeView, DropAreaView, StoreeModel, template) ->
+], ($, _, Backbone, app, StoreerVisualizer, StoreerLibrary, LandingView, HomeView, DropAreaView, StreamView, StoreeModel, template) ->
 	class ExplorerView extends Backbone.Marionette.Layout
 		template: _.template(template)
 		className: 'storeer-content'
@@ -39,7 +40,8 @@ define [
 			@storee.show(new HomeView())
 
 		onShow: ->
-			@storee.show(new HomeView())
+			@storee.show(new StreamView(collection: app.storees))
+			#@storee.show(new HomeView())
 			@dropArea.show(new DropAreaView())
 			@library.show(new StoreerLibrary(collection: app.storees))
 

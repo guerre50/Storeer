@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['jquery', 'underscore', 'backbone', 'marionette', 'App', 'views/LandingView', 'views/ExplorerView'], function($, _, Backbone, Marionette, app, LandingView, ExplorerView) {
+  define(['jquery', 'underscore', 'backbone', 'marionette', 'App', 'views/LandingView', 'views/ExplorerView', 'views/StreamView'], function($, _, Backbone, Marionette, app, LandingView, ExplorerView, StreamView) {
     var DesktopRouter, _ref;
     return DesktopRouter = (function(_super) {
       __extends(DesktopRouter, _super);
@@ -21,6 +21,7 @@
         '': 'landing',
         'storees': 'storees',
         'storees/create': 'createStoree',
+        'storees/stream': 'stream',
         'storees/:id': 'storees',
         '*actions': 'landing'
       };
@@ -37,6 +38,11 @@
 
       DesktopRouter.prototype.landing = function() {
         return app.content.show(new LandingView());
+      };
+
+      DesktopRouter.prototype.stream = function() {
+        app.content.show(new ExplorerView());
+        return app.vent.trigger('search:term', '');
       };
 
       return DesktopRouter;

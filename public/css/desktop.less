@@ -751,6 +751,60 @@ body {
 	pointer-events: none;
 }
 
+//=====================
+// Storee Stream
+//=====================
+.storeer-stream-content {
+	.fill;
+	.storeer-stream {
+		.fill;
+		overflow-y: scroll;
+		.storeer-visualizer.expanded {
+			margin-top: @margin;
+			border: 1px solid fadeout(grey, 80%);
+			.drop-shadow(0px, 0px, 1px, 0.2, 0px);
+			.rounded(4px);
+			margin-left: 10%;
+			.fill-width(80%);
+			.fill-height(300px);
+			.storeer-visualizer-frame {
+				.rounded(3px);
+				.fill-height;
+				.end-options {
+					top: 20% !important;
+				}
+				.storeer-control-arrow p {
+					top: 40%;
+				}
+				&:hover {
+					.storeer-overlay {
+						opacity: 0;
+						&:hover {
+							opacity: 1;
+						}
+					}
+				}
+			}
+		}
+	}
+	.storeer-overlay {
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		height: @avatar-size;
+		padding-left: 10px;
+		background: fadeout(black, 50%);
+		color: @main-color;
+		text-shadow: 1px 1px 1px fadeout(black, 30%);
+		.transition(0.5s, ease-in, opacity);
+		small {
+			color: @lightest-color;
+			text-shadow: 1px 1px 1px darken(grey, 30%);
+		}
+		display: block;
+	}
+}
+
 
 
 
