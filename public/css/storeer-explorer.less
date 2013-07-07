@@ -1,0 +1,205 @@
+//=====================
+// Storeer Explorer
+//=====================
+.storeer-visualizer-drop {
+	.fill;
+	position: absolute;
+	top:0;
+	left:0;
+	.transition(0.5s, ease-in-out, background);
+	z-index: @top-most-z*10;
+	display: none;
+
+	// We show dark bar when is closed
+	&.closed {
+		background: @dark-color;
+		box-shadow: 
+			inset 0 -14px 58px -5px @darkest-color;
+	}
+
+	// Div containing the icon of the dropzone helper
+	div {
+		position: relative;
+		color: transparent;
+		.fill;
+        pointer-events: none;
+		top: 50%;
+
+		i {
+			.transition(0.5s, ease-in-out);
+			.center;
+			.fill-width;
+
+			display: inline-table;
+			position: absolute;
+			text-align: center;
+			&.drag-over {
+				.transform(scale(0));
+			}
+			&.drag {
+				.transform(scale(0));
+			}
+		}
+	}
+
+	&.enabled {
+		display: block;
+	}
+
+	// Dragging storee and not necessarily on top 
+	&.dragging {
+		display: block;
+		background: fadeout(@dark-color, 30%);
+		.drop-shadow(inset, 0, 0, 0.7, 15px);
+		pointer-events: all;
+		z-index: @top-most-z*10+1;
+		div {
+			pointer-events: none;
+			i {
+				&.drag {
+					.transform(scale(1));
+				}
+				&.drag-over {
+					.transform(scale(0));
+				}
+			}
+			color: fadeout(@lightest-color, 20%);
+			font-size: 2em;
+			text-shadow: 
+				-1px -1px 5px rgba(0, 0, 0, 0.2), 
+				1px -1px 5px rgba(0, 0, 0, 0.2),
+				0px 0px 3px rgba(0, 0, 0, 0.3),
+				0px 0px 3px rgba(0, 0, 0, 0.3),
+				0px 0px 1px rgba(0, 0, 0, 0.5),
+				0px 0px 1px rgba(0, 0, 0, 0.5);
+		}
+	}
+
+	// Draged item is on top of us
+	&.drag-over {
+		div {
+			i {
+				color: @lightest-color;
+
+				&.drag-over {
+					.transform(scale(1.2));
+				}
+				&.drag {
+					.transform(scale(1.2));
+					
+				}
+			}
+		}
+		background: fadeout(@dark-color, 20%);
+	}
+}
+
+// Tabs
+
+.tab {
+	i {
+		display: block;
+	}
+	text-align: center;
+	.transition(0.2s, ease-out, right);
+}
+
+.explorer-tabs {
+	.explorer-tab {
+		.tab;
+		box-shadow: 
+			inset 2px 1px 1px rgba(1, 1, 1, 0.5),
+			inset 0px 0px 1px 60px rgba(0, 0, 0, 0.2);
+
+		&.active {
+			box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+			i {
+				color: white;
+				text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+			}
+		}
+		&.storee {
+			right: @navbar-height ;
+			background: @color3;
+		}
+		&.library {
+			background: @color1;
+			right: 0px;
+		}
+	}
+
+	&.mobile {
+		.explorer-tab {
+			top: -@navbar-height;
+			height: @navbar-height;
+			width: @navbar-height;
+			position: absolute;
+			i {
+				margin-top: 25%;
+			}
+
+			@media(min-width: @mobile-width) {
+				right: -100% !important;
+			}
+		}
+	}
+
+	&.desktop {
+		position: absolute;
+		top: @margin/2;
+		display: inline-block;
+		overflow: hidden;
+		left: 100%;
+		width: @navbar-height*0.9;
+		@media(max-width: @mobile-width) {
+			right: 50% !important;
+		}
+
+		.explorer-tab {
+			margin-top: @navbar-height*0.1;
+			margin-bottom: @navbar-height*0.1;
+			.transition(0.2s, ease-out, margin-left);
+			margin-left: -5px;
+			i {
+				padding-top: @navbar-height*0.1;
+			}
+			width: @navbar-height*0.8;
+			height: @navbar-height*0.8;
+			border-top-right-radius: 2px;
+			border-bottom-right-radius: 2px;
+			&:hover {
+				margin-left: -3px;
+			}
+			&.active {
+				margin-left: 0px;
+			}
+		}
+	}
+}
+
+.search-tab {
+	.tab;
+	position: absolute;
+	background: fadeout(white, 80%);
+	pointer-events: none;
+}
+
+.storeer-side-panel {
+	position: absolute;
+	display: block;
+	margin-top: @margin/2;
+	.fill;
+	.transition(0.5s, ease-out, left);
+
+	@media(min-width: @mobile-width) {
+		left: 50% !important;
+		&.expanded {		
+			left: 75% !important;
+		}
+	}
+	
+	@media(max-width: @mobile-width) {
+		z-index: @top-most-z;
+		width:90%;
+	}
+}

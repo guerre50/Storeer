@@ -20,8 +20,7 @@
       'wreqr': '../libs/plugins/backbone.wreqr',
       'babysitter': '../libs/plugins/backbone.babysitter',
       'json2': '../libs/plugins/json2',
-      'marionette': '../libs/plugins/backbone.marionette',
-      'prefixfree': '../libs/prefixfree.min'
+      'marionette': '../libs/plugins/backbone.marionette'
     },
     config: {
       'css': {
@@ -46,10 +45,12 @@
         "exports": "Marionette"
       },
       "wreqr": ["backbone"],
-      "babysitter": ["backbone"],
-      "less": ["prefixfree"],
-      "css": ["prefixfree"]
+      "babysitter": ["backbone"]
     }
   });
 
 }).call(this);
+
+/*
+//@ sourceMappingURL=config.map
+*/

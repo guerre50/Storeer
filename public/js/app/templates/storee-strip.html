@@ -1,7 +1,18 @@
-<div id="storeer-visualizer" class="storeer-visualizer">
-  <!-- Storee frame -->
+<div id="storeer-visualizer" data-id="<%- model.id %>" class="storeer-visualizer">
+  <!-- Helper with current frame -->
+  <div class="storeer-frame-indicator">
+    <div id ="frame-indicator" class="logo-background">
+      <% var active = 'active'; for (var i = 0; i < model.frames.length; ++i) { %>
+        <div class=" storeer-frame-indicator cube <%- active %>" data-order="<%- i %>"></div>
+        <% active = '';%>
+      <% }; %>
+      <div class=""></div>
+    </div>
+  </div>
+  
+  <!-- Frames -->
   <div class="storeer-visualizer-frame expanded storeer-row row2">
-    <!-- Storee frame strip -->
+    <!-- Frame strip -->
     <div id="storeer-frame-strip" class="storeer-frame-strip">
       <% var active = 'active'; var i = 0; _.each(model.frames, function(frame) { %>
         <div class="storeer-frame item <%- active %>" data-order="<%- i %>" style="margin-right: 80px;">
@@ -35,6 +46,8 @@
         </div>
         <% active = ''; i++; %>
       <% }); %>
+
+      <!-- Final frame with options to give trophy, like, bookmark -->
       <div class="storeer-frame item end-frame" data-order="<%- i %>" style="margin-right: 20px;">
           <div class="end-options">
             <% if (model.id) { %>
@@ -59,12 +72,14 @@
           </div>
       </div>
     </div>
-    <!-- Storee overlay information -->
+
+    <!-- Overlay nformation -->
     <div class="storeer-overlay">
       <h5><%- model.subject %><br>
       <small><%- model.authorname %></small></h5>
     </div>
-    <!-- Storee nav controls -->
+
+    <!-- Navigation controls -->
     <div class="visualizer-controls">
       <div id="storeer-prev" class="storeer-control-arrow previous" data-slide="prev"><p><i class="icon-chevron-left"></i></p></div>
       <div id="storeer-next" class="storeer-control-arrow next" data-slide="next"><p><i class="icon-chevron-right"></i></p></div>

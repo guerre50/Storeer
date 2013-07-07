@@ -158,3 +158,10 @@
   -webkit-background-clip: @argument;
   background-clip: @argument;
 }
+.blur(@pixels : 0px) {
+  -webkit-filter: blur(@pixels);
+  -ms-filter: blur(@pixels);
+  -moz-filter: blur(@pixels);
+  -o-filter: blur(@pixels);
+  filter: blur(@pixels);
+}

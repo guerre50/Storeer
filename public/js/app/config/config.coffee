@@ -29,7 +29,6 @@ require.config
 		'babysitter' : '../libs/plugins/backbone.babysitter'
 		'json2' : '../libs/plugins/json2'
 		'marionette': '../libs/plugins/backbone.marionette'
-		'prefixfree': '../libs/prefixfree.min'
 
 	config:
 		'css':
@@ -53,5 +52,3 @@ require.config
 	        "exports": "Marionette"
 	    "wreqr": ["backbone"]
 	    "babysitter": ["backbone"]
-	    "less": ["prefixfree"]
-	    "css": ["prefixfree"]

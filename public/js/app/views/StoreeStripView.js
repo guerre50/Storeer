@@ -33,13 +33,7 @@
 
       StoreeStripView.prototype.initialize = function() {
         _.bindAll(this);
-        $(window).on('resize', this.timeoutResize);
-        return this.$el.on('mouseover', this.load);
-      };
-
-      StoreeStripView.prototype.load = function() {
-        this.$el.off('mouseover', this.load);
-        return this.loadStoreer(this.model);
+        return $(window).on('resize', this.timeoutResize);
       };
 
       StoreeStripView.prototype.onShow = function() {
@@ -52,11 +46,34 @@
         'click .storeer-frame': 'onFrameClick',
         'click .storeer-frame-indicator': 'onFrameClick',
         'click .storeer-options': 'onClickOption',
-        'transitionend #storeer-frame-strip': 'timeoutResize'
+        'transitionend #storeer-frame-strip': 'timeoutResize',
+        'mouseenter .storeer-visualizer': 'onMouseEnter',
+        'mouseleave .storeer-visualizer': 'onMouseLeave'
+      };
+
+      StoreeStripView.prototype.onMouseEnter = function() {
+        $(window).on('keydown', this.onKeyDown);
+        this.load();
+        return app.vent.trigger('current:storee', this.model);
+      };
+
+      StoreeStripView.prototype.onMouseLeave = function() {
+        return $(window).off('keydown', this.onKeyDown);
+      };
+
+      StoreeStripView.prototype.load = function() {
+        if (!this.loaded) {
+          return this.loadStoreer(this.model);
+        }
+      };
+
+      StoreeStripView.prototype.expand = function() {
+        return app.vent.trigger('open:storee', this.model);
       };
 
       StoreeStripView.prototype.preLoad = function() {
         $ = this.$;
+        this.loaded = false;
         this.currentFrame = 0;
         this.imagesToLoad = 5;
         this.$el.find('img').off('load', this.onImgLoad);
@@ -73,7 +90,10 @@
 
       StoreeStripView.prototype.loadStoreer = function(storee) {
         $ = this.$;
-        $(window).on('keydown', this.onKeyDown);
+        if (!this.loaded) {
+          this.preLoad();
+        }
+        this.loaded = true;
         this.model = storee;
         this.model.loadExtras();
         this.resize();
@@ -124,8 +144,9 @@
 
       StoreeStripView.prototype.onKeyDown = function(event) {
         var code;
+        console.log("keydown");
         if (!event || event.target.localName !== "body") {
-          return;
+          return true;
         }
         code = event.keyCode;
         switch (code) {

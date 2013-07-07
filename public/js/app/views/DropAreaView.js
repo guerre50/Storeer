@@ -92,3 +92,7 @@
   });
 
 }).call(this);
+
+/*
+//@ sourceMappingURL=DropAreaView.map
+*/

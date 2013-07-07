@@ -1,13 +1,16 @@
+<!-- Comments -->
 <% if (model.comments) {_.each(model.comments, function(comment) { %>
 <div class="media">
   <a class="pull-left">
     <img class="media-object" src="<%- comment.avatar %>">
   </a>
   <div class="media-body">
-    <span class="media-heading"><%- comment.message._content %></span>
+    <span class="media-heading"><%= comment.message._content %></span>
   </div>
 </div>
 <% });} %>
+
+<!-- Last comment to allow users interact -->
 <div class="media">
   <a class="pull-left">
     <img class="media-object" src="http://www.flickr.com/images/buddyicon.gif">

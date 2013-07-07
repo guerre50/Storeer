@@ -9,15 +9,16 @@
     #BoilerplateMVC Helper Methods
     boilerplateMVC = 
       loadCSS: (url, callback) ->
-        link = d.createElement 'link'
-        link.type = 'text/css'
-        link.rel = 'stylesheet'
-        link.href = url
-        d.getElementsByTagName('head')[0].appendChild link
+        if url
+          link = d.createElement 'link'
+          link.type = 'text/css'
+          link.rel = 'stylesheet'
+          link.href = url
+          d.getElementsByTagName('head')[0].appendChild link
+          
         if callback then callback()
 
         return
-
 
       loadJS: (file, callback) ->
         script = d.createElement "script"
@@ -79,15 +80,15 @@
     # Desktop logic
     else
       # Desktop CSS and JavaScript files to load
-          filesToLoad =
-            # Require.js configuration file that is also loaded when in development mode
-            "dev-js":
-              "data-main": "js/app/config/config.js"
-              "src": "js/libs/require.js"
-            # JavaScript initialization file that is loaded when in development mode
-            "dev-init": "js/app/init/DesktopInit.js"
-            # JavaScript file that is loaded when in production mode
-            "prod-js": "js/app/init/DesktopInit.min.js"
+        filesToLoad =
+          # Require.js configuration file that is also loaded when in development mode
+          "dev-js":
+            "data-main": "js/app/config/config.js"
+            "src": "js/libs/require.js"
+          # JavaScript initialization file that is loaded when in development mode
+          "dev-init": "js/app/init/DesktopInit.js"
+          # JavaScript file that is loaded when in production mode
+          "prod-js": "js/app/init/DesktopInit.min.js"
 
     boilerplateMVC.loadFiles production, filesToLoad, ->
       if not production and window.require

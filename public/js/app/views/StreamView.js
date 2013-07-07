@@ -19,8 +19,86 @@
 
       StreamView.prototype.template = _.template(template);
 
+      StreamView.prototype.stream = '#storeer-stream';
+
+      StreamView.prototype.storeeOptions = '#strip-options';
+
+      StreamView.prototype.events = {
+        'mouseenter .storeer-visualizer.expanded': 'onMouseEnter',
+        'mouseleave .storeer-visualizer.expanded': 'onMouseLeave',
+        'click .expand': 'expand'
+      };
+
+      StreamView.prototype.onMouseEnter = function(event) {
+        this.$storeeOptions.toggleClass('enabled', true);
+        return this.setCurrentStoree($(event.currentTarget));
+      };
+
+      StreamView.prototype.onMouseLeave = function(event) {
+        var $destiny;
+        $destiny = $(event.toElement);
+        if (this.$storeeOptions.find($destiny).length === 0 && this.$storeeOptions.attr('class') !== $destiny.attr('class')) {
+          return this.$storeeOptions.toggleClass('enabled', false);
+        }
+      };
+
+      StreamView.prototype.initialize = function() {
+        _.bindAll(this);
+        return app.vent.on('current:storee', this.selectStoree);
+      };
+
+      StreamView.prototype.selectStoree = function(storee) {
+        return this.$selectedStoree = storee;
+      };
+
+      StreamView.prototype.onShow = function() {
+        this.$stream = $(this.stream);
+        this.$storeeOptions = $(this.storeeOptions);
+        return this.$stream.on('scroll', this.onScroll);
+      };
+
       StreamView.prototype.appendHtml = function(collectionView, itemView) {
         return collectionView.$(".storeer-stream").append(itemView.el);
+      };
+
+      StreamView.prototype.setCurrentStoree = function(storee) {
+        this.$currentStoree = storee;
+        return this.updateOptionsTop();
+      };
+
+      StreamView.prototype.updateOptionsTop = function() {
+        var scrollTop, storeeBottom, storeeTop, top;
+        storeeTop = this.$currentStoree.position().top;
+        storeeBottom = this.$currentStoree.height() + storeeTop;
+        scrollTop = this.$stream.scrollTop();
+        top = storeeBottom - this.$storeeOptions.height();
+        if (top > 0) {
+          top = Math.max(storeeTop, 0);
+        }
+        return this.$storeeOptions.css('top', top + scrollTop);
+      };
+
+      StreamView.prototype.onScroll = function(event) {
+        var scroll, scrollHeight, scrollTop;
+        scroll = event.target;
+        scrollTop = scroll.scrollTop;
+        scrollHeight = scroll.scrollHeight;
+        if (scrollTop === 0) {
+          this.$stream.animate({
+            'padding-top': 40
+          }, 200).animate({
+            'padding-top': 0
+          }, 150);
+        } else if (parseInt(scrollHeight - scrollTop) === parseInt(scroll.clientHeight)) {
+          console.log("bottom");
+        }
+        if (this.$currentStoree) {
+          return this.updateOptionsTop();
+        }
+      };
+
+      StreamView.prototype.expand = function(event) {
+        return app.vent.trigger('open:storee', this.$selectedStoree);
       };
 
       return StreamView;

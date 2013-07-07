@@ -25,6 +25,7 @@ define [
 				Flickr.replies(@attributes.id ,100, 1, @loadComments, @loadCommentsFail)
 
 		loadComments: (comments) ->
+			console.log "comments"
 			@set("comments", comments)
 
 		loadCommentsFail: (msg) ->

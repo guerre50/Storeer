@@ -283,6 +283,7 @@
       };
 
       StoreerVisualizer.prototype.renderComments = function() {
+        console.log("renderComments");
         this.$comments.html(this.commentsTemplate({
           model: this.model.toJSON()
         }));
@@ -313,3 +314,7 @@
   });
 
 }).call(this);
+
+/*
+//@ sourceMappingURL=StoreerVisualizer.map
+*/

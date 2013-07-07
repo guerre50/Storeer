@@ -22,14 +22,9 @@ define [
 			_.bindAll @
 
 			$(window).on('resize', @timeoutResize)
-			@$el.on('mouseover', @load)
 
-		load: ->
-			@$el.off('mouseover', @load)
-			@loadStoreer(@model)
 
 		onShow: ->
-			#@loadStoreer(@model)
 			@preLoad()
 
 		events:
@@ -39,9 +34,27 @@ define [
 			'click .storeer-frame-indicator': 'onFrameClick'
 			'click .storeer-options': 'onClickOption'
 			'transitionend #storeer-frame-strip' : 'timeoutResize'
+			'mouseenter .storeer-visualizer' : 'onMouseEnter'
+			'mouseleave .storeer-visualizer' : 'onMouseLeave'
+
+		onMouseEnter: ->
+			$(window).on('keydown', @onKeyDown)
+			@load()
+			app.vent.trigger('current:storee', @model)
+
+		onMouseLeave: ->
+			$(window).off('keydown', @onKeyDown)
+
+		load: ->
+			if not @loaded
+				@loadStoreer(@model)
+
+		expand: ->
+			app.vent.trigger('open:storee', @model)
 
 		preLoad: ->
 			$ = @$
+			@loaded = false
 			@currentFrame = 0
 			@imagesToLoad = 5
 
@@ -64,7 +77,11 @@ define [
 
 		loadStoreer: (storee) ->
 			$ = @$
-			$(window).on('keydown', @onKeyDown)
+
+			if not @loaded
+				@preLoad()
+
+			@loaded = true
 
 			# Assign new Storee
 			@model = storee
@@ -119,9 +136,10 @@ define [
 			return false
 
 		onKeyDown: (event) ->
+			console.log "keydown"
 			# We must listen events that doesn't target any other DOM
 			# element
-			if not event or event.target.localName isnt "body" then return
+			if not event or event.target.localName isnt "body" then return true
 
 			code = event.keyCode
 			switch code

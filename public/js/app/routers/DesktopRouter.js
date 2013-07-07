@@ -23,6 +23,7 @@
         'storees/create': 'createStoree',
         'storees/stream': 'stream',
         'storees/:id': 'storees',
+        'home': 'home',
         '*actions': 'landing'
       };
 
@@ -40,6 +41,10 @@
         return app.content.show(new LandingView());
       };
 
+      DesktopRouter.prototype.home = function() {
+        return this.stream();
+      };
+
       DesktopRouter.prototype.stream = function() {
         app.content.show(new ExplorerView());
         return app.vent.trigger('search:term', '');
@@ -51,3 +56,7 @@
   });
 
 }).call(this);
+
+/*
+//@ sourceMappingURL=DesktopRouter.map
+*/

@@ -264,6 +264,7 @@ define [
 			@
 
 		renderComments: ->
+			console.log "renderComments"
 			@$comments.html(@commentsTemplate({model: @model.toJSON()}))
 
 			@

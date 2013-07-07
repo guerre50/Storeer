@@ -43,6 +43,7 @@
       };
 
       StoreeModel.prototype.loadComments = function(comments) {
+        console.log("comments");
         return this.set("comments", comments);
       };
 
@@ -60,3 +61,7 @@
   });
 
 }).call(this);
+
+/*
+//@ sourceMappingURL=StoreeModel.map
+*/

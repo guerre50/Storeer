@@ -24,6 +24,7 @@ define [
             'storees/create': 'createStoree'
             'storees/stream': 'stream'
             'storees/:id': 'storees'
+            'home': 'home'
             '*actions': 'landing'
 
         createStoree: ->
@@ -37,6 +38,9 @@ define [
         landing: ->
             app.content.show(new LandingView())
 
+        home: ->
+            @stream()
+            
         stream: ->
             app.content.show(new ExplorerView())
             app.vent.trigger('search:term','')
