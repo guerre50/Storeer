@@ -14,8 +14,11 @@
       }
 
       DesktopRouter.prototype.initialize = function() {
+        _.bindAll(this);
         return Backbone.history.start();
       };
+
+      DesktopRouter.prototype.navMenu = '#nav-menu';
 
       DesktopRouter.prototype.routes = {
         '': 'landing',
@@ -29,25 +32,38 @@
 
       DesktopRouter.prototype.createStoree = function() {
         app.content.show(new ExplorerView());
-        return app.vent.trigger('create:storee');
+        app.vent.trigger('create:storee');
+        return this.selectMenu();
       };
 
       DesktopRouter.prototype.storees = function(id) {
         app.content.show(new ExplorerView());
-        return app.vent.trigger('search:term', '');
+        app.vent.trigger('search:term', '');
+        return this.selectMenu();
       };
 
       DesktopRouter.prototype.landing = function() {
-        return app.content.show(new LandingView());
+        app.content.show(new LandingView());
+        return this.selectMenu();
       };
 
       DesktopRouter.prototype.home = function() {
-        return this.stream();
+        this.stream();
+        return this.selectMenu();
       };
 
       DesktopRouter.prototype.stream = function() {
         app.content.show(new ExplorerView());
-        return app.vent.trigger('search:term', '');
+        app.vent.trigger('search:term', '');
+        return this.selectMenu();
+      };
+
+      DesktopRouter.prototype.selectMenu = function() {
+        var $navMenu, url;
+        url = Backbone.history.fragment;
+        $navMenu = $(this.navMenu);
+        $navMenu.find(".active").toggleClass('active', false);
+        return $navMenu.find("a[href$='" + url + "']").toggleClass('active', true);
       };
 
       return DesktopRouter;
@@ -56,7 +72,3 @@
   });
 
 }).call(this);
-
-/*
-//@ sourceMappingURL=DesktopRouter.map
-*/

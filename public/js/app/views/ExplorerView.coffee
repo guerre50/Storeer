@@ -37,7 +37,7 @@ define [
 			app.vent.on('create:storee', @createStoree)
 
 		closeStoree: ->
-			@storee.show(new HomeView())
+			@storee.show(new StreamView(collection: app.storees))
 
 		onShow: ->
 			@storee.show(new StreamView(collection: app.storees))

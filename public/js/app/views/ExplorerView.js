@@ -43,7 +43,9 @@
       };
 
       ExplorerView.prototype.closeStoree = function() {
-        return this.storee.show(new HomeView());
+        return this.storee.show(new StreamView({
+          collection: app.storees
+        }));
       };
 
       ExplorerView.prototype.onShow = function() {
@@ -169,7 +171,3 @@
   });
 
 }).call(this);
-
-/*
-//@ sourceMappingURL=ExplorerView.map
-*/
