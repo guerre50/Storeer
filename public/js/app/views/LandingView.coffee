@@ -71,6 +71,6 @@ define [
 			@clearInterval()
 
 		onLandingButtonClick: (event) ->
-			app.router.navigate('storees', {trigger: true})
+			app.router.navigate('home', {trigger: true})
 
 

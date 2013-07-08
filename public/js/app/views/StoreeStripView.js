@@ -29,6 +29,8 @@
 
       StoreeStripView.prototype.frameIndicator = '#frame-indicator';
 
+      StoreeStripView.prototype.storeeOptions = '#strip-options';
+
       StoreeStripView.prototype.commentsTemplate = _.template(commentsTemplate);
 
       StoreeStripView.prototype.initialize = function() {
@@ -46,10 +48,14 @@
         'click .storeer-frame': 'onFrameClick',
         'click .storeer-frame-indicator': 'onFrameClick',
         'click .storeer-options': 'onClickOption',
+        'click .expand': 'expand',
         'transitionend #storeer-frame-strip': 'timeoutResize',
         'mouseenter .storeer-visualizer': 'onMouseEnter',
-        'mouseleave .storeer-visualizer': 'onMouseLeave'
+        'mouseleave .storeer-visualizer': 'onMouseLeave',
+        'mousewheel .storeer-visualizer': 'onScroll'
       };
+
+      StoreeStripView.prototype.onScroll = function(event) {};
 
       StoreeStripView.prototype.onMouseEnter = function() {
         $(window).on('keydown', this.onKeyDown);
@@ -85,6 +91,7 @@
         this.$nextArrow = $(this.nextArrow);
         this.$frameIndicator = $(this.frameIndicator);
         this.$storeerVisualizer = $(this.storeerVisualizer);
+        this.$storeeOptions = $(this.storeeOptions);
         return this;
       };
 
@@ -95,7 +102,6 @@
         }
         this.loaded = true;
         this.model = storee;
-        this.model.loadExtras();
         this.resize();
         return this;
       };

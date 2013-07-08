@@ -30,6 +30,13 @@ define [
 			app.vent.on('load:images', @loadImages)
 			app.vent.on('load:url', @loadURL)
 
+		remove: ->
+			$(window).off('keydown', @onKeyDown)
+			$(window).off('resize', @timeoutResize)
+			app.vent.off('load:images', @loadImages)
+			app.vent.off('load:url', @loadURL)
+			Backbone.View.prototype.remove.apply(@)
+
 		onShow: ->
 			@loadStoreer(@model)
 
@@ -277,8 +284,3 @@ define [
 			@$el.html(@template({model: @model.toJSON()}))
 
 			@
-
-		remove: ->
-			$(window).off('keydown', @onKeyDown)
-			$(window).off('resize', @timeoutResize)
-			Backbone.View.prototype.remove.apply(@)

@@ -42,6 +42,12 @@
         return app.vent.on('create:storee', this.createStoree);
       };
 
+      ExplorerView.prototype.remove = function() {
+        app.vent.off('close:storee', this.closeStoree);
+        app.vent.off('open:storee', this.openStoree);
+        return app.vent.off('create:storee', this.createStoree);
+      };
+
       ExplorerView.prototype.closeStoree = function() {
         return this.storee.show(new StreamView({
           collection: app.storees
@@ -64,11 +70,14 @@
       };
 
       ExplorerView.prototype.openStoree = function(storee) {
-        app.router.navigate('storees/' + storee.id);
-        this.storee.show(new StoreerVisualizer({
-          model: storee
-        }));
-        return this.show($(this.$tabs.children()[0]));
+        console.log(storee);
+        if (storee) {
+          app.router.navigate('storees/' + storee.id);
+          this.storee.show(new StoreerVisualizer({
+            model: storee
+          }));
+          return this.show($(this.$tabs.children()[0]));
+        }
       };
 
       ExplorerView.prototype.toggleMenu = function(menu) {

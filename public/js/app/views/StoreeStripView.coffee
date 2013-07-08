@@ -16,6 +16,7 @@ define [
 		className: 'storeer-visualizer expanded'
 		storeerVisualizer: '#storeer-visualizer'
 		frameIndicator: '#frame-indicator'
+		storeeOptions: '#strip-options'
 		commentsTemplate: _.template(commentsTemplate)
 
 		initialize: ->
@@ -33,9 +34,15 @@ define [
 			'click .storeer-frame': 'onFrameClick'
 			'click .storeer-frame-indicator': 'onFrameClick'
 			'click .storeer-options': 'onClickOption'
+			'click .expand' : 'expand'
 			'transitionend #storeer-frame-strip' : 'timeoutResize'
 			'mouseenter .storeer-visualizer' : 'onMouseEnter'
 			'mouseleave .storeer-visualizer' : 'onMouseLeave'
+			'mousewheel .storeer-visualizer' : 'onScroll'
+
+		onScroll: (event) ->
+			#TO-DO implement following top of screen
+			#@$storeeOptions.css('top', top)
 
 		onMouseEnter: ->
 			$(window).on('keydown', @onKeyDown)
@@ -71,6 +78,7 @@ define [
 			@$nextArrow = $(@nextArrow)
 			@$frameIndicator = $(@frameIndicator)
 			@$storeerVisualizer = $(@storeerVisualizer)
+			@$storeeOptions = $(@storeeOptions)
 
 			@
 			
@@ -85,7 +93,7 @@ define [
 
 			# Assign new Storee
 			@model = storee
-			@model.loadExtras()
+			#@model.loadExtras()
 
 			@resize()
 

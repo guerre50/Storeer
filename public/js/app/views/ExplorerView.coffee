@@ -36,6 +36,11 @@ define [
 			app.vent.on('open:storee', @openStoree)
 			app.vent.on('create:storee', @createStoree)
 
+		remove: ->
+			app.vent.off('close:storee', @closeStoree)
+			app.vent.off('open:storee', @openStoree)
+			app.vent.off('create:storee', @createStoree)
+
 		closeStoree: ->
 			@storee.show(new StreamView(collection: app.storees))
 
@@ -52,16 +57,19 @@ define [
 			@$body = $('body')
 
 		openStoree: (storee) ->
-			app.router.navigate('storees/' + storee.id)
-			@storee.show(new StoreerVisualizer({model: storee}))
+			console.log storee
+			if storee
+				app.router.navigate('storees/' + storee.id)
+				@storee.show(new StoreerVisualizer({model: storee}))
 
-			# TO-DO make this less dependent on DOM
-			@show($(@$tabs.children()[0]))
+				# TO-DO make this less dependent on DOM
+				@show($(@$tabs.children()[0]))
 
 		toggleMenu: (menu) ->
 			$(@library.$el.parent()).toggleClass('expanded')
 
 		createStoree: ->
+			#if @storee
 			@storee.show(new StoreerVisualizer({model: new StoreeModel()}))
 			@library.close()
 

@@ -45,6 +45,14 @@
         return app.vent.on('load:url', this.loadURL);
       };
 
+      StoreerVisualizer.prototype.remove = function() {
+        $(window).off('keydown', this.onKeyDown);
+        $(window).off('resize', this.timeoutResize);
+        app.vent.off('load:images', this.loadImages);
+        app.vent.off('load:url', this.loadURL);
+        return Backbone.View.prototype.remove.apply(this);
+      };
+
       StoreerVisualizer.prototype.onShow = function() {
         return this.loadStoreer(this.model);
       };
@@ -302,19 +310,9 @@
         return this;
       };
 
-      StoreerVisualizer.prototype.remove = function() {
-        $(window).off('keydown', this.onKeyDown);
-        $(window).off('resize', this.timeoutResize);
-        return Backbone.View.prototype.remove.apply(this);
-      };
-
       return StoreerVisualizer;
 
     })(Backbone.Marionette.ItemView);
   });
 
 }).call(this);
-
-/*
-//@ sourceMappingURL=StoreerVisualizer.map
-*/

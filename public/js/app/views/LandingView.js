@@ -13,9 +13,9 @@
         return _ref;
       }
 
-      LandingView.prototype.className = 'landing-container';
-
       LandingView.prototype.template = _.template(template);
+
+      LandingView.prototype.className = 'landing-container';
 
       LandingView.prototype.landingStoree = '#landing-storee';
 
@@ -91,7 +91,7 @@
       };
 
       LandingView.prototype.onLandingButtonClick = function(event) {
-        return app.router.navigate('storees', {
+        return app.router.navigate('home', {
           trigger: true
         });
       };
