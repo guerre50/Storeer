@@ -1,3 +1,4 @@
+# DropArea View
 define [
 	"jquery"
 	"underscore"

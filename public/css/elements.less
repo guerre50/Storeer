@@ -165,3 +165,7 @@
   -o-filter: blur(@pixels);
   filter: blur(@pixels);
 }
+.animate(@name, @parameters) {
+  animation: @name @parameters;
+  -webkit-animation: @name @parameters;
+}

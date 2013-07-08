@@ -37,9 +37,9 @@
       };
 
       DesktopRouter.prototype.storees = function(id) {
+        this.selectMenu('home');
         app.content.show(new ExplorerView());
-        app.vent.trigger('search:term', '');
-        return this.selectMenu();
+        return app.vent.trigger('search:term', '');
       };
 
       DesktopRouter.prototype.landing = function() {
@@ -58,9 +58,11 @@
         return this.selectMenu();
       };
 
-      DesktopRouter.prototype.selectMenu = function() {
-        var $navMenu, url;
-        url = Backbone.history.fragment;
+      DesktopRouter.prototype.selectMenu = function(url) {
+        var $navMenu;
+        if (!url) {
+          url = Backbone.history.fragment;
+        }
         $navMenu = $(this.navMenu);
         $navMenu.find(".active").toggleClass('active', false);
         return $navMenu.find("a[href$='" + url + "']").toggleClass('active', true);
@@ -72,3 +74,7 @@
   });
 
 }).call(this);
+
+/*
+//@ sourceMappingURL=DesktopRouter.map
+*/

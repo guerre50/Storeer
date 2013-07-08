@@ -1,6 +1,6 @@
-div {
-	.user-select(none);
-}
+//=====================
+// Colors
+//=====================
 
 .color1 {
 	background: @color1;
@@ -18,23 +18,33 @@ div {
 	background: @color5;
 }
 
+.main-color-complex() {
+	background: @main-color;
+	box-shadow: inset 0 -14px 58px -5px @main-shadow;
+}
+
+.dark-color-complex() {
+	background: @dark-color;
+	box-shadow: inset 0 -14px 58px -5px @darkest-color;
+}
+
+//=====================
+// Containers
+//=====================
+
 .responsive-square(@width: 20%) {
 	height:0;
 	width: @width;
 	padding-bottom: @width;
 	position: relative;
 }
-
-.container {
-	margin: @margin/2;
-	.fill;
-	position: relative;
+div {
+	.user-select(none);
 }
-
-.hover-translate(@width:0px, @height:2px) {
-	&:hover {
-		.translate(@width, @height);
-	}
+.container {
+	.fill;
+	margin: @margin/2;
+	position: relative;
 }
 
 .tab-content {
@@ -60,20 +70,23 @@ span.topic {
 	margin-right: 0px;
 }
 
+//=====================
+// Effects
+//=====================
 
-
-
-.animate (@name, @parameters) {
-	animation: @name @parameters;
-	-webkit-animation: @name @parameters;
+.hover-translate(@width:0px, @height:2px) {
+	&:hover {
+		.translate(@width, @height);
+	}
 }
 
+//=====================
+// Others
+//=====================
 .center() {
 	margin-left: auto;
 	margin-right: auto;
 }
-
-
 
 .squared(@width: 100%) {
 	height: 0;
@@ -101,6 +114,7 @@ span.topic {
 //=====================
 // Columns
 //=====================
+// TO-DO complete all columns and rows for responsive grid system
 
 .storeer-col {
 	position: relative;

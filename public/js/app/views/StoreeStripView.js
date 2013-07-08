@@ -15,6 +15,8 @@
 
       StoreeStripView.prototype.template = _.template(template);
 
+      StoreeStripView.prototype.commentsTemplate = _.template(commentsTemplate);
+
       StoreeStripView.prototype.strip = '#storeer-frame-strip';
 
       StoreeStripView.prototype.prevArrow = '#storeer-prev';
@@ -31,17 +33,6 @@
 
       StoreeStripView.prototype.storeeOptions = '#strip-options';
 
-      StoreeStripView.prototype.commentsTemplate = _.template(commentsTemplate);
-
-      StoreeStripView.prototype.initialize = function() {
-        _.bindAll(this);
-        return $(window).on('resize', this.timeoutResize);
-      };
-
-      StoreeStripView.prototype.onShow = function() {
-        return this.preLoad();
-      };
-
       StoreeStripView.prototype.events = {
         'click .previous': 'previous',
         'click .next': 'next',
@@ -55,12 +46,26 @@
         'mousewheel .storeer-visualizer': 'onScroll'
       };
 
+      StoreeStripView.prototype.initialize = function() {
+        _.bindAll(this);
+        return $(window).on('resize', this.timeoutResize);
+      };
+
+      StoreeStripView.prototype.remove = function() {
+        $(window).off('keydown', this.onKeyDown);
+        $(window).off('resize', this.timeoutResize);
+        return Backbone.View.prototype.remove.apply(this);
+      };
+
+      StoreeStripView.prototype.onShow = function() {
+        return this.preLoad();
+      };
+
       StoreeStripView.prototype.onScroll = function(event) {};
 
       StoreeStripView.prototype.onMouseEnter = function() {
         $(window).on('keydown', this.onKeyDown);
-        this.load();
-        return app.vent.trigger('current:storee', this.model);
+        return this.load();
       };
 
       StoreeStripView.prototype.onMouseLeave = function() {
@@ -150,7 +155,6 @@
 
       StoreeStripView.prototype.onKeyDown = function(event) {
         var code;
-        console.log("keydown");
         if (!event || event.target.localName !== "body") {
           return true;
         }
@@ -266,15 +270,13 @@
         return this;
       };
 
-      StoreeStripView.prototype.remove = function() {
-        $(window).off('keydown', this.onKeyDown);
-        $(window).off('resize', this.timeoutResize);
-        return Backbone.View.prototype.remove.apply(this);
-      };
-
       return StoreeStripView;
 
     })(Backbone.Marionette.ItemView);
   });
 
 }).call(this);
+
+/*
+//@ sourceMappingURL=StoreeStripView.map
+*/

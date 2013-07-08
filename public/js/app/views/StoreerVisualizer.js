@@ -25,12 +25,6 @@
 
       StoreerVisualizer.prototype.className = 'storeer-visualizer expanded';
 
-      StoreerVisualizer.prototype.storeerOptions = '#storeer-options';
-
-      StoreerVisualizer.prototype.storeerOptionsMobile = '#storeer-options-mobile';
-
-      StoreerVisualizer.prototype.storeerOptionsContent = '#storeer-options-content';
-
       StoreerVisualizer.prototype.frameIndicator = '#frame-indicator';
 
       StoreerVisualizer.prototype.comments = '#storee-comments';
@@ -62,7 +56,6 @@
         'click .next': 'next',
         'click .storeer-frame': 'onFrameClick',
         'click .storeer-frame-indicator': 'onFrameClick',
-        'click .storeer-options': 'onClickOption',
         'transitionend #storeer-frame-strip': 'timeoutResize',
         'click .remove': 'onClickClose'
       };
@@ -72,6 +65,7 @@
       };
 
       StoreerVisualizer.prototype.loadStoreer = function(storee) {
+        $ = this.$;
         this.$el.find('img').off('load', this.onImgLoad);
         this.model = storee;
         this.model.loadExtras();
@@ -86,10 +80,6 @@
         this.$nextArrow = $(this.nextArrow);
         this.$comments = $(this.comments);
         this.$frameIndicator = $(this.frameIndicator);
-        this.$storeerOptions = $($(this.storeerOptions)[0]).children();
-        this.$storeerOptionsMobile = $($(this.storeerOptionsMobile)[0]).children();
-        this.$storeerOptionsContent = $($(this.storeerOptionsContent)[0]).children();
-        this.setOptionsOrder();
         this.resize();
         if (!this.model.id) {
           app.vent.trigger('requireDrop');
@@ -124,20 +114,6 @@
 
       StoreerVisualizer.prototype.loadURL = function(URL) {
         return console.log(URL);
-      };
-
-      StoreerVisualizer.prototype.setOptionsOrder = function() {
-        var i, option, _i, _len, _ref1, _results;
-        i = 0;
-        _ref1 = this.$storeerOptions;
-        _results = [];
-        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-          option = _ref1[_i];
-          $($(option)[0]).data('order', i);
-          $(this.$storeerOptionsMobile[i]).data('order', i);
-          _results.push(i++);
-        }
-        return _results;
       };
 
       StoreerVisualizer.prototype.previous = function() {
@@ -189,19 +165,6 @@
         }
       };
 
-      StoreerVisualizer.prototype.onClickOption = function(event) {
-        var target, targetOption;
-        console.log(this.$storeerOptions);
-        this.$storeerOptions.filter('div.active').toggleClass('active');
-        this.$storeerOptionsMobile.filter('div.active').toggleClass('active');
-        this.$storeerOptionsContent.filter('div.active').toggleClass('active');
-        target = $(event.currentTarget);
-        targetOption = target.data('order');
-        $(this.$storeerOptionsMobile[targetOption]).addClass('active');
-        $(this.$storeerOptions[targetOption]).addClass('active');
-        return $(this.$storeerOptionsContent[targetOption]).addClass('active');
-      };
-
       StoreerVisualizer.prototype.onClickClose = function() {
         return app.vent.trigger('close:storee');
       };
@@ -224,7 +187,7 @@
       };
 
       StoreerVisualizer.prototype.getCurrentFrame = function() {
-        return $(this.$frames[this.currentFrame]);
+        return this.$(this.$frames[this.currentFrame]);
       };
 
       StoreerVisualizer.prototype.updateControlArrows = function() {
@@ -298,11 +261,6 @@
         return this;
       };
 
-      StoreerVisualizer.prototype.renderModel = function() {
-        this.render();
-        return this.resize();
-      };
-
       StoreerVisualizer.prototype.render = function() {
         this.$el.html(this.template({
           model: this.model.toJSON()
@@ -316,3 +274,7 @@
   });
 
 }).call(this);
+
+/*
+//@ sourceMappingURL=StoreerVisualizer.map
+*/

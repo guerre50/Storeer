@@ -10,7 +10,6 @@ define [
 	class StoreesView extends Backbone.Marionette.CompositeView
 		itemView: StoreeView,
 		className: 'storeer-results-content'
-		
 		template: _.template(template)
 
 		appendHtml: (collectionView, itemView) ->

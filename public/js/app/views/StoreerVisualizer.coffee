@@ -14,9 +14,6 @@ define [
 		nextArrow: '#storeer-next'
 		imagesToLoad: 0
 		className: 'storeer-visualizer expanded'
-		storeerOptions: '#storeer-options'
-		storeerOptionsMobile: '#storeer-options-mobile'
-		storeerOptionsContent: '#storeer-options-content'
 		frameIndicator: '#frame-indicator'
 		comments: '#storee-comments'
 		commentsTemplate: _.template(commentsTemplate)
@@ -45,7 +42,6 @@ define [
 			'click .next': 'next'
 			'click .storeer-frame': 'onFrameClick'
 			'click .storeer-frame-indicator': 'onFrameClick'
-			'click .storeer-options': 'onClickOption'
 			'transitionend #storeer-frame-strip' : 'timeoutResize'
 			'click .remove': 'onClickClose'
 
@@ -53,6 +49,7 @@ define [
 			console.log event
 
 		loadStoreer: (storee) ->
+			$ = @$
 			# We remove listeners
 			@$el.find('img').off('load', @onImgLoad)
 
@@ -76,11 +73,6 @@ define [
 			@$nextArrow = $(@nextArrow)
 			@$comments = $(@comments)
 			@$frameIndicator = $(@frameIndicator)
-
-			@$storeerOptions = $($(@storeerOptions)[0]).children()
-			@$storeerOptionsMobile = $($(@storeerOptionsMobile)[0]).children()
-			@$storeerOptionsContent = $($(@storeerOptionsContent)[0]).children()
-			@setOptionsOrder()
 
 			@resize()
 
@@ -114,13 +106,6 @@ define [
 
 		loadURL: (URL) ->
 			console.log URL
-
-		setOptionsOrder: ->
-			i = 0
-			for option in @$storeerOptions
-				$($(option)[0]).data('order', i)
-				$(@$storeerOptionsMobile[i]).data('order', i)
-				i++
 
 		previous: ->
 			@setCurrentFrame(@currentFrame-1)
@@ -166,19 +151,6 @@ define [
 				when 39 then @next() #right_arrow
 				when 27 then @onClickClose() #esc
 
-		onClickOption: (event) ->
-			console.log @$storeerOptions
-			@$storeerOptions.filter('div.active').toggleClass('active')
-			@$storeerOptionsMobile.filter('div.active').toggleClass('active')
-			@$storeerOptionsContent.filter('div.active').toggleClass('active')
-			
-			target = $(event.currentTarget)
-			targetOption = target.data('order')
-
-			$(@$storeerOptionsMobile[targetOption]).addClass('active')
-			$(@$storeerOptions[targetOption]).addClass('active')
-			$(@$storeerOptionsContent[targetOption]).addClass('active')
-
 		onClickClose: ->
 			app.vent.trigger('close:storee')
 
@@ -202,7 +174,7 @@ define [
 			@
 
 		getCurrentFrame: ->
-			$(@$frames[@currentFrame])
+			@$(@$frames[@currentFrame])
 
 		updateControlArrows: ->
 			currentFrame = @getCurrentFrame()
@@ -275,10 +247,6 @@ define [
 			@$comments.html(@commentsTemplate({model: @model.toJSON()}))
 
 			@
-
-		renderModel: ->
-			@render()
-			@resize()
 
 		render: ->
 			@$el.html(@template({model: @model.toJSON()}))

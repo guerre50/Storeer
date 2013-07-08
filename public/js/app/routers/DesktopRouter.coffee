@@ -36,9 +36,10 @@ define [
             @selectMenu()
 
         storees: (id) ->
+            @selectMenu('home')
             app.content.show(new ExplorerView())
             app.vent.trigger('search:term', '')
-            @selectMenu()
+            
 
         landing: ->
             app.content.show(new LandingView())
@@ -53,8 +54,10 @@ define [
             app.vent.trigger('search:term','')
             @selectMenu()
 
-        selectMenu: ->
-            url = Backbone.history.fragment
+        selectMenu: (url) ->
+            if not url
+                url = Backbone.history.fragment
+            
             $navMenu = $(@navMenu)
             $navMenu.find(".active").toggleClass('active', false)
             $navMenu.find("a[href$='#{url}']").toggleClass('active', true)

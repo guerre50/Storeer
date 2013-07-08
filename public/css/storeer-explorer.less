@@ -94,6 +94,25 @@
 	}
 }
 
+.storeer-overlay {
+	position: absolute;
+	.transition(0.5s, ease-in-out, top);
+	top: 200%;
+
+	&.enabled {
+		top: 0%;
+	}
+	
+}
+
+.mobile-tabs {
+	display: none;
+
+	&.enabled {
+		display: block;
+	}
+}
+
 // Tabs
 
 .tab {
@@ -103,6 +122,7 @@
 	text-align: center;
 	.transition(0.2s, ease-out, right);
 }
+
 
 .explorer-tabs {
 	.explorer-tab {
@@ -186,10 +206,15 @@
 
 .storeer-side-panel {
 	position: absolute;
-	display: block;
+	display: none;
 	margin-top: @margin/2;
 	.fill;
 	.transition(0.5s, ease-out, left);
+
+	&.enabled {
+		display: block;
+	}
+
 
 	@media(min-width: @mobile-width) {
 		left: 50% !important;

@@ -64,3 +64,7 @@
   });
 
 }).call(this);
+
+/*
+//@ sourceMappingURL=StoreeCollection.map
+*/

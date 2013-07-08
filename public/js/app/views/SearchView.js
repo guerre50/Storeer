@@ -51,3 +51,7 @@
   });
 
 }).call(this);
+
+/*
+//@ sourceMappingURL=SearchView.map
+*/

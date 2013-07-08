@@ -1,4 +1,4 @@
-# View example
+# Landing View
 define [
 	"jquery"
 	"underscore"

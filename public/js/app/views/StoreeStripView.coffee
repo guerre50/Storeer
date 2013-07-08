@@ -9,6 +9,8 @@ define [
 ], ($, _, Backbone, app, template, commentsTemplate) ->
 	class StoreeStripView extends Backbone.Marionette.ItemView
 		template: _.template(template)
+		commentsTemplate: _.template(commentsTemplate)
+		
 		strip: '#storeer-frame-strip'
 		prevArrow: '#storeer-prev'
 		nextArrow: '#storeer-next'
@@ -17,16 +19,6 @@ define [
 		storeerVisualizer: '#storeer-visualizer'
 		frameIndicator: '#frame-indicator'
 		storeeOptions: '#strip-options'
-		commentsTemplate: _.template(commentsTemplate)
-
-		initialize: ->
-			_.bindAll @
-
-			$(window).on('resize', @timeoutResize)
-
-
-		onShow: ->
-			@preLoad()
 
 		events:
 			'click .previous': 'previous'
@@ -40,6 +32,20 @@ define [
 			'mouseleave .storeer-visualizer' : 'onMouseLeave'
 			'mousewheel .storeer-visualizer' : 'onScroll'
 
+		initialize: ->
+			_.bindAll @
+
+			$(window).on('resize', @timeoutResize)
+
+		remove: ->
+			$(window).off('keydown', @onKeyDown)
+			$(window).off('resize', @timeoutResize)
+			Backbone.View.prototype.remove.apply(@)
+
+
+		onShow: ->
+			@preLoad()
+
 		onScroll: (event) ->
 			#TO-DO implement following top of screen
 			#@$storeeOptions.css('top', top)
@@ -47,7 +53,6 @@ define [
 		onMouseEnter: ->
 			$(window).on('keydown', @onKeyDown)
 			@load()
-			app.vent.trigger('current:storee', @model)
 
 		onMouseLeave: ->
 			$(window).off('keydown', @onKeyDown)
@@ -91,10 +96,8 @@ define [
 
 			@loaded = true
 
-			# Assign new Storee
+			# Assign new Storee and resize
 			@model = storee
-			#@model.loadExtras()
-
 			@resize()
 
 			@
@@ -144,7 +147,6 @@ define [
 			return false
 
 		onKeyDown: (event) ->
-			console.log "keydown"
 			# We must listen events that doesn't target any other DOM
 			# element
 			if not event or event.target.localName isnt "body" then return true
@@ -191,7 +193,6 @@ define [
 			if @$frames.last().data('order') == currentFrame.data('order') 
 				# If we are viewing an exising model (@model.id) then
 				# we open the comment zone
-
 				@$nextArrow.css('right', -@$nextArrow.width())
 			else
 				@$nextArrow.css('right', '')
@@ -255,8 +256,3 @@ define [
 			@$el.html(@template({model: @model.toJSON()}))
 
 			@
-
-		remove: ->
-			$(window).off('keydown', @onKeyDown)
-			$(window).off('resize', @timeoutResize)
-			Backbone.View.prototype.remove.apply(@)

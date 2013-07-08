@@ -17,8 +17,6 @@
 
       ExplorerView.prototype.className = 'storeer-content';
 
-      ExplorerView.prototype.dragTab = '#drag-tab';
-
       ExplorerView.prototype.tabs = '#explorer-tabs';
 
       ExplorerView.prototype.tabsMobile = '#explorer-tabs-mobile';
@@ -26,13 +24,12 @@
       ExplorerView.prototype.regions = {
         dropArea: "#drop-panel",
         storee: "#storeer-storee",
-        library: "#storeer-library"
+        library: "#storeer-library",
+        overlay: "#storeer-overlay"
       };
 
       ExplorerView.prototype.events = {
-        'mousedown .explorer-tabs': 'onMouseDown',
-        'click .explorer-tab': 'selectTab',
-        'mouseenter .explorer-tab': 'onMouseEnter'
+        'click .explorer-tab': 'toggleSidePanel'
       };
 
       ExplorerView.prototype.initialize = function() {
@@ -48,12 +45,6 @@
         return app.vent.off('create:storee', this.createStoree);
       };
 
-      ExplorerView.prototype.closeStoree = function() {
-        return this.storee.show(new StreamView({
-          collection: app.storees
-        }));
-      };
-
       ExplorerView.prototype.onShow = function() {
         this.storee.show(new StreamView({
           collection: app.storees
@@ -66,112 +57,64 @@
         this.$dragTab = $(this.dragTab);
         this.$tabs = $(this.tabs);
         this.$tabsMobile = $(this.tabsMobile);
-        return this.$body = $('body');
+        this.$body = $('body');
+        this.library.$el.parent().toggleClass('enabled', true);
+        return this.$tabsMobile.parent().toggleClass('enabled', true);
       };
 
-      ExplorerView.prototype.openStoree = function(storee) {
-        console.log(storee);
-        if (storee) {
-          app.router.navigate('storees/' + storee.id);
-          this.storee.show(new StoreerVisualizer({
-            model: storee
+      ExplorerView.prototype.closeStoree = function() {
+        if (this.overlay.$el.hasClass('enabled')) {
+          this.overlay.close();
+          return this.overlay.$el.toggleClass('enabled', false);
+        } else {
+          return this.storee.show(new StreamView({
+            collection: app.storees
           }));
-          return this.show($(this.$tabs.children()[0]));
         }
       };
 
-      ExplorerView.prototype.toggleMenu = function(menu) {
-        return $(this.library.$el.parent()).toggleClass('expanded');
+      ExplorerView.prototype.openStoree = function(storee) {
+        app.router.navigate('storees/' + storee.id);
+        if (this.storee) {
+          this.overlay.show(new StoreerVisualizer({
+            model: storee
+          }));
+          this.overlay.$el.toggleClass('enabled', true);
+        } else {
+          this.storee.show(new StoreerVisualizer({
+            model: storee
+          }));
+        }
+        return this.toggleSidePanel(false);
       };
 
       ExplorerView.prototype.createStoree = function() {
         this.storee.show(new StoreerVisualizer({
           model: new StoreeModel()
         }));
+        return this.removeSidePanel();
+      };
+
+      ExplorerView.prototype.toggleSidePanel = function(value) {
+        var sidePanel;
+        if (value !== void 0 && value === this.isSidePanelOpen()) {
+          return;
+        }
+        sidePanel = this.library.$el.parent();
+        sidePanel.toggleClass('expanded');
+        sidePanel.css('left', sidePanel.hasClass('expanded') ? '0%' : '100%');
+        $(this.$tabs.children()[1]).toggleClass('active');
+        return $(this.$tabsMobile.children()[1]).toggleClass('active');
+      };
+
+      ExplorerView.prototype.isSidePanelOpen = function() {
+        return this.library.$el.parent().hasClass('expanded');
+      };
+
+      ExplorerView.prototype.removeSidePanel = function() {
         this.library.close();
-        return this.show($(this.$tabs.children()[0]));
-      };
-
-      ExplorerView.prototype.onMouseDown = function(event) {
-        this.dragging = true;
-        $(window).on('mousemove', this.onMouseMove);
-        return $(window).on('mouseup', this.onMouseUp);
-      };
-
-      ExplorerView.prototype.onMouseUp = function(event) {
-        this.dragging = false;
-        $(window).off('mousemove', this.onMouseMove);
-        return $(window).off('mouseup', this.onMouseUp);
-      };
-
-      ExplorerView.prototype.closeMenu = function() {
-        this.library.$el.addClass('closed');
-        return this.library.close();
-      };
-
-      ExplorerView.prototype.onMouseMove = function(event) {
-        var left, max, min;
-        if (this.dragging) {
-          left = event.clientX / this.$body.width() * 100;
-          min = 100 - this.tabSize() * 1.5;
-          max = 100 - this.tabSize() * 0.5;
-          if (left < min) {
-            left = min;
-          } else if (left > max) {
-            left = max;
-          }
-          return this.slideTab(left + this.tabSize() / 2);
-        }
-      };
-
-      ExplorerView.prototype.selectTab = function(event) {
-        var target;
-        target = $(event.currentTarget).data('target');
-        if (target === 1) {
-          this.toggleMenu();
-        }
-        return this.show($(event.currentTarget));
-      };
-
-      ExplorerView.prototype.onMouseEnter = function(event) {
-        if (this.dragging) {
-          return this.show($(event.currentTarget));
-        }
-      };
-
-      ExplorerView.prototype.show = function(tab) {
-        var first, left, tabContents, tabIndex;
-        this.$tabs.find('.active').toggleClass('active', false);
-        this.$tabsMobile.find('.active').toggleClass('active', false);
-        tabIndex = tab.data('target');
-        $(this.$tabs.children()[tabIndex]).toggleClass('active', true);
-        $(this.$tabsMobile.children()[tabIndex]).toggleClass('active', true);
-        tabContents = this.tabContents();
-        left = -100 * tab.data('target');
-        first = 0;
-        _.each(tabContents, function(tabContent) {
-          if (first > 0) {
-            tabContent.css('left', left + '%');
-          } else {
-            first = 1;
-          }
-          return left += 100;
-        });
-        return this.slideTab((tab.position().left) / this.$body.width() * 100 + this.tabSize());
-      };
-
-      ExplorerView.prototype.tabSize = function() {
-        return (this.$dragTab.width() / this.$body.width()) * 100;
-      };
-
-      ExplorerView.prototype.tabContents = function() {
-        return [this.storee.$el.parent(), this.library.$el.parent()];
-      };
-
-      ExplorerView.prototype.slideTab = function(left) {
-        var tabSize;
-        tabSize = this.tabSize();
-        return this.$dragTab.css('right', ((100 - left) / 100 * this.$body.width()) + "px");
+        this.library.$el.parent().toggleClass('enabled', false);
+        return this.$tabsMobile.parent().toggleClass('enabled', false);
       };
 
       return ExplorerView;
@@ -180,3 +123,7 @@
   });
 
 }).call(this);
+
+/*
+//@ sourceMappingURL=ExplorerView.map
+*/

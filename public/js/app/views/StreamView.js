@@ -45,8 +45,7 @@
           }, 200).animate({
             'padding-top': 0
           }, 150);
-        } else if (parseInt(scrollHeight - scrollTop) === parseInt(scroll.clientHeight)) {
-          console.log("bottom");
+        } else if (parseInt(scrollHeight - scrollTop) < 1.25 * parseInt(scroll.clientHeight)) {
           return app.vent.trigger('search:more');
         }
       };
@@ -57,3 +56,7 @@
   });
 
 }).call(this);
+
+/*
+//@ sourceMappingURL=StreamView.map
+*/

@@ -1,3 +1,4 @@
+# Home View
 define [
 	"jquery"
 	"underscore"

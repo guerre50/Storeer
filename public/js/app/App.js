@@ -30,3 +30,7 @@
   });
 
 }).call(this);
+
+/*
+//@ sourceMappingURL=App.map
+*/

@@ -12,16 +12,8 @@
 	@media(min-width: @mobile-width) {
 		left: 0% !important;
 	}
-	// Visualizer is closed
-	&.closed {
-		width: 30px;
-		// User is dragging 
-		&.dragging {
-			width: 40px;
-		}
-	}
-
 	.storeer-visualizer {
+		.rounded(4px);
 		.fill-height;
 		overflow: hidden;
 		.logo-background {
@@ -236,9 +228,6 @@
 	}
 }
 
-
-
-
 // Comments
 .storeer-details-topbar {
 	width: 100%;
@@ -294,7 +283,6 @@
 		width: 100%;
 	}
 }
-
 
 .end-frame {
 	display: none;

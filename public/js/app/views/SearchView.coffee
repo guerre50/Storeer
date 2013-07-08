@@ -1,4 +1,4 @@
-# StoreeView
+# Search View
 define [
 	"jquery"
 	"underscore"

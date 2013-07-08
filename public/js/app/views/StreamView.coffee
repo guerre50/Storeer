@@ -30,9 +30,7 @@ define [
 
 			if scrollTop == 0
 				@$stream.animate({'padding-top': 40}, 200).animate({'padding-top': 0}, 150)
-			else if parseInt(scrollHeight - scrollTop) == parseInt(scroll.clientHeight)
-				# bottom
-				console.log "bottom"
+			else if parseInt(scrollHeight - scrollTop) < 1.25*parseInt(scroll.clientHeight)
 				app.vent.trigger('search:more')
 				
 				

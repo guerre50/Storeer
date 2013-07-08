@@ -1,3 +1,4 @@
+# Explorer View
 define [
 	"jquery"
 	"underscore"
@@ -15,7 +16,6 @@ define [
 	class ExplorerView extends Backbone.Marionette.Layout
 		template: _.template(template)
 		className: 'storeer-content'
-		dragTab: '#drag-tab'
 		tabs: '#explorer-tabs'
 		tabsMobile: '#explorer-tabs-mobile'
 
@@ -23,11 +23,10 @@ define [
 			dropArea: "#drop-panel"
 			storee: "#storeer-storee"
 			library: "#storeer-library"
+			overlay: "#storeer-overlay"
 
 		events:
-			'mousedown .explorer-tabs' : 'onMouseDown'
-			'click .explorer-tab' : 'selectTab'
-			'mouseenter .explorer-tab' : 'onMouseEnter'
+			'click .explorer-tab' : 'toggleSidePanel'
 
 		initialize: ->
 			_.bindAll @
@@ -41,12 +40,8 @@ define [
 			app.vent.off('open:storee', @openStoree)
 			app.vent.off('create:storee', @createStoree)
 
-		closeStoree: ->
-			@storee.show(new StreamView(collection: app.storees))
-
 		onShow: ->
 			@storee.show(new StreamView(collection: app.storees))
-			#@storee.show(new HomeView())
 			@dropArea.show(new DropAreaView())
 			@library.show(new StoreerLibrary(collection: app.storees))
 
@@ -56,93 +51,49 @@ define [
 			@$tabsMobile = $(@tabsMobile)
 			@$body = $('body')
 
+			# We enable side panel and tabs
+			@library.$el.parent().toggleClass('enabled', true)
+			@$tabsMobile.parent().toggleClass('enabled', true)
+
+		closeStoree: ->
+			if @overlay.$el.hasClass('enabled')
+				@overlay.close()
+				@overlay.$el.toggleClass('enabled', false)
+			else
+				@storee.show(new StreamView(collection: app.storees))
+
 		openStoree: (storee) ->
-			console.log storee
-			if storee
-				app.router.navigate('storees/' + storee.id)
+			app.router.navigate('storees/' + storee.id)
+
+			if @storee
+				@overlay.show(new StoreerVisualizer({model: storee}))
+				@overlay.$el.toggleClass('enabled', true)
+			else
 				@storee.show(new StoreerVisualizer({model: storee}))
 
-				# TO-DO make this less dependent on DOM
-				@show($(@$tabs.children()[0]))
-
-		toggleMenu: (menu) ->
-			$(@library.$el.parent()).toggleClass('expanded')
+			@toggleSidePanel(false)
 
 		createStoree: ->
-			#if @storee
 			@storee.show(new StoreerVisualizer({model: new StoreeModel()}))
+			@removeSidePanel()	
+
+		toggleSidePanel: (value) ->
+			if value != undefined and value == @isSidePanelOpen() then return
+
+			sidePanel = @library.$el.parent()
+			sidePanel.toggleClass('expanded')
+			sidePanel.css('left', if sidePanel.hasClass('expanded') then '0%' else '100%')
+
+			$(@$tabs.children()[1]).toggleClass('active')
+			$(@$tabsMobile.children()[1]).toggleClass('active')
+
+		isSidePanelOpen: ->
+			return @library.$el.parent().hasClass('expanded')
+
+		removeSidePanel: ->
 			@library.close()
-
-			# TO-DO make this less dependent on DOM
-			@show($(@$tabs.children()[0]))
-
-		onMouseDown: (event) ->
-			@dragging = true
-			$(window).on('mousemove', @onMouseMove)
-			$(window).on('mouseup', @onMouseUp)
-
-		onMouseUp: (event) ->
-			@dragging = false
-			$(window).off('mousemove', @onMouseMove)
-			$(window).off('mouseup', @onMouseUp)
-
-		closeMenu: ->
-			@library.$el.addClass('closed')
-			@library.close()
-
-		onMouseMove: (event) ->
-			if @dragging
-				left = event.clientX / @$body.width()*100
-				# We clamp mouse move to tab space
-				min = 100 - @tabSize()*1.5
-				max = 100 - @tabSize()*0.5
-				if left < min
-					left = min
-				else if  left > max
-					left = max
-
-				@slideTab(left + @tabSize()/2)
-
-		selectTab: (event) ->
-			target = $(event.currentTarget).data('target')
-			if target == 1
-				@toggleMenu()
-			@show($(event.currentTarget))
-
-		onMouseEnter: (event) ->
-			if @dragging then @show($(event.currentTarget))
-
-		show: (tab) ->
-			@$tabs.find('.active').toggleClass('active', false)
-			@$tabsMobile.find('.active').toggleClass('active', false)
-
-			tabIndex = tab.data('target')
-			$(@$tabs.children()[tabIndex]).toggleClass('active', true)
-			$(@$tabsMobile.children()[tabIndex]).toggleClass('active', true)
-
-			tabContents = @tabContents()
-			left = -100*tab.data('target')
-			first = 0
-			_.each(tabContents, (tabContent) ->
-				if first > 0
-					tabContent.css('left', left + '%')
-				else
-					first = 1
-				left += 100
-			)
-
-			@slideTab((tab.position().left) / @$body.width()*100 + @tabSize())
-
-		tabSize: ->
-			(@$dragTab.width()/@$body.width()) * 100
-
-		tabContents: ->
-			return [@storee.$el.parent(), @library.$el.parent()]
-
-		slideTab: (left) ->
-			# We move the dragging tab selector
-			tabSize = @tabSize()
-			@$dragTab.css('right', ((100-left)/100*@$body.width()) + "px")
+			@library.$el.parent().toggleClass('enabled', false)
+			@$tabsMobile.parent().toggleClass('enabled', false)
 			
 
 

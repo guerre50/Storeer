@@ -75,7 +75,9 @@
     <div class="visualizer-controls">
       <div id="storeer-prev" class="storeer-control-arrow previous" data-slide="prev"><p><i class="icon-chevron-left"></i></p></div>
       <div id="storeer-next" class="storeer-control-arrow next" data-slide="next"><p><i class="icon-chevron-right"></i></p></div>
+      <% if (model.id) { %>
       <div id="storeer-close" class="storeer-control-close remove extra"><p>&times;</p></div>
+      <% } %>
     </div>
   </div>
 
