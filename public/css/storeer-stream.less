@@ -2,6 +2,8 @@
 // Storeer Stream
 //=====================
 
+// stream of storees
+
 .storeer-stream-content {
 	.fill;
 	.storeer-stream {
@@ -33,18 +35,12 @@
 				opacity: 0;
 				z-index: 0;
 				position: relative;
-				&:hover {
-					z-index: 2;
-				}
+				&:hover { z-index: 2; }
 			}
 
 			&:hover {
-				.storeer-frame-indicator {
-					opacity: 1;
-				}
-				.strip-options {
-					opacity: 1;
-				}
+				.storeer-frame-indicator { opacity: 1; }
+				.strip-options { opacity: 1; }
 			}
 
 			.storeer-visualizer-frame {
@@ -52,34 +48,25 @@
 				.rounded(3px);
 				.fill-height;
 				overflow: hidden;
-				.end-options {
-					top: 20% !important;
-				}
-				.storeer-control-arrow p {
-					top: 40%;
-				}
+
+				.end-options { top: 20% !important; }
+				.storeer-control-arrow p { top: 40%; }
 				&:hover {
 					.storeer-overlay-information {
 						opacity: 0;
-						&:hover {
-							opacity: 1;
-						}
+						&:hover { opacity: 1; }
 					}
 				}
 			}
 		}
 	}
 
+	// Used to dark frame
 	.storeer-frame-transparency {
 		position: relative !important;
 	}
 
-	.strip-options {
-		opacity: 0;
-		&.enabled {
-			opacity : 1;
-		}
-	}
+	// Overlay information with title and author
 	.storeer-overlay-information {
 		position: absolute;
 		bottom: 0;
@@ -98,6 +85,7 @@
 	}
 }
 
+// Side options of strip
 .strip-options {
 	position: absolute;
 	width: 10%;
@@ -105,7 +93,8 @@
 	right: -10%;
 	text-align: center;
 	.transition(0.2s, ease-out, opacity);
-	span:hover {
-		color: @main-color;
-	}
+
+	opacity: 0;
+	&.enabled { opacity : 1; }
+	span:hover { color: @main-color; }
 }

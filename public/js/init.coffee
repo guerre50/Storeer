@@ -9,11 +9,12 @@
     #BoilerplateMVC Helper Methods
     boilerplateMVC = 
       loadCSS: (url, callback) ->
-        link = d.createElement 'link'
-        link.type = 'text/css'
-        link.rel = 'stylesheet'
-        link.href = url
-        d.getElementsByTagName('head')[0].appendChild link
+        if url 
+          link = d.createElement 'link'
+          link.type = 'text/css'
+          link.rel = 'stylesheet'
+          link.href = url
+          d.getElementsByTagName('head')[0].appendChild link
           
         if callback then callback()
 
@@ -88,7 +89,8 @@
           "dev-init": "js/app/init/DesktopInit.js"
           # JavaScript file that is loaded when in production mode
           "prod-js": "js/app/init/DesktopInit.min.js"
-          "dev-css": "css/desktop.css"
+          #"dev-css": "css/desktop.css"
+
 
     boilerplateMVC.loadFiles production, filesToLoad, ->
       if not production and window.require

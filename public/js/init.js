@@ -7,11 +7,13 @@
     boilerplateMVC = {
       loadCSS: function(url, callback) {
         var link;
-        link = d.createElement('link');
-        link.type = 'text/css';
-        link.rel = 'stylesheet';
-        link.href = url;
-        d.getElementsByTagName('head')[0].appendChild(link);
+        if (url) {
+          link = d.createElement('link');
+          link.type = 'text/css';
+          link.rel = 'stylesheet';
+          link.href = url;
+          d.getElementsByTagName('head')[0].appendChild(link);
+        }
         if (callback) {
           callback();
         }
@@ -77,8 +79,7 @@
           "src": "js/libs/require.js"
         },
         "dev-init": "js/app/init/DesktopInit.js",
-        "prod-js": "js/app/init/DesktopInit.min.js",
-        "dev-css": "css/desktop.css"
+        "prod-js": "js/app/init/DesktopInit.min.js"
       };
     }
     boilerplateMVC.loadFiles(production, filesToLoad, function() {

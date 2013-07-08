@@ -2,6 +2,13 @@
 // Storeer Visualizer
 //=====================
 
+// Made up of a top container showing images
+// and a bottom one that shows details such
+// as comments
+
+//----------------------
+// Top container showing the frames
+//----------------------
 .storeer-storee {
 	display: inline;
 	.fill-height;
@@ -9,28 +16,24 @@
 	.rounded(4px);
 	box-shadow: 0px 0px 3px 1px rgba(64, 64, 64, 0.3);
 	z-index: @top-most-z;
-	@media(min-width: @mobile-width) {
-		left: 0% !important;
-	}
+	@media @has-desktop-width { left: 0% !important; }
+
 	.storeer-visualizer {
 		.rounded(4px);
 		.fill-height;
 		overflow: hidden;
+
 		.logo-background {
 			position: absolute;
 			top: -10px;
 			left: 10px;
 			z-index: @top-most-z;
 		}
-		.storeer-details {
-			.fill-height(50%);
-		}
+		.storeer-details { .fill-height(50%); }
 		.storeer-visualizer-frame {
 			background: whitesmoke;
 			.fill-height(50%);
-			@media(max-height: @mobile-height) {
-				.fill-height(92%);
-			}
+			@media @has-mobile-height { .fill-height(92%); }
 		}
 
 		.storeer-frame-empty {
@@ -54,10 +57,7 @@
 				width: 80%;
 				left: 10%;
 				top: 10%;
-				.drop-zone {
-					.fill-height;
-				}
-
+				.drop-zone { .fill-height; }
 				.sub-info {
 					top: 35%;
 					position: relative;
@@ -84,34 +84,11 @@
 	}
 }
 
-.storeer-visualizer-frame {
-	position: relative;
-	display: inline-block;
-}
+//----------------------
+// Controls
+//----------------------
 
-.storeer-details {
-	display: block;
-	margin-top:-5px;
-	z-index: @top-most-z;
-	border-top: 1px solid fadeout(black, 0.5);
-	background: @dark-color;
-	overflow: hidden;
-	box-shadow: 
-		inset 0px 10px 15px rgba(0, 0, 0, 0.2);
-
-	@media(max-height: @mobile-height) {
-		position: absolute;
-		.fill-height(@avatar-size*1.1px) !important;
-		bottom: 0px;
-		width: 100%;
-	}
-	&.minimized {
-		position: absolute;
-		.fill-height(@avatar-size*1.1px) !important;
-		bottom: 0px;
-		width: 100%;
-	}
-}
+// Controls to go next, prev or close
 
 .storeer-control {
 	position: absolute;
@@ -120,8 +97,7 @@
 	font-size: 60px;
 	font-weight: 100;
 	line-height: 30px;
-	color: darken(#ffffff, 50%);
-	opacity: 0;
+	
 	filter: alpha(opacity=50); 
 	text-decoration: !important none;
 	text-shadow: 
@@ -129,13 +105,14 @@
 		2px 2px 2px fadeout(darken(grey, 30%), 10%);
 	.transition(0.2s, ease-in-out);
 	z-index: @top-most-z*10;
+
+	color: darken(#ffffff, 50%);
+	opacity: 0;
 	&:hover {
 		opacity: 1;
 		color: #ffffff;
 	}
 }
-
-
 
 .storeer-control-close {
 	.storeer-control;
@@ -166,27 +143,32 @@
 		top: 50%;
 		color: white;
 		text-decoration: none;
-		.transition(0.2s, ease-in-out);
+		.transition(0.2s, ease-in-out, -webkit-transform);
 	}
 	&.next {
 		margin-right: @margin;
 		text-align: right;
 		left: auto;
 		right: 0px;
-		p:hover {
-			.translate(4px, 0);
-		}	
+		p:hover { .translate(4px, 0); }	
 	}
 	&.previous {
 		text-align: left;
 		left: 0px;
 		margin-left: @margin;
-		p:hover {
-			.translate(-4px, 0);
-		}	
+		p:hover { .translate(-4px, 0); }	
 	}
 }
 
+
+//----------------------
+// Frame related
+//----------------------
+
+.storeer-visualizer-frame {
+	position: relative;
+	display: inline-block;
+}
 
 .storeer-frame-strip {
 	position:relative;
@@ -206,15 +188,12 @@
 		img {
 			.drop-shadow(0, 0, 2px, 0.4, 2px);
 		}
-		.storeer-frame-transparency {
-			background: fadeout(black, 100%);
-		}
+		.storeer-frame-transparency { background: fadeout(black, 100%); }
 	}
 	img {
 		display: block;
 		height: inherit;
 		width: auto;
-		//margin-top:-200%;
 		.transition(0.7s, ease-in, margin-top box-shadow);
 	}
 	.storeer-frame-transparency {
@@ -228,62 +207,7 @@
 	}
 }
 
-// Comments
-.storeer-details-topbar {
-	width: 100%;
-	max-height: @avatar-size;
-	min-height: @avatar-size;
-	background: @darkest-color;
-	position: relative;
-	overflow: hidden;
-	z-index: @top-most-z;
-	box-shadow: 
-		0px 1px 1px 0px rgba(0, 0, 0, 0.5),
-		inset 0 -14px 58px -5px @darkest-color;
-}
-
-.media-content {
-	float:left;
-
-	.storeer-title, .storeer-author {
-		margin-left: 15px;
-		color: white;
-		display: block;
-		@media(max-height: @mobile-height) {
-			display: inline-block;
-		}
-	}
-}
-
-.media-preview {
-	float:left;
-	display: table-row;
-	min-width: @avatar-size;
-	max-width: @avatar-size;
-}
-
-.avatar-frame {
-	width: 80%;
-	height:0;
-	padding-bottom: 80%;
-
-	position: relative;
-	
-	.transition(1s, ease-in-out);
-
-	.avatar-img {
-		overflow: hidden;
-		position: absolute;
-		background-repeat: no-repeat;
-		min-width: 80px;
-		min-height: 80px;
-		left:0;
-		top:0;
-		height: 100%;
-		width: 100%;
-	}
-}
-
+// End frame with options to give reward, like or bookmark
 .end-frame {
 	display: none;
 	position: absolute;
@@ -311,4 +235,288 @@
 			}
 		} 
 	}
+}
+
+
+
+//----------------------
+// Bottom bar: details
+//----------------------
+
+.storeer-details {
+	display: block;
+	margin-top:-5px;
+	z-index: @top-most-z;
+	border-top: 1px solid fadeout(black, 0.5);
+	background: @dark-color;
+	overflow: hidden;
+	box-shadow: 
+		inset 0px 10px 15px rgba(0, 0, 0, 0.2);
+
+	@media @has-mobile-height {
+		position: absolute;
+		.fill-height(@avatar-size*1.1px) !important;
+		bottom: 0px;
+		width: 100%;
+	}
+	&.minimized {
+		position: absolute;
+		.fill-height(@avatar-size*1.1px) !important;
+		bottom: 0px;
+		width: 100%;
+	}
+}
+
+.storeer-details-topbar {
+	width: 100%;
+	max-height: @avatar-size;
+	min-height: @avatar-size;
+	background: @darkest-color;
+	position: relative;
+	overflow: hidden;
+	z-index: @top-most-z;
+	box-shadow: 
+		0px 1px 1px 0px rgba(0, 0, 0, 0.5),
+		inset 0 -14px 58px -5px @darkest-color;
+}
+
+.media-content {
+	float:left;
+
+	.storeer-title, .storeer-author {
+		margin-left: 15px;
+		color: white;
+		display: block;
+		@media @has-mobile-height { display: inline-block; }
+	}
+}
+
+.media-preview {
+	float:left;
+	display: table-row;
+	min-width: @avatar-size;
+	max-width: @avatar-size;
+}
+
+// Avatars for the comments
+.avatar-frame {
+	.responsive-square(80%);
+	position: relative;
+
+	.avatar-img {
+		overflow: hidden;
+		position: absolute;
+		background-repeat: no-repeat;
+		min-width: @avatar-size;
+		min-height: @avatar-size;
+		left: 0;
+		top: 0;
+	}
+}
+
+//----------------------
+// Options on the bottom tab
+//----------------------
+
+.options-item (@color : black) {
+	background: darken(@lightest-color, 30%);
+
+	&.active {
+		border-left: solid 3px @color;
+		background: @lightest-color !important;
+		&.mobile {
+			border-left: solid 1px fadeout(grey, 0.2);
+			.options-outline {
+				height:3px;
+				background: @color;
+			}
+			i { .translate(0, 2px); }
+		}
+	}
+	&:hover { background: darken(@lightest-color, 15%); }
+	&.mobile {
+		.options-outline {
+			width: 100%;
+			height: 3px;
+		}
+	}
+}
+
+.storeer-options {
+	height: @avatar-size*0.75;
+	width: @avatar-size*0.75;
+	border-bottom: solid 1px fadeout(grey, 0.2);
+	display: none;
+	&.mobile {
+		border-left: solid 1px fadeout(grey, 0.2);
+		&.active { display: block; }
+	}
+	&.no-mobile {
+		position: relative;
+		&.active {
+			z-index: @top-most-z;
+			.drop-shadow(-3px, 1px, 4px, 0.2, 0px);
+		}
+	}
+
+	i {
+		text-align: center;
+		width: 100%;
+		height: 100%;
+		display: block;
+		.icon-2x;
+		padding-top: @avatar-size*0.2;
+	}
+
+	.transition(0.7s, ease-in-out, margin-top);
+	&.info {
+		.options-item(@color-info);
+		&.no-mobile {
+			@media @has-mobile-height { margin-top: -@avatar-size; }
+		}
+	}
+	&.comments {
+		.options-item(@color-comments);
+		&.no-mobile {
+			@media @has-mobile-height { margin-top: -@avatar-size*2; }
+		}
+	}
+	&.share {
+		.options-item(@color-share);
+		&.no-mobile {
+			@media @has-mobile-height { margin-top: -@avatar-size*3; }
+		}
+	}
+	&.related {
+		.options-item(@color-related);
+		&.no-mobile {
+			@media @has-mobile-height { margin-top: -@avatar-size*4; }
+		}
+	}
+	&.remove {
+		.options-item(@color-close);
+		&.no-mobile {
+			@media @has-mobile-height { margin-top: -@avatar-size*5; }
+		}
+	}
+}
+
+.storeer-option {
+	.fill-height(82%);
+}
+
+#storeer-options-content {
+	margin-left: @avatar-size*0.25;
+	background: @lightest-color;
+	.fill-height;
+	overflow-y: auto;
+	border-left: 1px solid fadeout(grey, 0.2);
+	.media-object { .rounded(1px); }
+
+	.media {
+		.media-body { padding: 5px 20px 5px 5px; }
+		.pull-left { margin-right: 0px !important; }
+		&:nth-child(even) {
+			outline: rgba(0,0,0,0.1) 1px solid;
+			box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+			background: white;
+		}
+		margin-top: 0px;
+
+		img {
+			height: @avatar-size*0.75;
+			width: @avatar-size*0.75;
+		}
+		span {
+			position: relative;
+			input {
+				.fill(100%, 100%);
+				.rounded(0px);
+			}
+			i {
+				top: 0px;
+				right: 10px;
+				position: absolute;
+				padding-left: 5px;
+				&:hover { .translate(0, 1px); }
+			}
+		}
+	}
+}
+
+#storee-comments {
+	.fill-height;
+	.loading {
+		.fill-height;
+		text-align: center;
+		overflow: hidden;
+		i {
+			margin-top: 17%;
+		}
+	}
+}
+
+.storeer-comments {
+	height: 100%;
+	width: 100%;
+	display: block;
+	float: left;
+	position: absolute;
+	overflow-y:hidden;
+
+	&.no-mobile {
+		width: @avatar-size*1.2;
+		display: none;
+	}
+
+	&.mobile {
+		float: none;
+		top: 0;
+		.transition(0.5s, ease-in, top);
+
+		.storeer-options-container {
+			.storeer-options {
+				height: @avatar-size/2;
+				width: @avatar-size/2;
+				i { padding-top: 2px; }
+			}
+		}
+
+		#storeer-options-mobile {
+			margin-left: @avatar-size;
+			position: absolute;
+			top: @avatar-size;
+			.transition(0.5s, ease-in, top);
+
+			@media @has-mobile-height { top: @avatar-size/2; }
+		}
+	}
+}
+
+#storeer-options {
+	position: absolute;
+	z-index: @top-most-z - 2;
+}
+
+.storeer-options-container {
+	.fill-height;
+	float: left;
+	margin-left: @avatar-size*0.25;
+
+	.mobile {
+		float: none;
+		.fill-height(50%);
+	}
+}
+
+
+//----------------------
+// Drop Area for the creation of storees
+//----------------------
+
+// Dropable area with dashed border
+.drop-zone {
+	border: 2px dashed #bbb;
+	.rounded(5px);
+	text-align: center;
 }

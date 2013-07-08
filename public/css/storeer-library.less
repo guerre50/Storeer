@@ -2,19 +2,21 @@
 // Storeer Library
 //=====================
 
+// Contains the elements 
+
 .storeer-library {
 	overflow: hidden;
 	background: white;
 	padding-bottom: @margin/2;
 	z-index: @top-most-z/10;
-	.drop-shadow(0px, 1px, 5px, 0.3);
-	right:0px;
+	right: 0px;
 	height: 95%;
+	.drop-shadow(0px, 1px, 5px, 0.3);
 
-	&.closed {
-		.fill-width(0%);
-	}
+	&.closed { .fill-width(0%); }
 
+	// Responsive behaviour
+	// --------------------
 	@media @has-mobile-width {
 		.fill-height(100%);
 		.border-radius(0, 0, 2px, 2px);
@@ -25,17 +27,14 @@
 
 	@media @has-desktop-width  {
 		left: 0% !important;
-		.border-radius(2px, 2px, 0px, 0px);
-		
 		width: 100%;
+		.border-radius(2px, 2px, 0px, 0px);
 	}
 
 	.storeer-library-content {
 		height: 100%;
 		
-		@media @has-mobile-height {
-			height: 90%;
-		}
+		@media @has-mobile-height { height: 90%; }
 	}
 }
 
@@ -48,17 +47,14 @@
 	.fill;
     position: absolute;
 	.transition(0.2s, ease-in-out);
+	&:hover { .scale(1.1); }
 
-	&:hover {
-		.scale(1.1);
-	}
 	.storeer-outer-thumbnail {
 		position: relative;
 		padding: @margin/2;
 		.fill;
 		box-sizing: border-box;
 		overflow: hidden;
-		
 	}
 
 	.storeer-storee-thumbnail {
@@ -68,79 +64,9 @@
 	}
 
 	.storeer-storee-thumbnail-transparency {
-		&:hover {
-			background: fadeout(white, 95%);
-		}
+		&:hover { background: fadeout(white, 95%); }
 	}
 }
-
-#storee-comments {
-	.fill-height;
-	.loading {
-		.fill-height;
-		text-align: center;
-		overflow: hidden;
-		i {
-			margin-top: 17%;
-		}
-	}
-}
-
-.storeer-comments {
-	height: 100%;
-	width: 100%;
-	display: block;
-	float: left;
-	position: absolute;
-	overflow-y:hidden;
-
-	&.no-mobile {
-		width: @avatar-size*1.2;
-		display: none;
-	}
-
-	&.mobile {
-		float: none;
-		top: 0;
-		.transition(0.5s, ease-in, top);
-
-		.storeer-options-container {
-			.storeer-options {
-				height: @avatar-size/2;
-				width: @avatar-size/2;
-				// commented for version without extra options display: inline-block;
-				i {
-					padding-top: 2px;
-				}
-			}
-		}
-
-		#storeer-options-mobile {
-			margin-left: @avatar-size;
-			position: absolute;
-			top: @avatar-size;
-			.transition(0.5s, ease-in, top);
-			@media(max-height: @mobile-height) {
-				top: @avatar-size/2;
-			}
-		}
-	}
-}
-#storeer-options {
-	position: absolute;
-	z-index: @top-most-z - 2;
-}
-.storeer-options-container {
-	.fill-height;
-	float: left;
-	margin-left: @avatar-size*0.25;
-
-	.mobile {
-		float: none;
-		.fill-height(50%);
-	}
-}
-
 
 .storee-collection {
 	width: 100%;
@@ -148,6 +74,18 @@
 	display: block;
 
 }
+
+// Each of the elements
+.storee-summary {
+	position: relative;
+	display:inline-block;
+	box-sizing: border-box;
+	&.dragging { .scale(0.8); }
+}
+
+//---------------------
+// Search bar
+//---------------------
 
 .storeer-search {
 	.rounded(0px) !important;
@@ -167,7 +105,6 @@
 	}
 }
 
-
 #storeer-searchBar {
 	height: 35px;
 	margin: @margin/2;
@@ -180,21 +117,14 @@
 	padding-left: @margin/2;
 	margin-right: @margin/2;
 	height: 92%;
+
+	// Responsive behaviour
+	// --------------------
 	@media(max-height: 760px) {
 		height: 89%;
 	}
-	@media(max-height: @mobile-height) {
+	@media @has-mobile-height {
 		height: 95%;
-	}
-}
-
-
-.storee-summary {
-	position: relative;
-	display:inline-block;
-	box-sizing: border-box;
-	&.dragging {
-		.scale(0.8);
 	}
 }
 
@@ -212,182 +142,14 @@
 		top: @margin/2;
 		right: @margin/2;
 		display: inline-block;
-		&.icon-spinner {
-			opacity: 0;
-		}
-		&.icon-search {
-			opacity: 1;
-		}
+		&.icon-spinner { opacity: 0; }
+		&.icon-search { opacity: 1; }
 	}
 	&.loading {
 		i {
-			&.icon-spinner {
-				opacity: 1;
-			}
-			&.icon-search {
-				opacity: 0;
-			}
+			&.icon-spinner { opacity: 1; }
+			&.icon-search { opacity: 0; }
 		}
 
 	}
-}
-
-.options-item (@color : black) {
-	background: darken(@lightest-color, 30%);
-
-	&.active {
-		border-left: solid 3px @color;
-		background: @lightest-color !important;
-		&.mobile {
-			border-left: solid 1px fadeout(grey, 0.2);
-			.options-outline {
-				height:3px;
-				background: @color;
-			}
-			i {
-				.translate(0, 2px);
-			}
-		}
-	}
-	&:hover {
-		background: darken(@lightest-color, 15%);
-	}
-	&.mobile {
-		.options-outline {
-			width: 100%;
-			height: 3px;
-		}
-	}
-}
-
-.storeer-options {
-	height: @avatar-size*0.75;
-	width: @avatar-size*0.75;
-	border-bottom: solid 1px fadeout(grey, 0.2);
-	display: none;
-	&.mobile {
-		border-left: solid 1px fadeout(grey, 0.2);
-		&.active {
-			display: block;
-		}
-	}
-	&.no-mobile {
-		position: relative;
-		&.active {
-			z-index: @top-most-z;
-			.drop-shadow(-3px, 1px, 4px, 0.2, 0px);
-		}
-	}
-
-	i {
-		text-align: center;
-		width: 100%;
-		height: 100%;
-		display: block;
-		.icon-2x;
-		padding-top: @avatar-size*0.2;
-	}
-
-	.transition(0.7s, ease-in-out, margin-top);
-	&.info {
-		.options-item(@color-info);
-		&.no-mobile {
-			@media(max-height: @mobile-height) {
-				margin-top: -@avatar-size;
-			}
-		}
-	}
-	&.comments {
-		.options-item(@color-comments);
-		&.no-mobile {
-			@media(max-height: @mobile-height) {
-				margin-top: -@avatar-size*2;
-			}
-		}
-	}
-	&.share {
-		.options-item(@color-share);
-		&.no-mobile {
-			@media(max-height: @mobile-height) {
-				margin-top: -@avatar-size*3;
-			}
-		}
-	}
-	&.related {
-		.options-item(@color-related);
-		&.no-mobile {
-			@media(max-height: @mobile-height) {
-				margin-top: -@avatar-size*4;
-			}
-		}
-	}
-
-	&.remove {
-		.options-item(@color-close);
-		&.no-mobile {
-			@media(max-height: @mobile-height) {
-				margin-top: -@avatar-size*5;
-			}
-		}
-	}
-}
-
-.storeer-option {
-	.fill-height(82%);
-}
-
-#storeer-options-content {
-	margin-left: @avatar-size*0.25;
-	background: @lightest-color;
-	.fill-height;
-	overflow-y: auto;
-	border-left: 1px solid fadeout(grey, 0.2);
-	.media {
-
-		.media-body {
-			padding: 5px 20px 5px 5px;
-		}
-		.pull-left {
-			margin-right: 0px !important;
-		}
-		&:nth-child(even) {
-			outline: rgba(0,0,0,0.1) 1px solid;
-			box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
-			background: white;
-		}
-		margin-top: 0px;
-		// Old version with different options
-		//margin-right: @margin;
-		//display: table-row;
-		img {
-			height: @avatar-size*0.75;
-			width: @avatar-size*0.75;
-		}
-		span {
-			position: relative;
-			input {
-				.fill(100%, 100%);
-				.rounded(0px);
-			}
-			i {
-				top: 0px;
-				right: 10px;
-				position: absolute;
-				padding-left: 5px;
-				&:hover {
-					.translate(0, 1px);
-				}
-			}
-		}
-	}
-	.media-object {
-		.rounded(1px);
-	}
-}
-
-
-.drop-zone {
-	border: 2px dashed #bbb;
-	.rounded(5px);
-	text-align: center;
 }
