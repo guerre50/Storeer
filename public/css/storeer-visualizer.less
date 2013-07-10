@@ -185,6 +185,7 @@
 	float: left;
 	display: block;
 	&.active {
+
 		img {
 			.drop-shadow(0, 0, 2px, 0.4, 2px);
 		}
@@ -194,7 +195,9 @@
 		display: block;
 		height: inherit;
 		width: auto;
-		.transition(0.7s, ease-in, margin-top box-shadow);
+		.transition(0.7s, ease-in, opacity);
+		opacity: 1;
+		&.loading { opacity: 0; }
 	}
 	.storeer-frame-transparency {
 		width: inherit;

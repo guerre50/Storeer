@@ -89,7 +89,7 @@
           "dev-init": "js/app/init/DesktopInit.js"
           # JavaScript file that is loaded when in production mode
           "prod-js": "js/app/init/DesktopInit.min.js"
-          #"dev-css": "css/desktop.css"
+          "dev-css": "css/desktop.css"
 
 
     boilerplateMVC.loadFiles production, filesToLoad, ->

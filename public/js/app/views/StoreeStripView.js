@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["jquery", "underscore", "backbone", "App", "text!templates/storee-strip.html", "text!templates/comments.html"], function($, _, Backbone, app, template, commentsTemplate) {
+  define(["jquery", "underscore", "backbone", "App", "text!templates/storee-strip.html"], function($, _, Backbone, app, template) {
     var StoreeStripView, _ref;
     return StoreeStripView = (function(_super) {
       __extends(StoreeStripView, _super);
@@ -15,23 +15,16 @@
 
       StoreeStripView.prototype.template = _.template(template);
 
-      StoreeStripView.prototype.commentsTemplate = _.template(commentsTemplate);
-
-      StoreeStripView.prototype.strip = '#storeer-frame-strip';
-
-      StoreeStripView.prototype.prevArrow = '#storeer-prev';
-
-      StoreeStripView.prototype.nextArrow = '#storeer-next';
-
-      StoreeStripView.prototype.imagesToLoad = 0;
-
       StoreeStripView.prototype.className = 'storeer-visualizer expanded';
 
-      StoreeStripView.prototype.storeerVisualizer = '#storeer-visualizer';
-
-      StoreeStripView.prototype.frameIndicator = '#frame-indicator';
-
-      StoreeStripView.prototype.storeeOptions = '#strip-options';
+      StoreeStripView.prototype.ui = {
+        frames: '#storeer-frame-strip .item',
+        strip: '#storeer-frame-strip',
+        prevArrow: '#storeer-prev',
+        nextArrow: '#storeer-next',
+        storeerVisualizer: '#storeer-visualizer',
+        frameIndicator: '#frame-indicator'
+      };
 
       StoreeStripView.prototype.events = {
         'click .previous': 'previous',
@@ -42,85 +35,69 @@
         'click .expand': 'expand',
         'transitionend #storeer-frame-strip': 'timeoutResize',
         'mouseenter .storeer-visualizer': 'onMouseEnter',
-        'mouseleave .storeer-visualizer': 'onMouseLeave',
-        'mousewheel .storeer-visualizer': 'onScroll'
+        'mouseleave .storeer-visualizer': 'onMouseLeave'
       };
+
+      StoreeStripView.prototype.visibility = false;
+
+      StoreeStripView.prototype.currentFrame = 0;
+
+      StoreeStripView.prototype.imagesToLoad = 0;
+
+      StoreeStripView.prototype.visibleFrames = 2;
 
       StoreeStripView.prototype.initialize = function() {
         _.bindAll(this);
+        this.loadStoreer(this.model);
         return $(window).on('resize', this.timeoutResize);
       };
 
       StoreeStripView.prototype.remove = function() {
-        $(window).off('keydown', this.onKeyDown);
         $(window).off('resize', this.timeoutResize);
+        clearTimeout(this.startTimeout);
+        clearTimeout(this.resizeTimeout);
+        clearTimeout(this.loadImagesTimeout);
+        this.$el.find('img').off('load', this.onImgLoad);
         return Backbone.View.prototype.remove.apply(this);
       };
 
       StoreeStripView.prototype.onShow = function() {
-        return this.preLoad();
+        return this.loadStoreer(this.model);
       };
 
-      StoreeStripView.prototype.onScroll = function(event) {};
-
       StoreeStripView.prototype.onMouseEnter = function() {
-        $(window).on('keydown', this.onKeyDown);
-        return this.load();
+        this.loadImagesTimeout = setTimeout(this.renderExtraImages, 500);
+        return this.startTimeout = setTimeout(this.start, 2000);
+      };
+
+      StoreeStripView.prototype.start = function() {
+        return this.$el.toggleClass('started', true);
       };
 
       StoreeStripView.prototype.onMouseLeave = function() {
-        return $(window).off('keydown', this.onKeyDown);
-      };
-
-      StoreeStripView.prototype.load = function() {
-        if (!this.loaded) {
-          return this.loadStoreer(this.model);
-        }
+        clearTimeout(this.loadImages);
+        clearTimeout(this.startTimeout);
+        return this.$el.toggleClass('started', false);
       };
 
       StoreeStripView.prototype.expand = function() {
         return app.vent.trigger('open:storee', this.model);
       };
 
-      StoreeStripView.prototype.preLoad = function() {
-        $ = this.$;
-        this.loaded = false;
-        this.currentFrame = 0;
-        this.imagesToLoad = 5;
-        this.$el.find('img').off('load', this.onImgLoad);
-        this.$el.find('img').on('load', this.onImgLoad);
-        this.render();
-        this.$strip = $(this.strip);
-        this.$frames = this.$strip.find("div.item");
-        this.$prevArrow = $(this.prevArrow);
-        this.$nextArrow = $(this.nextArrow);
-        this.$frameIndicator = $(this.frameIndicator);
-        this.$storeerVisualizer = $(this.storeerVisualizer);
-        this.$storeeOptions = $(this.storeeOptions);
-        return this;
+      StoreeStripView.prototype.visible = function(visibility) {
+        if (visibility !== this.visibility) {
+          this.visibility = visibility;
+          this.$el.toggleClass('visible', visibility);
+          return this.repositionStoree();
+        }
       };
 
       StoreeStripView.prototype.loadStoreer = function(storee) {
         $ = this.$;
-        if (!this.loaded) {
-          this.preLoad();
-        }
-        this.loaded = true;
         this.model = storee;
-        this.resize();
+        this.currentFrame = 0;
+        this.imagesToLoad = this.visibleFrames;
         return this;
-      };
-
-      StoreeStripView.prototype.setImage = function(frame, image) {
-        var $frame, $img;
-        $ = this.$;
-        $frame = $(this.$frames[frame]);
-        this.model.attributes.frames[frame].src = image;
-        $img = $($frame.find('img'));
-        $img.attr('src', image);
-        $img.removeClass('empty');
-        $frame.find('div.storeer-frame-empty').remove();
-        return this.next();
       };
 
       StoreeStripView.prototype.previous = function() {
@@ -139,11 +116,15 @@
       StoreeStripView.prototype.onImgLoad = function(event) {
         var $img, img, tmpImage;
         img = event.target;
-        $img = $(img);
+        $img = this.$(img);
         tmpImage = new Image();
         tmpImage.src = img.src;
-        $img.data('ratio', tmpImage.width / tmpImage.height);
-        return this.resize($img.parent());
+        img.setAttribute('data-ratio', tmpImage.width / tmpImage.height);
+        $img.toggleClass('loading', false);
+        this.resizeFrame($img.parent());
+        if (--this.imagesToLoad === 0) {
+          return this.onLoad();
+        }
       };
 
       StoreeStripView.prototype.onFrameClick = function(event) {
@@ -153,33 +134,14 @@
         return false;
       };
 
-      StoreeStripView.prototype.onKeyDown = function(event) {
-        var code;
-        if (!event || event.target.localName !== "body") {
-          return true;
-        }
-        code = event.keyCode;
-        switch (code) {
-          case 37:
-            return this.previous();
-          case 39:
-            return this.next();
-          case 27:
-            return this.onClickClose();
-        }
-      };
-
       StoreeStripView.prototype.setCurrentFrame = function(frame) {
-        var currentFrame, currentIndicator, previousFrame;
-        if (frame >= 0 && frame < this.$frames.length) {
-          previousFrame = this.getCurrentFrame();
-          this.currentFrame = frame;
+        var currentFrame, previousFrame;
+        if (frame >= 0 && frame < this.ui.frames.length) {
+          previousFrame = this.getCurrentFrame().toggleClass('active');
+          $(this.ui.frames[frame]).toggleClass('active');
           currentFrame = this.getCurrentFrame();
-          previousFrame.toggleClass('active');
-          currentFrame.toggleClass('active');
-          currentIndicator = this.$frameIndicator.find('.active');
-          currentIndicator.toggleClass('active', false);
-          $(this.$frameIndicator.children()[this.currentFrame]).toggleClass('active', true);
+          this.ui.frameIndicator.find('.active').toggleClass('active', false);
+          $(this.ui.frameIndicator.children()[this.currentFrame]).toggleClass('active', true);
           this.repositionStoree();
           this.updateControlArrows();
         }
@@ -188,21 +150,23 @@
 
       StoreeStripView.prototype.getCurrentFrame = function() {
         $ = this.$;
-        return $(this.$frames[this.currentFrame]);
+        this.currentFrame = parseInt(this.ui.frames.filter('.active').attr('data-order'));
+        return $(this.ui.frames[this.currentFrame]);
       };
 
       StoreeStripView.prototype.updateControlArrows = function() {
         var currentFrame;
         currentFrame = this.getCurrentFrame();
-        if (this.$frames.first().data('order') === currentFrame.data('order')) {
-          this.$prevArrow.css('left', -this.$prevArrow.width());
+        if (this.ui.frames.first().data('order') === currentFrame.data('order')) {
+          this.ui.prevArrow.css('left', -this.ui.prevArrow.width());
         } else {
-          this.$prevArrow.css('left', '');
+          this.ui.prevArrow.css('left', '');
         }
-        if (this.$frames.last().data('order') === currentFrame.data('order')) {
-          return this.$nextArrow.css('right', -this.$nextArrow.width());
+        if (this.ui.frames.last().data('order') === currentFrame.data('order')) {
+          this.$el.toggleClass('started', false);
+          return this.ui.nextArrow.css('right', -this.ui.nextArrow.width());
         } else {
-          return this.$nextArrow.css('right', '');
+          return this.ui.nextArrow.css('right', '');
         }
       };
 
@@ -212,16 +176,15 @@
       };
 
       StoreeStripView.prototype.resize = function() {
-        _.each(this.$frames, this.resizeFrame);
+        _.each(this.ui.frames, this.resizeFrame);
         return this.repositionStoree();
       };
 
       StoreeStripView.prototype.resizeFrame = function(frame) {
-        var $frame, $img, containerHeight, containerRatio, containerWidth, imgRatio, isLastFrame, newHeight;
-        containerHeight = this.$strip.height();
+        var $frame, $img, containerHeight, containerRatio, containerWidth, imgRatio, newHeight;
+        containerHeight = this.ui.strip.height();
         containerWidth = this.$el.width();
         containerRatio = containerWidth / containerHeight;
-        isLastFrame = this.currentFrame === this.$frames.length - 1;
         $frame = $(frame);
         $img = $frame.find('img');
         imgRatio = $img.data('ratio');
@@ -244,29 +207,42 @@
         var currentFrame, currentWidth, frameLeftOffset, frameWidth;
         $ = this.$;
         currentFrame = this.getCurrentFrame();
-        currentWidth = this.$storeerVisualizer.width();
+        currentWidth = this.ui.storeerVisualizer.width();
         frameWidth = currentFrame.width();
         frameLeftOffset = currentFrame.position().left;
-        this.$strip.css('left', (-frameLeftOffset + (currentWidth - frameWidth) / 2) + 'px');
+        this.ui.strip.css('left', (-frameLeftOffset + (currentWidth - frameWidth) / 2) + 'px');
         return this;
       };
 
-      StoreeStripView.prototype.renderComments = function() {
-        this.$comments.html(this.commentsTemplate({
-          model: this.model.toJSON()
-        }));
-        return this;
+      StoreeStripView.prototype.renderExtraImages = function() {
+        var frames, i, image, images, _results;
+        images = this.ui.frames.find('img');
+        frames = this.model.get('frames');
+        this.restartImageListeners();
+        i = 0;
+        _results = [];
+        while (i < frames.length) {
+          image = images[i];
+          if (!image.src) {
+            image.src = frames[i].src;
+          }
+          _results.push(i++);
+        }
+        return _results;
       };
 
-      StoreeStripView.prototype.renderModel = function() {
-        this.render();
-        return this.resize();
+      StoreeStripView.prototype.restartImageListeners = function() {
+        return this.$el.find('img').off('load', this.onImgLoad).on('load', this.onImgLoad);
       };
 
       StoreeStripView.prototype.render = function() {
         this.$el.html(this.template({
-          model: this.model.toJSON()
+          model: this.model.toJSON(),
+          visible: this.visibility,
+          visibleFrames: this.visibleFrames
         }));
+        this.restartImageListeners();
+        this.bindUIElements();
         return this;
       };
 
@@ -276,7 +252,3 @@
   });
 
 }).call(this);
-
-/*
-//@ sourceMappingURL=StoreeStripView.map
-*/

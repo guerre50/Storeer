@@ -53,7 +53,8 @@
               </div>
             </div>
           <% } else { %>
-            <img draggable="false" src="<%- frame.src %>">
+
+            <img draggable="false" class="loading" <% if (visible || i < visibleFrames) { %> src="<%- frame.src %>" <% } %>>
             <div class="storeer-frame-transparency">
             </div>
           <% } %>

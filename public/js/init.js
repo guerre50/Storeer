@@ -79,7 +79,8 @@
           "src": "js/libs/require.js"
         },
         "dev-init": "js/app/init/DesktopInit.js",
-        "prod-js": "js/app/init/DesktopInit.min.js"
+        "prod-js": "js/app/init/DesktopInit.min.js",
+        "dev-css": "css/desktop.css"
       };
     }
     boilerplateMVC.loadFiles(production, filesToLoad, function() {

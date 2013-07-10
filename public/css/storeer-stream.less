@@ -30,6 +30,11 @@
 				.fill-width(80%);
 			}
 
+			visibility: hidden;
+			&.visible {
+				visibility: visible;
+			}
+
 			.storeer-frame-indicator {
 				.transition(0.2s, ease-in, opacity);
 				opacity: 0;
@@ -43,6 +48,13 @@
 				.strip-options { opacity: 1; }
 			}
 
+			&.started:hover {
+				.storeer-overlay-information {
+					opacity: 0;
+					&:hover { opacity: 1; }
+				}
+			}
+
 			.storeer-visualizer-frame {
 				z-index: 1;
 				.rounded(3px);
@@ -51,12 +63,7 @@
 
 				.end-options { top: 20% !important; }
 				.storeer-control-arrow p { top: 40%; }
-				&:hover {
-					.storeer-overlay-information {
-						opacity: 0;
-						&:hover { opacity: 1; }
-					}
-				}
+				
 			}
 		}
 	}
