@@ -32,11 +32,12 @@ define [
 
 		remove: ->
 			clearTimeout(@scrollTimeout)
-			@ui.stream.off('scroll', @delayedOnScroll)
+			@$('#storeer-stream').off('scroll', @delayedOnScroll)
 			Backbone.View.prototype.remove.apply(@)
 
 		onShow: ->
-			@ui.stream.on('scroll', @delayedOnScroll)
+			@$('#storeer-stream').on('scroll', @delayedOnScroll)
+			#@ui.stream.on('scroll', @delayedOnScroll)
 
 		appendHtml: (collectionView, itemView, itemIndex) ->
 			# We see if there is already a "prjevious render" of the item
@@ -50,24 +51,35 @@ define [
 			else
 				# We append it to the stream View
 				stream.append(itemView.el)
+				item = stream.children().last()
 
-			# we mark the element with data bout the view
-			$el = $(itemView.el)
-					.attr('data-cid', itemView.cid)
-					.attr('data-index', itemIndex)
-			
+			$el = $(stream.children()[itemIndex])
+				.attr('data-cid', itemView.cid)
+				.attr('data-index', itemIndex)
+
+			# Management of top and BottomItem
 			if not @topItem
 				@topItem = $el
 				@bottomItem = $el
+			else
+				if @equals(@topItem, $el) 
+					@topItem = $el
+
+				if @equals(@bottomItem, $el) 
+					@bottomItem = $el
 
 			if @visible($el)
 				itemView.visible(true)
+
+		equals: (itemA, itemB) ->
+			parseInt(itemA.attr('data-index')) == parseInt(itemB.attr('data-index')) and itemA.attr('data-cid') != itemB.attr('data-cid')
 
 		updateVisibility: (direction) ->
 			if direction < 0 
 				[@bottomItem, @topItem] = @move('prev')
 			else if direction > 0
 				[@topItem, @bottomItem] = @move('next')
+
 			#console.log "top", @topItem.attr('data-index')
 			#console.log "bottom", @bottomItem.attr('data-index')
 			@

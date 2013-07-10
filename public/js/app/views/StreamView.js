@@ -45,12 +45,12 @@
 
       StreamView.prototype.remove = function() {
         clearTimeout(this.scrollTimeout);
-        this.ui.stream.off('scroll', this.delayedOnScroll);
+        this.$('#storeer-stream').off('scroll', this.delayedOnScroll);
         return Backbone.View.prototype.remove.apply(this);
       };
 
       StreamView.prototype.onShow = function() {
-        return this.ui.stream.on('scroll', this.delayedOnScroll);
+        return this.$('#storeer-stream').on('scroll', this.delayedOnScroll);
       };
 
       StreamView.prototype.appendHtml = function(collectionView, itemView, itemIndex) {
@@ -61,15 +61,27 @@
           itemView.setElement(item).bindUIElements();
         } else {
           stream.append(itemView.el);
+          item = stream.children().last();
         }
-        $el = $(itemView.el).attr('data-cid', itemView.cid).attr('data-index', itemIndex);
+        $el = $(stream.children()[itemIndex]).attr('data-cid', itemView.cid).attr('data-index', itemIndex);
         if (!this.topItem) {
           this.topItem = $el;
           this.bottomItem = $el;
+        } else {
+          if (this.equals(this.topItem, $el)) {
+            this.topItem = $el;
+          }
+          if (this.equals(this.bottomItem, $el)) {
+            this.bottomItem = $el;
+          }
         }
         if (this.visible($el)) {
           return itemView.visible(true);
         }
+      };
+
+      StreamView.prototype.equals = function(itemA, itemB) {
+        return parseInt(itemA.attr('data-index')) === parseInt(itemB.attr('data-index')) && itemA.attr('data-cid') !== itemB.attr('data-cid');
       };
 
       StreamView.prototype.updateVisibility = function(direction) {
