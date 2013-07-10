@@ -49,7 +49,8 @@
       StoreeStripView.prototype.initialize = function() {
         _.bindAll(this);
         this.loadStoreer(this.model);
-        return $(window).on('resize', this.timeoutResize);
+        $(window).on('resize', this.timeoutResize);
+        return this.on('visible', this.onVisible);
       };
 
       StoreeStripView.prototype.remove = function() {
@@ -84,7 +85,7 @@
         return app.vent.trigger('open:storee', this.model);
       };
 
-      StoreeStripView.prototype.visible = function(visibility) {
+      StoreeStripView.prototype.onVisible = function(visibility) {
         if (visibility !== this.visibility) {
           this.visibility = visibility;
           this.$el.toggleClass('visible', visibility);

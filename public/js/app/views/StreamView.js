@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["jquery", "underscore", "backbone", "App", "text!templates/stream.html", "views/StoreeStripView"], function($, _, Backbone, app, template, StoreeStripView) {
+  define(["jquery", "underscore", "backbone", "App", "text!templates/stream.html", "views/StoreeStripView", "views/ScrollView"], function($, _, Backbone, app, template, StoreeStripView, ScrollView) {
     var StreamView, _ref;
     return StreamView = (function(_super) {
       __extends(StreamView, _super);
@@ -19,202 +19,26 @@
 
       StreamView.prototype.className = 'storeer-stream-content';
 
-      StreamView.prototype.topItem = void 0;
-
-      StreamView.prototype.bottomItem = void 0;
-
-      StreamView.prototype.scrollTop = 0;
-
-      StreamView.prototype.scrollTopDestiny = 0;
-
       StreamView.prototype.margin = 2000;
 
       StreamView.prototype.loadMargin = 2000;
 
       StreamView.prototype.ui = {
-        stream: '#storeer-stream'
-      };
-
-      StreamView.prototype.events = {
-        'mousewheel': 'onMouseWheel'
+        scroll: '#storeer-stream'
       };
 
       StreamView.prototype.initialize = function() {
-        return _.bindAll(this);
+        _.bindAll(this);
+        return this.on('scrollend', this.loadMore);
       };
 
-      StreamView.prototype.remove = function() {
-        clearTimeout(this.scrollTimeout);
-        this.$('#storeer-stream').off('scroll', this.delayedOnScroll);
-        return Backbone.View.prototype.remove.apply(this);
-      };
-
-      StreamView.prototype.onShow = function() {
-        return this.$('#storeer-stream').on('scroll', this.delayedOnScroll);
-      };
-
-      StreamView.prototype.appendHtml = function(collectionView, itemView, itemIndex) {
-        var $el, item, stream;
-        stream = collectionView.$(".storeer-stream");
-        item = $(stream.children()[itemIndex]);
-        if (item && parseInt(item.attr('data-index')) === itemIndex) {
-          itemView.setElement(item).bindUIElements();
-        } else {
-          stream.append(itemView.el);
-          item = stream.children().last();
-        }
-        $el = $(stream.children()[itemIndex]).attr('data-cid', itemView.cid).attr('data-index', itemIndex);
-        if (!this.topItem) {
-          this.topItem = $el;
-          this.bottomItem = $el;
-        } else {
-          if (this.equals(this.topItem, $el)) {
-            this.topItem = $el;
-          }
-          if (this.equals(this.bottomItem, $el)) {
-            this.bottomItem = $el;
-          }
-        }
-        if (this.visible($el)) {
-          return itemView.visible(true);
-        }
-      };
-
-      StreamView.prototype.equals = function(itemA, itemB) {
-        return parseInt(itemA.attr('data-index')) === parseInt(itemB.attr('data-index')) && itemA.attr('data-cid') !== itemB.attr('data-cid');
-      };
-
-      StreamView.prototype.updateVisibility = function(direction) {
-        var _ref1, _ref2;
-        if (direction < 0) {
-          _ref1 = this.move('prev'), this.bottomItem = _ref1[0], this.topItem = _ref1[1];
-        } else if (direction > 0) {
-          _ref2 = this.move('next'), this.topItem = _ref2[0], this.bottomItem = _ref2[1];
-        }
-        return this;
-      };
-
-      StreamView.prototype.move = function(direction) {
-        var extremeA, extremeB;
-        extremeA = this.moveWhileVisibilityIs(this.topItem, direction, false);
-        extremeB = this.moveWhileVisibilityIs(extremeA, direction, true);
-        return [extremeA, extremeB];
-      };
-
-      StreamView.prototype.moveWhileVisibilityIs = function(item, direction, isVisible) {
-        var prevItem;
-        prevItem = item;
-        while (this.visible(item) === isVisible) {
-          prevItem = item;
-          item = item[direction]();
-          if (!isVisible) {
-            this.removeItem(prevItem);
-          } else {
-            this.addItem(prevItem);
-          }
-        }
-        if (item.length === 0) {
-          item = prevItem;
-        }
-        return item;
-      };
-
-      StreamView.prototype.visible = function(item) {
-        var itemTop, scroll;
-        if (!item || item.length === 0) {
-          return void 0;
-        }
-        scroll = this.scrollData();
-        itemTop = item.position().top + scroll.top;
-        return !(itemTop > scroll.bottom + 800 || itemTop + item.height() < scroll.top - 800);
-      };
-
-      StreamView.prototype.scrollData = function() {
-        var scroll;
-        scroll = this.ui.stream[0];
-        return {
-          top: scroll.scrollTop,
-          height: scroll.scrollHeight,
-          bottom: scroll.scrollTop + scroll.clientHeight
-        };
-      };
-
-      StreamView.prototype.removeItem = function(item) {
-        var copy, itemView;
-        itemView = this.children._views[item.attr('data-cid')];
-        if (itemView) {
-          copy = item[0].outerHTML;
-          $(copy).insertAfter(item);
-          return this.removeChildView(itemView);
-        }
-      };
-
-      StreamView.prototype.addItem = function(item) {
-        var itemView;
-        itemView = this.children._views[item.attr('data-cid')];
-        if (itemView) {
-          return itemView.visible(true);
-        } else {
-          return this.addChildView(this.collection.at(item.attr('data-index')));
-        }
-      };
-
-      StreamView.prototype.onMouseWheel = function(event) {
-        var deltaY, newDestiny, scroll, sign;
-        event.preventDefault();
-        scroll = this.scrollData();
-        deltaY = event.originalEvent.wheelDeltaY;
-        sign = this.sign(deltaY);
-        newDestiny = this.scrollTopDestiny + Math.max(Math.abs(deltaY), 80) * sign;
-        newDestiny = Math.max(Math.min(newDestiny, scroll.height), 0);
-        if (this.scrollTopDestiny !== newDestiny) {
-          this.scrollTopDestiny = newDestiny;
-          this.ui.stream.css('padding-top', 0);
-          this.ui.stream.clearQueue().stop().animate({
-            scrollTop: this.scrollTopDestiny
-          }, 400, 'easeOutQuad');
-          if (this.scrollTopDestiny === 0) {
-            return this.ui.stream.animate({
-              'padding-top': 40
-            }, 100).animate({
-              'padding-top': 0
-            }, 150);
-          }
-        }
-      };
-
-      StreamView.prototype.delayedOnScroll = function(event) {
-        var scrollTop;
-        scrollTop = event.target.scrollTop;
-        if (!this.visible(this.topItem) || !this.visible(this.bottomItem)) {
-          this.onScroll(event);
-        }
-        clearTimeout(this.scrollTimeout);
-        return this.scrollTimeout = setTimeout(this.onScroll, 200);
-      };
-
-      StreamView.prototype.onScroll = function(event) {
-        var scroll;
-        scroll = this.scrollData();
-        this.updateVisibility(scroll.top - this.scrollTop);
-        this.scrollTop = scroll.top;
-        if (scroll.height - this.loadMargin < scroll.bottom) {
-          return app.vent.trigger('search:more');
-        }
-      };
-
-      StreamView.prototype.sign = function(value) {
-        if (value > 0) {
-          return -1;
-        } else if (value < 0) {
-          return 1;
-        }
-        return 0;
+      StreamView.prototype.loadMore = function() {
+        return app.vent.trigger('search:more');
       };
 
       return StreamView;
 
-    })(Backbone.Marionette.CompositeView);
+    })(ScrollView);
   });
 
 }).call(this);

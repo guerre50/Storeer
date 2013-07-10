@@ -38,6 +38,7 @@ define [
 			_.bindAll @
 			@loadStoreer(@model)
 			$(window).on('resize', @timeoutResize)
+			@on('visible', @onVisible)
 
 		remove: ->
 			$(window).off('resize', @timeoutResize)
@@ -53,7 +54,7 @@ define [
 		onMouseEnter: ->
 			# We wait 0.5 seconds to load all the images of the storee
 			@loadImagesTimeout = setTimeout(@renderExtraImages, 500)
-			
+
 			# We wait 2 seconds and then we mark the storee as started
 			@startTimeout = setTimeout(@start, 2000)
 
@@ -69,7 +70,7 @@ define [
 			app.vent.trigger('open:storee', @model)
 			
 
-		visible: (visibility) ->
+		onVisible: (visibility) ->
 			if visibility != @visibility
 				@visibility = visibility
 				@$el.toggleClass('visible', visibility)
