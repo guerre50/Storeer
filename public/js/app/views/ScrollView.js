@@ -36,6 +36,7 @@
       };
 
       ScrollView.prototype.initialize = function() {
+        this._viewsQueue = [];
         return _.bindAll(this);
       };
 
@@ -220,7 +221,8 @@
         this.trigger('scroll', scroll);
         this.scrollTop = scroll.top;
         if (scroll.height - this.loadMargin < scroll.bottom) {
-          return this.trigger('scrollend');
+          this.trigger('scrollend');
+          return this.loadMore();
         }
       };
 

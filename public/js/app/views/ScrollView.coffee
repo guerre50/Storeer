@@ -10,8 +10,7 @@ define [
 		bottomItem: undefined
 		scrollTop : 0
 		scrollTopDestiny: 0
-		_viewsQueue: []
-
+		_viewsQueue : []
 		# margin that we want to add to the scroll view
 		visibleMargin: 2000
 		# margin at which we want to load more images
@@ -24,6 +23,7 @@ define [
 			scroll: '.scroll'
 
 		initialize: ->
+			@_viewsQueue = []
 			_.bindAll @
 
 		remove: ->
@@ -223,6 +223,7 @@ define [
 
 			if scroll.height - @loadMargin < scroll.bottom
 				@trigger('scrollend')
+				@loadMore()
 
 		_sign: (value) ->
 			if value > 0 

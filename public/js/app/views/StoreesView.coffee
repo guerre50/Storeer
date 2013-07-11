@@ -31,4 +31,3 @@ define [
 			if not @pending()
 				app.vent.trigger('search:more')
 
-			
