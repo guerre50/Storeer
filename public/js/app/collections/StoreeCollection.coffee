@@ -23,9 +23,10 @@ define [
 			app.vent.on('search:term', @search)
 
 		search: (query) ->
-			@page = 0
-			@query = query
-			@fetchStorees(query, @fetchReset)
+			if query != @query
+				@page = 0
+				@query = query
+				@fetchStorees(query, @fetchReset)
 
 		more: ->
 			@page++

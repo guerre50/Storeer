@@ -40,6 +40,8 @@
       };
 
       ScrollView.prototype.remove = function() {
+        this._viewsQueue = null;
+        clearTimeout(this.appendTimeout);
         clearTimeout(this._scrollTimeout);
         this.$el.find(this.ui.scroll).off('scroll', this._delayedOnScroll);
         return Backbone.View.prototype.remove.apply(this);

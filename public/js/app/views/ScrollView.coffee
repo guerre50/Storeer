@@ -27,6 +27,8 @@ define [
 			_.bindAll @
 
 		remove: ->
+			@_viewsQueue = null
+			clearTimeout(@appendTimeout)
 			clearTimeout(@_scrollTimeout)
 			# remove is called after unsetting the ui bindings so we have to find
 			# the one related with scroll

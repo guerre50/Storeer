@@ -44,6 +44,7 @@ define [
 			clearTimeout(@startTimeout)
 			clearTimeout(@resizeTimeout)
 			clearTimeout(@loadImagesTimeout)
+			app.vent.off('resize', @timeoutResize)
 			@$el.find('img').off('load', @onImgLoad)
 			Backbone.View.prototype.remove.apply(@)
 

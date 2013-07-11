@@ -26,9 +26,11 @@
       };
 
       StoreeCollection.prototype.search = function(query) {
-        this.page = 0;
-        this.query = query;
-        return this.fetchStorees(query, this.fetchReset);
+        if (query !== this.query) {
+          this.page = 0;
+          this.query = query;
+          return this.fetchStorees(query, this.fetchReset);
+        }
       };
 
       StoreeCollection.prototype.more = function() {

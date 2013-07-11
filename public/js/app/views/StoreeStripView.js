@@ -57,6 +57,7 @@
         clearTimeout(this.startTimeout);
         clearTimeout(this.resizeTimeout);
         clearTimeout(this.loadImagesTimeout);
+        app.vent.off('resize', this.timeoutResize);
         this.$el.find('img').off('load', this.onImgLoad);
         return Backbone.View.prototype.remove.apply(this);
       };
