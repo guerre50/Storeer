@@ -21,12 +21,14 @@
 
       ScrollView.prototype.scrollTopDestiny = 0;
 
+      ScrollView.prototype._viewsQueue = [];
+
       ScrollView.prototype.visibleMargin = 2000;
 
       ScrollView.prototype.loadMargin = 2000;
 
       ScrollView.prototype.events = {
-        'mousewheel': 'onMouseWheel'
+        'mousewheel': '_onMouseWheel'
       };
 
       ScrollView.prototype.ui = {
@@ -38,16 +40,39 @@
       };
 
       ScrollView.prototype.remove = function() {
-        clearTimeout(this.scrollTimeout);
-        this.$el.find(this.ui.scroll).off('scroll', this.delayedOnScroll);
+        clearTimeout(this._scrollTimeout);
+        this.$el.find(this.ui.scroll).off('scroll', this._delayedOnScroll);
         return Backbone.View.prototype.remove.apply(this);
       };
 
       ScrollView.prototype.onShow = function() {
-        return this.ui.scroll.on('scroll', this.delayedOnScroll);
+        return this.ui.scroll.on('scroll', this._delayedOnScroll);
       };
 
       ScrollView.prototype.appendHtml = function(collectionView, itemView, itemIndex) {
+        if (itemIndex < 8) {
+          return this._appendHtml(collectionView, itemView, itemIndex);
+        } else {
+          this._viewsQueue.push([collectionView, itemView, itemIndex]);
+          clearTimeout(this.appendTimeout);
+          return this.appendTimeout = setTimeout(this._checkAppend, 500);
+        }
+      };
+
+      ScrollView.prototype._checkAppend = function() {
+        var front;
+        if (this._viewsQueue.length > 0) {
+          front = this._viewsQueue.shift();
+          this._appendHtml(front[0], front[1], front[2]);
+          return this.appendTimeout = setTimeout(this._checkAppend, 500);
+        }
+      };
+
+      ScrollView.prototype.pending = function() {
+        return this._viewsQueue.length > 0;
+      };
+
+      ScrollView.prototype._appendHtml = function(collectionView, itemView, itemIndex) {
         var $el, item, scroll;
         scroll = this.ui.scroll;
         item = $(scroll.children()[itemIndex]);
@@ -62,49 +87,49 @@
           this.topItem = $el;
           this.bottomItem = $el;
         } else {
-          if (this.equals(this.topItem, $el)) {
+          if (this._equals(this.topItem, $el)) {
             this.topItem = $el;
           }
-          if (this.equals(this.bottomItem, $el)) {
+          if (this._equals(this.bottomItem, $el)) {
             this.bottomItem = $el;
           }
         }
-        if (this.visible($el)) {
+        if (this._visible($el)) {
           return itemView.trigger('visible', true);
         }
       };
 
-      ScrollView.prototype.equals = function(itemA, itemB) {
+      ScrollView.prototype._equals = function(itemA, itemB) {
         return parseInt(itemA.attr('data-index')) === parseInt(itemB.attr('data-index')) && itemA.attr('data-cid') !== itemB.attr('data-cid');
       };
 
-      ScrollView.prototype.updateVisibility = function(direction) {
+      ScrollView.prototype._updateVisibility = function(direction) {
         var _ref1, _ref2;
         if (direction < 0) {
-          _ref1 = this.move('prev'), this.bottomItem = _ref1[0], this.topItem = _ref1[1];
+          _ref1 = this._move('prev'), this.bottomItem = _ref1[0], this.topItem = _ref1[1];
         } else if (direction > 0) {
-          _ref2 = this.move('next'), this.topItem = _ref2[0], this.bottomItem = _ref2[1];
+          _ref2 = this._move('next'), this.topItem = _ref2[0], this.bottomItem = _ref2[1];
         }
         return this;
       };
 
-      ScrollView.prototype.move = function(direction) {
+      ScrollView.prototype._move = function(direction) {
         var extremeA, extremeB;
-        extremeA = this.moveWhileVisibilityIs(this.topItem, direction, false);
-        extremeB = this.moveWhileVisibilityIs(extremeA, direction, true);
+        extremeA = this._moveWhileVisibilityIs(this.topItem, direction, false);
+        extremeB = this._moveWhileVisibilityIs(extremeA, direction, true);
         return [extremeA, extremeB];
       };
 
-      ScrollView.prototype.moveWhileVisibilityIs = function(item, direction, isVisible) {
+      ScrollView.prototype._moveWhileVisibilityIs = function(item, direction, isVisible) {
         var prevItem;
         prevItem = item;
-        while (this.visible(item) === isVisible) {
+        while (this._visible(item) === isVisible) {
           prevItem = item;
           item = item[direction]();
           if (!isVisible) {
-            this.removeItem(prevItem);
+            this._removeItem(prevItem);
           } else {
-            this.addItem(prevItem);
+            this._addItem(prevItem);
           }
         }
         if (item.length === 0) {
@@ -113,17 +138,17 @@
         return item;
       };
 
-      ScrollView.prototype.visible = function(item) {
+      ScrollView.prototype._visible = function(item) {
         var itemTop, scroll;
         if (!item || item.length === 0) {
           return void 0;
         }
-        scroll = this.scrollData();
+        scroll = this._scrollData();
         itemTop = item.position().top + scroll.top;
         return !(itemTop > scroll.bottom + this.visibleMargin || itemTop + item.height() < scroll.top - this.visibleMargin);
       };
 
-      ScrollView.prototype.scrollData = function() {
+      ScrollView.prototype._scrollData = function() {
         var scroll;
         scroll = this.ui.scroll[0];
         return {
@@ -133,7 +158,7 @@
         };
       };
 
-      ScrollView.prototype.removeItem = function(item) {
+      ScrollView.prototype._removeItem = function(item) {
         var copy, itemView;
         itemView = this.children._views[item.attr('data-cid')];
         if (itemView) {
@@ -144,7 +169,7 @@
         }
       };
 
-      ScrollView.prototype.addItem = function(item) {
+      ScrollView.prototype._addItem = function(item) {
         var itemView;
         itemView = this.children._views[item.attr('data-cid')];
         if (itemView) {
@@ -154,19 +179,19 @@
         }
       };
 
-      ScrollView.prototype.onMouseWheel = function(event) {
+      ScrollView.prototype._onMouseWheel = function(event) {
         var deltaY, newDestiny, scroll, sign;
         event.preventDefault();
-        scroll = this.scrollData();
+        scroll = this._scrollData();
         deltaY = event.originalEvent.wheelDeltaY;
-        sign = this.sign(deltaY);
+        sign = this._sign(deltaY);
         newDestiny = this.scrollTopDestiny + Math.max(Math.abs(deltaY), 80) * sign;
         newDestiny = Math.max(Math.min(newDestiny, scroll.height), 0);
         if (this.scrollTopDestiny !== newDestiny) {
           this.scrollTopDestiny = newDestiny;
           this.ui.scroll.css('padding-top', 0).clearQueue().stop().animate({
             scrollTop: this.scrollTopDestiny
-          }, 400, 'easeOutQuad');
+          }, 100, 'easeOutQuad');
           if (this.scrollTopDestiny === 0) {
             return this.ui.scroll.animate({
               'padding-top': 40
@@ -177,28 +202,27 @@
         }
       };
 
-      ScrollView.prototype.delayedOnScroll = function(event) {
+      ScrollView.prototype._delayedOnScroll = function(event) {
         var scrollTop;
         scrollTop = event.target.scrollTop;
-        if (!this.visible(this.topItem) || !this.visible(this.bottomItem)) {
-          this.onScroll(event);
+        if (!this._visible(this.topItem) || !this._visible(this.bottomItem)) {
+          this._onScroll(event);
         }
-        clearTimeout(this.scrollTimeout);
-        return this.scrollTimeout = setTimeout(this.onScroll, 200);
+        clearTimeout(this._scrollTimeout);
+        return this._scrollTimeout = setTimeout(this._onScroll, 200);
       };
 
-      ScrollView.prototype.onScroll = function(event) {
+      ScrollView.prototype._onScroll = function(event) {
         var scroll;
-        scroll = this.scrollData();
+        scroll = this._scrollData();
         this.trigger('scroll', scroll);
-        this.updateVisibility(scroll.top - this.scrollTop);
         this.scrollTop = scroll.top;
         if (scroll.height - this.loadMargin < scroll.bottom) {
           return this.trigger('scrollend');
         }
       };
 
-      ScrollView.prototype.sign = function(value) {
+      ScrollView.prototype._sign = function(value) {
         if (value > 0) {
           return -1;
         } else if (value < 0) {

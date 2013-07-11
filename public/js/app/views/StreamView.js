@@ -19,21 +19,24 @@
 
       StreamView.prototype.className = 'storeer-stream-content';
 
-      StreamView.prototype.margin = 2000;
+      StreamView.prototype.visibleMargin = 2000;
 
-      StreamView.prototype.loadMargin = 2000;
+      StreamView.prototype.bottomMargin = 2000;
 
       StreamView.prototype.ui = {
         scroll: '#storeer-stream'
       };
 
       StreamView.prototype.initialize = function() {
+        ScrollView.prototype.initialize.apply(this);
         _.bindAll(this);
         return this.on('scrollend', this.loadMore);
       };
 
       StreamView.prototype.loadMore = function() {
-        return app.vent.trigger('search:more');
+        if (!this.pending()) {
+          return app.vent.trigger('search:more');
+        }
       };
 
       return StreamView;

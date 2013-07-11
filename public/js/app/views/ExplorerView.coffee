@@ -71,7 +71,7 @@ define [
 			else
 				@storee.show(new StoreerVisualizer({model: storee}))
 
-			@toggleSidePanel(false)
+			#@toggleSidePanel(false)
 
 		createStoree: ->
 			@storee.show(new StoreerVisualizer({model: new StoreeModel()}))

@@ -19,7 +19,7 @@
 
       StoreeCollection.prototype.initialize = function() {
         _.bindAll(this);
-        this.maxResults = 15;
+        this.maxResults = 10;
         this.page = 1;
         app.vent.on('search:more', this.more);
         return app.vent.on('search:term', this.search);
@@ -64,7 +64,3 @@
   });
 
 }).call(this);
-
-/*
-//@ sourceMappingURL=StoreeCollection.map
-*/

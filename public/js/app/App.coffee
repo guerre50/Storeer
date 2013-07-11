@@ -16,6 +16,7 @@ define [
     app.addInitializer (options) ->
         @storees = options.storee
         @storees.fetch()
+        $(window).on('resize', (event) -> app.vent.trigger('resize', event))
 
     app
 

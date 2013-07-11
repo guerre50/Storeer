@@ -49,12 +49,11 @@
       StoreeStripView.prototype.initialize = function() {
         _.bindAll(this);
         this.loadStoreer(this.model);
-        $(window).on('resize', this.timeoutResize);
-        return this.on('visible', this.onVisible);
+        this.on('visible', this.onVisible);
+        return app.vent.on('resize', this.timeoutResize);
       };
 
       StoreeStripView.prototype.remove = function() {
-        $(window).off('resize', this.timeoutResize);
         clearTimeout(this.startTimeout);
         clearTimeout(this.resizeTimeout);
         clearTimeout(this.loadImagesTimeout);
@@ -63,7 +62,9 @@
       };
 
       StoreeStripView.prototype.onShow = function() {
-        return this.loadStoreer(this.model);
+        this.loadStoreer(this.model);
+        this.updateControlArrows();
+        return this.onVisible(true);
       };
 
       StoreeStripView.prototype.onMouseEnter = function() {
@@ -86,7 +87,7 @@
       };
 
       StoreeStripView.prototype.onVisible = function(visibility) {
-        if (visibility !== this.visibility) {
+        if (visibility) {
           this.visibility = visibility;
           this.$el.toggleClass('visible', visibility);
           return this.repositionStoree();
@@ -109,23 +110,16 @@
         return this.setCurrentFrame(this.currentFrame + 1);
       };
 
-      StoreeStripView.prototype.onLoad = function() {
-        this.repositionStoree();
-        return this.updateControlArrows();
-      };
-
       StoreeStripView.prototype.onImgLoad = function(event) {
-        var $img, img, tmpImage;
+        var $img, frame, img, tmpImage;
         img = event.target;
         $img = this.$(img);
         tmpImage = new Image();
         tmpImage.src = img.src;
         img.setAttribute('data-ratio', tmpImage.width / tmpImage.height);
         $img.toggleClass('loading', false);
-        this.resizeFrame($img.parent());
-        if (--this.imagesToLoad === 0) {
-          return this.onLoad();
-        }
+        frame = $img.parent();
+        return this.repositionStoree();
       };
 
       StoreeStripView.prototype.onFrameClick = function(event) {
@@ -173,7 +167,7 @@
 
       StoreeStripView.prototype.timeoutResize = function(event) {
         clearTimeout(this.resizeTimeout);
-        return this.resizeTimeout = setTimeout(this.resize, 500);
+        return this.resizeTimeout = setTimeout(this.resize, 200);
       };
 
       StoreeStripView.prototype.resize = function() {

@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["jquery", "underscore", "backbone", "App", "text!templates/storees.html", "views/StoreeView"], function($, _, Backbone, app, template, StoreeView) {
+  define(["jquery", "underscore", "backbone", "App", "text!templates/storees.html", "views/StoreeView", "views/ScrollView"], function($, _, Backbone, app, template, StoreeView, ScrollView) {
     var StoreesView, _ref;
     return StoreesView = (function(_super) {
       __extends(StoreesView, _super);
@@ -19,17 +19,30 @@
 
       StoreesView.prototype.template = _.template(template);
 
-      StoreesView.prototype.appendHtml = function(collectionView, itemView) {
-        return collectionView.$(".storee-collection").append(itemView.el);
+      StoreesView.prototype.visibleMargin = 1000;
+
+      StoreesView.prototype.bottomMargin = 200;
+
+      StoreesView.prototype.ui = {
+        scroll: '.storee-collection'
+      };
+
+      StoreesView.prototype.initialize = function() {
+        ScrollView.prototype.initialize.apply(this);
+        return this.on('scroll', this.onScroll);
+      };
+
+      StoreesView.prototype.onScroll = function(scroll) {};
+
+      StoreesView.prototype.loadMore = function() {
+        if (!this.pending()) {
+          return app.vent.trigger('search:more');
+        }
       };
 
       return StoreesView;
 
-    })(Backbone.Marionette.CompositeView);
+    })(ScrollView);
   });
 
 }).call(this);
-
-/*
-//@ sourceMappingURL=StoreesView.map
-*/

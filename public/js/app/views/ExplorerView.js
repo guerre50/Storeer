@@ -79,13 +79,12 @@
           this.overlay.show(new StoreerVisualizer({
             model: storee
           }));
-          this.overlay.$el.toggleClass('enabled', true);
+          return this.overlay.$el.toggleClass('enabled', true);
         } else {
-          this.storee.show(new StoreerVisualizer({
+          return this.storee.show(new StoreerVisualizer({
             model: storee
           }));
         }
-        return this.toggleSidePanel(false);
       };
 
       ExplorerView.prototype.createStoree = function() {
@@ -123,7 +122,3 @@
   });
 
 }).call(this);
-
-/*
-//@ sourceMappingURL=ExplorerView.map
-*/

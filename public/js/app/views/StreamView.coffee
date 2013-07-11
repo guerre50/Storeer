@@ -22,10 +22,12 @@ define [
 			scroll: '#storeer-stream'
 
 		initialize: ->
+			ScrollView.prototype.initialize.apply(@, )
 			_.bindAll @
 			@on('scrollend', @loadMore)
 
 		loadMore: ->
-			app.vent.trigger('search:more')
+			if not @pending()
+				app.vent.trigger('search:more')
 				
 

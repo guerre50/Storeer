@@ -24,13 +24,12 @@
     });
     app.addInitializer(function(options) {
       this.storees = options.storee;
-      return this.storees.fetch();
+      this.storees.fetch();
+      return $(window).on('resize', function(event) {
+        return app.vent.trigger('resize', event);
+      });
     });
     return app;
   });
 
 }).call(this);
-
-/*
-//@ sourceMappingURL=App.map
-*/

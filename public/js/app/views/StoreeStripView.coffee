@@ -37,11 +37,10 @@ define [
 		initialize: ->
 			_.bindAll @
 			@loadStoreer(@model)
-			$(window).on('resize', @timeoutResize)
 			@on('visible', @onVisible)
+			app.vent.on('resize', @timeoutResize)
 
 		remove: ->
-			$(window).off('resize', @timeoutResize)
 			clearTimeout(@startTimeout)
 			clearTimeout(@resizeTimeout)
 			clearTimeout(@loadImagesTimeout)
@@ -50,6 +49,8 @@ define [
 
 		onShow: ->
 			@loadStoreer(@model)
+			@updateControlArrows()
+			@onVisible(true)
 
 		onMouseEnter: ->
 			# We wait 0.5 seconds to load all the images of the storee
@@ -71,7 +72,7 @@ define [
 			
 
 		onVisible: (visibility) ->
-			if visibility != @visibility
+			if visibility
 				@visibility = visibility
 				@$el.toggleClass('visible', visibility)
 				@repositionStoree()
@@ -94,12 +95,6 @@ define [
 		next: ->
 			@setCurrentFrame(@currentFrame+1)
 
-		onLoad: ->
-			# We need to wait until all images are loaded
-			# to reposition
-			@repositionStoree()
-			@updateControlArrows()
-
 		onImgLoad: (event) ->
 			img = event.target
 			$img = @$(img)
@@ -112,9 +107,9 @@ define [
 
 			$img.toggleClass('loading', false)
 
-			@resizeFrame($img.parent())
+			frame = $img.parent()
 
-			if --@imagesToLoad == 0 then @onLoad()
+			@repositionStoree()
 
 		onFrameClick: (event) ->
 			# We move frame according of the relative position 
@@ -165,7 +160,7 @@ define [
 
 		timeoutResize: (event) ->
 			clearTimeout(@resizeTimeout)
-			@resizeTimeout = setTimeout(@resize, 500)
+			@resizeTimeout = setTimeout(@resize, 200)
 
 		resize: ->
 			_.each(@ui.frames, @resizeFrame)
